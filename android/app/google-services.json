@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "651776985530",
+    "project_id": "breminderapp",
+    "storage_bucket": "breminderapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651776985530:android:c85c47ae97e8ba92173583",
+        "android_client_info": {
+          "package_name": "com.bremind.bremind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651776985530-g9e93f9lel1cn11687jibqpe9l3ai6jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfSdMJsDl8zJONkwGqQlbC7XRgitBpa4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651776985530-g9e93f9lel1cn11687jibqpe9l3ai6jr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "651776985530-vf9h68tretevaim8cjs4u0ir40dv4cqr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bremind.bremind"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -38,6 +38,7 @@ dependencies:
   flutter_native_splash: ^2.2.3
   get: ^4.6.5
   google_fonts: ^3.0.1
+  firebase_core: ^1.17.1
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:bremind/app.swatch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,11 +13,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(systemNavigationBarColor: AppSwatch.primary.shade700,statusBarColor:AppSwatch.primary.shade700),);
     return GetMaterialApp(
       title: 'breminder',
       theme: ThemeData(
           colorScheme:
-              ColorScheme.fromSwatch(primarySwatch: AppSwatch.appswatch),
+              ColorScheme.fromSwatch(primarySwatch: AppSwatch.primary),
           textTheme: TextTheme(
             headline1: GoogleFonts.inter(
                 fontSize: 93, fontWeight: FontWeight.w300, letterSpacing: -1.5),
@@ -48,7 +50,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("bremind"),
+          title: const Text("breminder  "),
         ),
         backgroundColor: Colors.white,
         body: Center(
