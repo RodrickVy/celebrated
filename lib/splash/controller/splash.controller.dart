@@ -1,12 +1,13 @@
+import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/splash/interface/splash.controller.interface.dart';
 import 'package:bremind/splash/models/splash.item.dart';
 import 'package:get/get.dart';
 
 class IntroScreenController extends GetxController
-    implements ISplashController {
+    implements IAppIntroController {
   Rx<int> current = 0.obs;
-
 
   @override
   SplashItem get currentItem => __items[current.value];
@@ -23,8 +24,7 @@ class IntroScreenController extends GetxController
   final List<SplashItem> __items = [
     const SplashItem(
         title: "Save Dates",
-        description:
-            "Save birthday dates, customize when to be reminded. ",
+        description: "Save birthday dates, customize when to be reminded. ",
         image: "assets/intro/man_time.png"),
     const SplashItem(
         title: "Group Birthdays",
@@ -33,16 +33,16 @@ class IntroScreenController extends GetxController
         image: "assets/intro/plan.png"),
     const SplashItem(
         title: "Share Birthday Lists",
-        description:
-            "Share a birthday lits so others are notfied too.",
+        description: "Share a birthday lits so others are notfied too.",
         image: "assets/intro/thoughts_pc.png"),
   ];
-
-
 
   @override
   void onInit() {
     super.onInit();
+    if (AuthController.instance.isAuthenticated.isTrue) {
+      NavController.instance.to(AppRoutes.home);
+    }
   }
 
   @override
@@ -65,5 +65,4 @@ class IntroScreenController extends GetxController
   void skipSplash() {
     Get.toNamed(AppRoutes.auth);
   }
-
 }

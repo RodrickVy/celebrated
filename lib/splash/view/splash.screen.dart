@@ -1,12 +1,11 @@
 import 'package:bremind/app.swatch.dart';
-import 'package:bremind/domain/page.view.dart';
+import 'package:bremind/domain/view/page.view.dart';
 import 'package:bremind/splash/interface/splash.controller.interface.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_fade/image_fade.dart';
 
-class AppIntro<C extends ISplashController> extends AppView<C> {
+class AppIntro<C extends IAppIntroController> extends AppStateView<C> {
   @override
   AppIntro({Key? key}) : super(key: key);
 
@@ -16,21 +15,20 @@ class AppIntro<C extends ISplashController> extends AppView<C> {
       () => Container(
         width:  adapter.width,
         height: adapter.height,
-        color: AppSwatch.primary.shade500,
-        padding: const EdgeInsets.all(8.0),
+        color:  adapter.adapt(phone: null, tablet: null, desktop: AppSwatch.primary.shade500),
+        padding:  EdgeInsets.zero,
+        alignment: Alignment.center,
         child: Container(
-          width: adapter.adapt(phone: 300, tablet: 500, desktop: 500),
+          width: adapter.adapt(phone: adapter.width, tablet:  adapter.width, desktop: 500),
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.all(20),
           decoration:  BoxDecoration(
-              color: AppSwatch.primary.shade500,
+              color:  adapter.adapt(phone: null, tablet: null, desktop: AppSwatch.primary.shade500),
               image: const DecorationImage(
             image: AssetImage("assets/intro/bg.png"),
             fit: BoxFit.fitWidth,
             alignment: Alignment.topCenter,
           )),
-
-          alignment: Alignment.center,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -53,10 +51,14 @@ class AppIntro<C extends ISplashController> extends AppView<C> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  controller.currentItem.image,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ImageFade(
+                    image:AssetImage(
+                      controller.currentItem.image,
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -114,6 +116,7 @@ class AppIntro<C extends ISplashController> extends AppView<C> {
             ],
           ),
         ),
+
       ),
     );
   }

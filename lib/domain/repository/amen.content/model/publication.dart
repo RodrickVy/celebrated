@@ -1,0 +1,4 @@
+enum PublicationState{
+  isPublished,
+  isUnpublished
+}

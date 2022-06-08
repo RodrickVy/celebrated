@@ -1,6 +1,6 @@
 import 'package:bremind/splash/models/splash.item.dart';
 
-abstract class ISplashController {
+abstract class IAppIntroController {
   List<SplashItem> get splashItems;
 
   int get currentItemIndex;

@@ -25,5 +25,5 @@ class AppSwatch {
     400: Color(0xFFFFE3BC),
     700: Color(0xFFFFD9A2),
   });
-  static const int accentValue = 0xFFFFF8EF;
+  static const int accentValue = 0xFFF5E9C6;
 }
