@@ -1,13 +1,15 @@
+import 'package:bremind/appIntro/interface/intro.controller.interface.dart';
+import 'package:bremind/appIntro/models/splash.item.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/splash/interface/splash.controller.interface.dart';
-import 'package:bremind/splash/models/splash.item.dart';
 import 'package:get/get.dart';
 
+/// manages the app intro slideshow adhering to the view's interface [IAppIntroController]
 class IntroScreenController extends GetxController
     implements IAppIntroController {
   Rx<int> current = 0.obs;
+
 
   @override
   SplashItem get currentItem => __items[current.value];
@@ -21,6 +23,8 @@ class IntroScreenController extends GetxController
   @override
   List<SplashItem> get splashItems => __items;
 
+
+  /// the data for the splash screen
   final List<SplashItem> __items = [
     const SplashItem(
         title: "Save Dates",
@@ -40,11 +44,13 @@ class IntroScreenController extends GetxController
   @override
   void onInit() {
     super.onInit();
+    /// if user is authenticated already no need to do app intro , must go to home page.
     if (AuthController.instance.isAuthenticated.isTrue) {
       NavController.instance.to(AppRoutes.home);
     }
   }
 
+  /// called when next is pressed in slideshow
   @override
   void nextScreen() {
     if (current < __items.length - 1) {
@@ -53,7 +59,7 @@ class IntroScreenController extends GetxController
       Get.toNamed(AppRoutes.auth);
     }
   }
-
+  /// called when previous is pressed in slideshow
   @override
   void previousScreen() {
     if (current > 0) {
@@ -61,8 +67,9 @@ class IntroScreenController extends GetxController
     }
   }
 
+  /// called when skip is pressed in slideshow
   @override
-  void skipSplash() {
+  void skipIntro() {
     Get.toNamed(AppRoutes.auth);
   }
 }

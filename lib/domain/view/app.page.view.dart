@@ -7,10 +7,10 @@ import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-abstract class AppView<T> extends StatelessWidget {
+abstract class AppPageView<T> extends StatelessWidget {
   final T controller = Get.find<T>();
 
-  AppView({Key? key}) : super(key: key);
+  AppPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +31,3 @@ abstract class AppView<T> extends StatelessWidget {
   Widget view({required BuildContext ctx, required Adaptives adapter});
 }
 
-abstract class AppStateView<T> extends StatelessWidget {
-  final T controller = Get.find<T>();
-
-  AppStateView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return view(ctx: context, adapter: Adaptives(context));
-  }
-
-  Widget view({required BuildContext ctx, required Adaptives adapter});
-}

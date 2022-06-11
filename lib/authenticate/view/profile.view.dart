@@ -1,9 +1,8 @@
-import 'package:bremind/account/view/expantion.text.editor.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:bremind/authenticate/interface/auth.controller.interface.dart';
 import 'package:bremind/authenticate/view/avatar.view.dart';
-import 'package:bremind/authenticate/view/form.text.field.dart';
 import 'package:bremind/authenticate/view/signout.view.dart';
-import 'package:bremind/domain/view/page.view.dart';
+import 'package:bremind/domain/view/app.page.view.dart';
+import 'package:bremind/domain/view/expantion.text.editor.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
 import 'package:bremind/util/adaptive.dart';
@@ -11,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SimpleProfile extends AppStateView<AuthController> {
-  SimpleProfile({Key? key}) : super(key: key);
+
+/// simple UI for showing user profile, needs any class that impliments of [IAuthController]
+class ProfileView<T extends IAuthController> extends AppPageView<T> {
+  ProfileView({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptives adapter}) {
@@ -23,7 +24,10 @@ class SimpleProfile extends AppStateView<AuthController> {
             width: adapter.adapt(
                 phone: adapter.width,
                 tablet: adapter.width / 1.7,
-                desktop: adapter.desktop(small: adapter.width / 2.5,medium:adapter.width / 3,large: adapter.width / 3.5)),
+                desktop: adapter.desktop(
+                    small: adapter.width / 2.5,
+                    medium: adapter.width / 3,
+                    large: adapter.width / 3.5)),
             child: Card(
               clipBehavior: Clip.hardEdge,
               elevation: 0,
@@ -56,23 +60,24 @@ class SimpleProfile extends AppStateView<AuthController> {
                         textValue: controller.accountUser.value.name,
                         label: 'username',
                         onSave: (String value) async {
-                          FeedbackController.spinnerUpdateState(
-                              key: AfroSpinKeys.updateNameForm, isOn: true);
+                          FeedbackService.spinnerUpdateState(
+                              key: FeedbackSpinKeys.updateNameForm, isOn: true);
                           await controller.updateUserName(name: value);
-                          FeedbackController.spinnerUpdateState(
-                              key: AfroSpinKeys.updateNameForm, isOn: false);
+                          FeedbackService.spinnerUpdateState(
+                              key: FeedbackSpinKeys.updateNameForm,
+                              isOn: false);
                         },
-                        spinnerKey: AfroSpinKeys.updateNameForm,
+                        spinnerKey: FeedbackSpinKeys.updateNameForm,
                       ),
                       Card(
                           clipBehavior: Clip.hardEdge,
                           elevation: 0,
-                          margin:
-                              const EdgeInsets.only(left: 20, top: 12, right: 12),
+                          margin: const EdgeInsets.only(
+                              left: 20, top: 12, right: 12),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           child: ListTile(
-                            leading: Icon(
+                            leading: const Icon(
                               Icons.email,
                             ),
                             title: Padding(
@@ -87,15 +92,15 @@ class SimpleProfile extends AppStateView<AuthController> {
                         minLines: 4,
                         maxLines: 5,
                         onSave: (String value) async {
-                          FeedbackController.spinnerUpdateState(
-                              key: AfroSpinKeys.updateBioForm, isOn: true);
+                          FeedbackService.spinnerUpdateState(
+                              key: FeedbackSpinKeys.updateBioForm, isOn: true);
                           await controller.updateBio(bio: value);
-                          FeedbackController.spinnerUpdateState(
-                              key: AfroSpinKeys.updateBioForm, isOn: false);
+                          FeedbackService.spinnerUpdateState(
+                              key: FeedbackSpinKeys.updateBioForm, isOn: false);
                         },
-                        spinnerKey: AfroSpinKeys.updateBioForm,
+                        spinnerKey: FeedbackSpinKeys.updateBioForm,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
                       SignOutView(),

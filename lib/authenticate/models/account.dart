@@ -1,5 +1,5 @@
-import 'package:bremind/account/models/content_interaction.dart';
-import 'package:bremind/account/models/user.content.interaction.type.dart';
+import 'package:bremind/authenticate/models/content_interaction.dart';
+import 'package:bremind/authenticate/models/user.content.interaction.type.dart';
 import 'package:bremind/authenticate/models/auth.with.dart';
 import 'package:bremind/domain/model/imodel.dart';
 import 'package:bremind/util/enum.dart';

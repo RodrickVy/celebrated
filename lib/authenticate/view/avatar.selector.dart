@@ -1,5 +1,5 @@
 import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/domain/view/page.view.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttermoji/fluttermoji.dart';

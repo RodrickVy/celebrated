@@ -65,7 +65,7 @@ class FormTextField extends StatelessWidget {
       autofocus: autoFocus,
       enabled: enabled,
       onChanged: (_){
-        FeedbackController.clearErrorNotification();
+        FeedbackService.clearErrorNotification();
       },
       maxLines: maxLines,
       minLines: minLines,
@@ -81,10 +81,17 @@ class FormTextField extends StatelessWidget {
       // prefixIcon: Icon(
       //   fieldIcon,
       // ),
+      focusColor: Colors.black,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12)
+        borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.black38)
+      ),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.black38)
       ),
       hintText: hint,
+      labelStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
       contentPadding: const EdgeInsets.all(8).copyWith(left: 15),
       hintStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
       //fillColor: Colors.green

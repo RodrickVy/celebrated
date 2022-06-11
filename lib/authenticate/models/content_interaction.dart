@@ -1,4 +1,4 @@
-import 'package:bremind/account/models/user.content.interaction.type.dart';
+import 'package:bremind/authenticate/models/user.content.interaction.type.dart';
 import 'package:bremind/util/enum.dart';
 import 'package:flutter/foundation.dart';
 
