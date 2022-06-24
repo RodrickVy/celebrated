@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bremind.bremind">
+    package="com.rudo.bereminder">
    <application
-        android:label="breminder"
+        android:label="celebrated"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

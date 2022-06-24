@@ -1,28 +1,33 @@
+import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:bremind/birthday/view/birthday.date.name.dart';
+import 'package:bremind/domain/view/app.button.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
+import 'package:bremind/domain/view/app.text.field.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/afro_spinner.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/authenticate/interface/auth.controller.interface.dart';
-import 'package:bremind/authenticate/view/form.submit.button.dart';
-import 'package:bremind/authenticate/view/form.text.field.dart';
-import 'package:bremind/support/view/notification.widget.dart';
+import 'package:bremind/support/view/feedback.spinner.dart';
+
+import 'package:bremind/support/view/notification.view.dart';
+import 'package:bremind/util/adaptive.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'auth.button.dart';
 
+/// auth sign up form , for authentication this is not a page just the form.
 // ignore: must_be_immutable
-class SignUpFormView extends StatelessWidget {
-  final IAuthController controller = Get.find<AuthController>();
+class SignUpFormView extends AppStateView<AuthController> {
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController _birthdateController = TextEditingController(
+      text: DateTime.now().toString());
 
   SignUpFormView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Center(
       child: SizedBox(
         width: 320,
@@ -33,9 +38,10 @@ class SignUpFormView extends StatelessWidget {
             ),
             ProviderButtons(
               key: UniqueKey(),
+
             ),
-            SpinnerView(
-              spinnerKey: AfroSpinKeys.signUpForm,
+            FeedbackSpinner(
+              spinnerKey: FeedbackSpinKeys.signUpForm,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
@@ -43,31 +49,26 @@ class SignUpFormView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        FormTextField(
-                          fieldIcon: Icons.email,
-                          label: "Name",
-                          hint: "eg. mpatso",
-                          controller: nameTextController,
-                          formValidator: (value) {
-
-                            return controller.userNameValidator.validate(value);
-
-                          },
-                          key: UniqueKey(),
-                          keyboardType: TextInputType.name,
-                          autoFillHints: const [AutofillHints.name],
-                        ),
+                        // AppTextField(
+                        //   fieldIcon: Icons.email,
+                        //   label: "Name",
+                        //   hint: "eg. mpatso",
+                        //   controller: nameTextController,
+                        //   key: UniqueKey(),
+                        //   keyboardType: TextInputType.name,
+                        //   autoFillHints: const [AutofillHints.name],
+                        // ),
+                        BirthdayDateForm(
+                            birthdateController: _birthdateController,
+                            nameTextController: nameTextController),
                         const SizedBox(
                           height: 10,
                         ),
-                        FormTextField(
+                        AppTextField(
                           fieldIcon: Icons.email,
                           label: "Email",
                           hint: "eg. example@gmail.com",
                           controller: emailTextController,
-                          formValidator: (value) {
-                            return  controller.emailFormValidator.validate(value);
-                          },
                           key: UniqueKey(),
                           keyboardType: TextInputType.emailAddress,
                           autoFillHints: const [AutofillHints.email],
@@ -75,12 +76,12 @@ class SignUpFormView extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        FormTextField(
+                        AppTextField(
                           fieldIcon: Icons.vpn_key,
                           label: "Password",
                           hint: "minimum 6 characters",
                           controller: passwordTextController,
-                          obscureText: true,
+                          obscureOption: true,
                           key: UniqueKey(),
                           keyboardType: TextInputType.visiblePassword,
                           autoFillHints: const [AutofillHints.password],
@@ -88,25 +89,27 @@ class SignUpFormView extends StatelessWidget {
                         const SizedBox(
                           height: 10 / 2,
                         ),
+
+                        const NotificatonsView(),
                         const SizedBox(
-                          height: 10,
+                          height: 10 / 2,
                         ),
-                        const NotificatonsView( ),
-                        FormSubmitButton(
+                        AppButton(
                           key: UniqueKey(),
                           child: Text(
                             "Sign Up",
                             style: GoogleFonts.poppins(fontSize: 16),
                           ),
                           onPressed: () async {
-                            FeedbackController.spinnerUpdateState(
-                                key: AfroSpinKeys.signUpForm, isOn: true);
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.signUpForm, isOn: true);
                             await controller.signUpWithEmail(
                                 name: nameTextController.value.text,
                                 email: emailTextController.value.text,
+                                birthdate:  DateTime.parse(_birthdateController.value.text),
                                 password: passwordTextController.value.text);
-                            FeedbackController.spinnerUpdateState(
-                                key: AfroSpinKeys.signUpForm, isOn: false);
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.signUpForm, isOn: false);
                           },
                         ),
                       ]),

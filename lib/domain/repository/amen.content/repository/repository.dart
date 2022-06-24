@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
+//// a repo that simplifies accessing firestore, handles the serialization,
+// with a powerful query pattern lowering down the dev-time and complexity of app.
 class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     implements IContentRepositoryInterface<T> {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -29,6 +31,7 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
   //   collectionReference = firestore.collection(dbCollectionPath);
   // }
 
+  @override
   Future<List<T>> getCollectionAsList(ContentQuery? query) async {
     return (await getQueryReference(query).get())
         .docs
@@ -41,8 +44,10 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     }).toList();
   }
 
-  Future<List<T>> filter(List<T> docs,ContentQuery? query) async {
-    List<T> _data = await (await getQueryReference(query).where("id",whereIn: docs.map((e) => e.id).toList()).get())
+  Future<List<T>> filter(List<T> docs, ContentQuery? query) async {
+    List<T> data = (await getQueryReference(query)
+            .where("id", whereIn: docs.map((e) => e.id).toList())
+            .get())
         .docs
         .map((QueryDocumentSnapshot doc) {
       if (doc.data() != null) {
@@ -52,14 +57,15 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
       }
     }).toList();
 
-    return _data;
+    return data;
   }
 
+  @override
   Query<Map<String, dynamic>> getQueryReference(ContentQuery? query) {
     if (query != null) {
       return whereQueryRef(query)
-          .limit(query.limit)
-          .orderBy(query.orderProperty, descending: query.orderDescending);
+          .limit(query.limit);
+          // .orderBy(query.orderProperty, descending: query.orderDescending);
     } else {
       return collectionReference;
     }
@@ -108,11 +114,10 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     }
   }
 
-
-  
+  @override
   Future<List<T>> queryCollection(ContentQuery query) async {
     if (!_cashed.containsKey(query.id)) {
-      List<T> _data = (await getQueryReference(query).get())
+      List<T> data = (await getQueryReference(query).get())
           .docs
           .map((QueryDocumentSnapshot doc) {
         if (doc.data() != null) {
@@ -121,13 +126,14 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
           return docFactory.fromJson(doc.data() as Map<String, dynamic>);
         }
       }).toList();
-      _cashed.assign(query.id, _data);
-      return _data;
+      _cashed.assign(query.id, data);
+      return data;
     } else {
       return _cashed[query.id]!;
     }
   }
 
+  @override
   Stream<List<T>> collectionStream(ContentQuery? query) {
     return getQueryReference(query).snapshots().map((QuerySnapshot event) {
       return event.docChanges.map((e) {
@@ -140,6 +146,7 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     });
   }
 
+  @override
   Stream<T> contentStream(String id) {
     return collectionReference
         .doc(id)
@@ -149,28 +156,30 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     });
   }
 
+  @override
   Future<T> getContent(String id) async {
-    DocumentSnapshot _snapshot = await collectionReference.doc(id).get();
+    DocumentSnapshot snapshot = await collectionReference.doc(id).get();
 
-    if (_snapshot.exists && _snapshot.data() != null) {
-      return docFactory.fromJson(_snapshot.data() as Map<String, dynamic>);
+    if (snapshot.exists && snapshot.data() != null) {
+      return docFactory.fromJson(snapshot.data() as Map<String, dynamic>);
     } else {
       throw "Document Not Found";
     }
   }
 
+  @override
   Future<T> updateContent(String id, Map<String, dynamic> changes) async {
-    DocumentSnapshot _snapshot = await collectionReference.doc(id).get();
+    DocumentSnapshot snapshot = await collectionReference.doc(id).get();
 
-    if (_snapshot.exists) {
+    if (snapshot.exists) {
       await collectionReference.doc(id).update(changes);
     } else {
       throw "Document Not Found";
     }
-    DocumentSnapshot _updatedSnapshot = await collectionReference.doc(id).get();
-    if (_updatedSnapshot.data() != null) {
+    DocumentSnapshot updatedSnapshot = await collectionReference.doc(id).get();
+    if (updatedSnapshot.data() != null) {
       return docFactory
-          .fromJson(_updatedSnapshot.data() as Map<String, dynamic>);
+          .fromJson(updatedSnapshot.data() as Map<String, dynamic>);
     } else {
       throw "Document data is null";
     }
@@ -188,6 +197,7 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     });
   }
 
+  @override
   Future<bool> deleteContent(String id) async {
     return collectionReference
         .doc(id)

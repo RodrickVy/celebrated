@@ -21,9 +21,10 @@ class Validator {
     return AppNotification(
         message: validations.first.errorMessage,
         title: validate(val) ?? "",
-        code: AppErrorCodes.unknownError,
+        code: ResponseCode.unknownError,
         route: Get.currentRoute,
         stack: "stack",
+        appWide: true,
         timestamp: DateTime.now().microsecondsSinceEpoch);
   }
 }

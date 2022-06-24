@@ -1,7 +1,7 @@
 import 'package:bremind/support/models/app.error.code.dart';
 
 class ErrorReport {
-  final AppErrorCodes code;
+  final ResponseCode code;
   final String message;
   final String stack;
   final String solutions;
@@ -19,7 +19,7 @@ class ErrorReport {
       required this.timestamp});
 
   ErrorReport copyWith({
-    AppErrorCodes? code,
+    ResponseCode? code,
     String? message,
     String? stack,
     String? solutions,
@@ -52,7 +52,7 @@ class ErrorReport {
 
   factory ErrorReport.fromMap(Map<String, dynamic> map) {
     return ErrorReport(
-      code: map['code'] as AppErrorCodes,
+      code: map['code'] as ResponseCode,
       message: map['message'] as String,
       stack: map['stack'] as String,
       solutions: map['solutions'] as String,

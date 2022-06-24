@@ -1,5 +1,5 @@
 import 'package:bremind/appIntro/interface/intro.controller.interface.dart';
-import 'package:bremind/appIntro/models/splash.item.dart';
+import 'package:bremind/appIntro/models/intro.item.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
@@ -12,7 +12,7 @@ class IntroScreenController extends GetxController
 
 
   @override
-  SplashItem get currentItem => __items[current.value];
+  IntroItem get currentItem => __items[current.value];
 
   @override
   int get currentItemIndex => current.value;
@@ -21,34 +21,32 @@ class IntroScreenController extends GetxController
   bool get skipped => current.value == __items.length - 1;
 
   @override
-  List<SplashItem> get splashItems => __items;
+  List<IntroItem> get splashItems => __items;
 
 
   /// the data for the splash screen
-  final List<SplashItem> __items = [
-    const SplashItem(
+  final List<IntroItem> __items = [
+    const IntroItem(
         title: "Save Dates",
         description: "Save birthday dates, customize when to be reminded. ",
         image: "assets/intro/man_time.png"),
-    const SplashItem(
+    const IntroItem(
         title: "Group Birthdays",
         description:
             "Group related birthdays in lists, eg friends, co-workers,class list etc.",
         image: "assets/intro/plan.png"),
-    const SplashItem(
+    const IntroItem(
         title: "Share Birthday Lists",
         description: "Share a birthday lits so others are notfied too.",
         image: "assets/intro/thoughts_pc.png"),
   ];
 
   @override
-  void onInit() {
-    super.onInit();
-    /// if user is authenticated already no need to do app intro , must go to home page.
-    if (AuthController.instance.isAuthenticated.isTrue) {
-      NavController.instance.to(AppRoutes.home);
-    }
-  }
+  final IntroItem  homeItem =     const IntroItem(
+      title: "No more Belated Birthdays! ",
+      description: "Express appreciation to your friends and loved ones when it matters.",
+      image: "assets/logos/Icon-192.png");
+
 
   /// called when next is pressed in slideshow
   @override
@@ -56,7 +54,7 @@ class IntroScreenController extends GetxController
     if (current < __items.length - 1) {
       current.value++;
     } else {
-      Get.toNamed(AppRoutes.auth);
+      NavController.instance.to(AppRoutes.auth);
     }
   }
   /// called when previous is pressed in slideshow
@@ -70,6 +68,6 @@ class IntroScreenController extends GetxController
   /// called when skip is pressed in slideshow
   @override
   void skipIntro() {
-    Get.toNamed(AppRoutes.auth);
+    NavController.instance.to(AppRoutes.auth);
   }
 }

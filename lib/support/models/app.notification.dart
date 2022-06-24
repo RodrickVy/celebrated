@@ -7,20 +7,26 @@ import 'package:get/get.dart';
 class AppNotification implements IModel {
   final NotificationType type;
   final bool appWide;
-  final AppErrorCodes code;
+  final ResponseCode code;
   final String title;
   final String stack;
   final String message;
+  final Icon? icon;
+  final Duration? aliveFor;
   final int timestamp;
   final String route;
   final Widget? child;
+  final bool canDismiss;
 
   AppNotification({
-    required this.message,
+     this.message = '',
     required this.title,
     this.child,
-    this.appWide = true,
-    required this.code,
+    this.aliveFor,
+    this.icon,
+    this.appWide = false,
+    this.canDismiss = true,
+     this.code = ResponseCode.unknown,
     this.type = NotificationType.error,
     this.stack = "",
     this.route = '/',
@@ -46,7 +52,7 @@ class AppNotification implements IModel {
   factory AppNotification.fromMap(Map<String, dynamic> map) {
     return AppNotification(
       type: map['type'] as NotificationType,
-      code: map['code'] as AppErrorCodes,
+      code: map['code'] as ResponseCode,
       title: map['title'] as String,
       stack: map['stack'] as String,
       message: map['message'] as String,
@@ -59,7 +65,7 @@ class AppNotification implements IModel {
     return AppNotification(
         message: "",
         title: "",
-        code: AppErrorCodes.unknown,
+        code: ResponseCode.unknown,
         route: "",
         stack: "",
         timestamp: 0);
@@ -67,18 +73,18 @@ class AppNotification implements IModel {
 
   factory AppNotification.unknownError() {
     return AppNotification(
-      code: AppErrorCodes.unknownError,
+      code: ResponseCode.unknownError,
       title: "Sorry Something went wrong, didn't get the right response",
-      message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+      message: "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
+
     );
   }
 
   factory AppNotification.invalidRequest() {
     return AppNotification(
-      code: AppErrorCodes.invalidRequest,
+      code: ResponseCode.invalidRequest,
       title: "Something wrong with you inputted data please check",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
@@ -88,10 +94,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidResponse() {
     return AppNotification(
-      code: AppErrorCodes.invalidResponse,
+      code: ResponseCode.invalidResponse,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -99,10 +105,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.claimsTooLarge() {
     return AppNotification(
-      code: AppErrorCodes.claimsTooLarge,
+      code: ResponseCode.claimsTooLarge,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -110,10 +116,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.emailAlreadyExists() {
     return AppNotification(
-      code: AppErrorCodes.emailAlreadyExists,
+      code: ResponseCode.emailAlreadyExists,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -121,10 +127,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.idTokenExpired() {
     return AppNotification(
-      code: AppErrorCodes.idTokenExpired,
+      code: ResponseCode.idTokenExpired,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -132,10 +138,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.idTokenRevoked() {
     return AppNotification(
-      code: AppErrorCodes.idTokenRevoked,
+      code: ResponseCode.idTokenRevoked,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -143,10 +149,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.insufficientPermission() {
     return AppNotification(
-      code: AppErrorCodes.insufficientPermission,
+      code: ResponseCode.insufficientPermission,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -154,10 +160,11 @@ class AppNotification implements IModel {
 
   factory AppNotification.internalError() {
     return AppNotification(
-      code: AppErrorCodes.internalError,
+      code: ResponseCode.internalError,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
+
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -165,10 +172,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidArgument() {
     return AppNotification(
-      code: AppErrorCodes.invalidArgument,
+      code: ResponseCode.invalidArgument,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -176,10 +183,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidClaims() {
     return AppNotification(
-      code: AppErrorCodes.invalidClaims,
+      code: ResponseCode.invalidClaims,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
       stack: '',
@@ -188,10 +195,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidContinueUri() {
     return AppNotification(
-      code: AppErrorCodes.invalidContinueUri,
+      code: ResponseCode.invalidContinueUri,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -199,10 +206,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidCreationTime() {
     return AppNotification(
-      code: AppErrorCodes.invalidCreationTime,
+      code: ResponseCode.invalidCreationTime,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -210,10 +217,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidCredential() {
     return AppNotification(
-      code: AppErrorCodes.invalidCredential,
+      code: ResponseCode.invalidCredential,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -221,10 +228,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidDisabledField() {
     return AppNotification(
-      code: AppErrorCodes.invalidDisabledField,
+      code: ResponseCode.invalidDisabledField,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -232,10 +239,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidDisplayName() {
     return AppNotification(
-      code: AppErrorCodes.invalidDisplayName,
+      code: ResponseCode.invalidDisplayName,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -243,10 +250,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidDynamicLinkDomain() {
     return AppNotification(
-      code: AppErrorCodes.invalidDynamicLinkDomain,
+      code: ResponseCode.invalidDynamicLinkDomain,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -254,10 +261,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidEmail() {
     return AppNotification(
-      code: AppErrorCodes.invalidEmail,
+      code: ResponseCode.invalidEmail,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -265,10 +272,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidEmailVerified() {
     return AppNotification(
-      code: AppErrorCodes.invalidEmailVerified,
+      code: ResponseCode.invalidEmailVerified,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -276,10 +283,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashAlgorithm() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashAlgorithm,
+      code: ResponseCode.invalidHashAlgorithm,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -287,10 +294,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashBlockSize() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashBlockSize,
+      code: ResponseCode.invalidHashBlockSize,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -298,10 +305,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashDerivedKeyLength() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashDerivedKeyLength,
+      code: ResponseCode.invalidHashDerivedKeyLength,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -309,10 +316,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashKey() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashKey,
+      code: ResponseCode.invalidHashKey,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -320,10 +327,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashMemoryCost() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashMemoryCost,
+      code: ResponseCode.invalidHashMemoryCost,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -331,10 +338,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashParallelization() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashParallelization,
+      code: ResponseCode.invalidHashParallelization,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -342,10 +349,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashRounds() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashRounds,
+      code: ResponseCode.invalidHashRounds,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -353,10 +360,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidHashSaltSeparator() {
     return AppNotification(
-      code: AppErrorCodes.invalidHashSaltSeparator,
+      code: ResponseCode.invalidHashSaltSeparator,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -364,10 +371,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidIdToken() {
     return AppNotification(
-      code: AppErrorCodes.invalidIdToken,
+      code: ResponseCode.invalidIdToken,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -375,10 +382,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidLastSignInTime() {
     return AppNotification(
-      code: AppErrorCodes.invalidLastSignInTime,
+      code: ResponseCode.invalidLastSignInTime,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -386,10 +393,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPageToken() {
     return AppNotification(
-      code: AppErrorCodes.invalidPageToken,
+      code: ResponseCode.invalidPageToken,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -397,10 +404,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPassword() {
     return AppNotification(
-      code: AppErrorCodes.invalidPassword,
+      code: ResponseCode.invalidPassword,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -408,10 +415,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPasswordHash() {
     return AppNotification(
-      code: AppErrorCodes.invalidPasswordHash,
+      code: ResponseCode.invalidPasswordHash,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -419,10 +426,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPasswordSalt() {
     return AppNotification(
-      code: AppErrorCodes.invalidPasswordSalt,
+      code: ResponseCode.invalidPasswordSalt,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -430,10 +437,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPhoneNumber() {
     return AppNotification(
-      code: AppErrorCodes.invalidPhoneNumber,
+      code: ResponseCode.invalidPhoneNumber,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -441,10 +448,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidPhotoUrl() {
     return AppNotification(
-      code: AppErrorCodes.invalidPhotoUrl,
+      code: ResponseCode.invalidPhotoUrl,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -452,10 +459,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidProviderData() {
     return AppNotification(
-      code: AppErrorCodes.invalidProviderData,
+      code: ResponseCode.invalidProviderData,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -463,10 +470,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidProviderId() {
     return AppNotification(
-      code: AppErrorCodes.invalidProviderId,
+      code: ResponseCode.invalidProviderId,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -474,10 +481,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidSessionCookieDuration() {
     return AppNotification(
-      code: AppErrorCodes.invalidSessionCookieDuration,
+      code: ResponseCode.invalidSessionCookieDuration,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -485,10 +492,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidUid() {
     return AppNotification(
-      code: AppErrorCodes.invalidUid,
+      code: ResponseCode.invalidUid,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -496,10 +503,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.invalidUserImport() {
     return AppNotification(
-      code: AppErrorCodes.invalidUserImport,
+      code: ResponseCode.invalidUserImport,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -507,10 +514,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.maximumUserCountExceeded() {
     return AppNotification(
-      code: AppErrorCodes.maximumUserCountExceeded,
+      code: ResponseCode.maximumUserCountExceeded,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -518,10 +525,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.missingAndroidPkgName() {
     return AppNotification(
-      code: AppErrorCodes.missingAndroidPkgName,
+      code: ResponseCode.missingAndroidPkgName,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -529,10 +536,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.missingContinueUri() {
     return AppNotification(
-      code: AppErrorCodes.missingContinueUri,
+      code: ResponseCode.missingContinueUri,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -540,10 +547,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.missingHashAlgorithm() {
     return AppNotification(
-      code: AppErrorCodes.missingHashAlgorithm,
+      code: ResponseCode.missingHashAlgorithm,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -551,10 +558,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.missingIosBundleId() {
     return AppNotification(
-      code: AppErrorCodes.missingIosBundleId,
+      code: ResponseCode.missingIosBundleId,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -562,10 +569,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.missingUid() {
     return AppNotification(
-      code: AppErrorCodes.missingUid,
+      code: ResponseCode.missingUid,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -573,10 +580,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.operationNotAllowed() {
     return AppNotification(
-      code: AppErrorCodes.operationNotAllowed,
+      code: ResponseCode.operationNotAllowed,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -584,10 +591,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.phoneNumberAlreadyExists() {
     return AppNotification(
-      code: AppErrorCodes.phoneNumberAlreadyExists,
+      code: ResponseCode.phoneNumberAlreadyExists,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -595,10 +602,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.projectNotFound() {
     return AppNotification(
-      code: AppErrorCodes.projectNotFound,
+      code: ResponseCode.projectNotFound,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -606,10 +613,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.reservedClaims() {
     return AppNotification(
-      code: AppErrorCodes.reservedClaims,
+      code: ResponseCode.reservedClaims,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -617,10 +624,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.sessionCookieExpired() {
     return AppNotification(
-      code: AppErrorCodes.sessionCookieExpired,
+      code: ResponseCode.sessionCookieExpired,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -628,10 +635,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.sessionCookieRevoked() {
     return AppNotification(
-      code: AppErrorCodes.sessionCookieRevoked,
+      code: ResponseCode.sessionCookieRevoked,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -639,10 +646,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.uidAlreadyExists() {
     return AppNotification(
-      code: AppErrorCodes.uidAlreadyExists,
+      code: ResponseCode.uidAlreadyExists,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -650,10 +657,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.unauthorizedContinueUri() {
     return AppNotification(
-      code: AppErrorCodes.unauthorizedContinueUri,
+      code: ResponseCode.unauthorizedContinueUri,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -661,10 +668,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.userNotFound() {
     return AppNotification(
-      code: AppErrorCodes.userNotFound,
+      code: ResponseCode.userNotFound,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -672,10 +679,10 @@ class AppNotification implements IModel {
 
   factory AppNotification.userNotAuthenticated() {
     return AppNotification(
-      code: AppErrorCodes.userNotAuthenticated,
+      code: ResponseCode.userNotAuthenticated,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -684,10 +691,10 @@ class AppNotification implements IModel {
   factory AppNotification.userUnverifiedEmail() {
     //  this is sent to know that the user's email link has been sent
     return AppNotification(
-      code: AppErrorCodes.internalError,
+      code: ResponseCode.internalError,
       title: "So Sorry!, Something went wrong, please try again",
       message:
-          "try again , if it fail , wait for a bit more and try again. If doesn't work be sure to report this and will get on as quickly as possible.",
+          "",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
     );
@@ -696,13 +703,16 @@ class AppNotification implements IModel {
   AppNotification copyWith({
     NotificationType? type,
     bool? appWide,
-    AppErrorCodes? code,
+    ResponseCode? code,
     String? title,
     String? stack,
     String? message,
+    Icon? icon,
+    Duration? aliveFor,
     int? timestamp,
     String? route,
     Widget? child,
+    bool? canDismiss,
   }) {
     return AppNotification(
       type: type ?? this.type,
@@ -711,9 +721,12 @@ class AppNotification implements IModel {
       title: title ?? this.title,
       stack: stack ?? this.stack,
       message: message ?? this.message,
+      icon: icon ?? this.icon,
+      aliveFor: aliveFor ?? this.aliveFor,
       timestamp: timestamp ?? this.timestamp,
       route: route ?? this.route,
       child: child ?? this.child,
+      canDismiss: canDismiss ?? this.canDismiss,
     );
   }
 }

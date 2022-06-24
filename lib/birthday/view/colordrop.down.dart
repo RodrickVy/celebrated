@@ -1,50 +1,63 @@
+import 'package:bremind/birthday/controller/birthdays.controller.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
+import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+final Rx<int?> _value = Rx<int?>(null);
+/// used to select color of category in birthday lists
+class ColorDropDown extends AppStateView<BirthdaysController> {
+  final List<int> values;
 
-class BirthdaysDropDown extends StatelessWidget {
-  final List<String> values;
-  final Rx<String?> _value = Rx<String?>(null);
-  final Function(String value)  onSelect;
-  final String defaultValue;
-  BirthdaysDropDown(
-      {Key? key, required this.values, required this.defaultValue , required this.onSelect})
+  final Function(int value) onSelect;
+  final int defaultValue;
+
+  ColorDropDown(
+      {Key? key,
+      required this.values,
+      required this.defaultValue,
+      required this.onSelect})
       : super(key: key) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _value(defaultValue);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   _value(defaultValue);
+    // });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
+    Get.log("build happened!");
     return Obx(
       () => Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(0),
             border: const Border.fromBorderSide(
-                BorderSide(color: Colors.black45, width: 0.8))),
-        child: DropdownButton<String>(
-          value: _value.value??defaultValue,
+                BorderSide(color: Colors.transparent, width: 0))),
+        child: DropdownButton<int>(
+          value: _value.value ?? defaultValue,
           icon: const Icon(Icons.arrow_drop_down),
           elevation: 16,
-          borderRadius: BorderRadius.circular(12),
-          style: GoogleFonts.poppins(),
+          borderRadius: BorderRadius.circular(0),
           underline: Container(
             height: 2,
           ),
-          onChanged: (String? newValue) {
+          onChanged: (int? newValue) {
+            Get.log("Selection happened!");
+            if(newValue
+             != null){
+              Get.log("Selection happened!");
+              _value(newValue);
+              onSelect(newValue);
+            }
 
           },
-          items: values.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
+          items: values.map<DropdownMenuItem<int>>((int value) {
+            return DropdownMenuItem<int>(
               value: value,
-              onTap: () {
-                _value(value);
-                onSelect(value);
+              onTap: (){
+                Get.log("tapped");
               },
-              child: Text(
-                " $value",
-                style: GoogleFonts.poppins(color: Colors.black),
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Color(value),
               ),
             );
           }).toList(),

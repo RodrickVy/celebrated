@@ -1,131 +1,113 @@
 import 'package:bremind/birthday/controller/birthdays.controller.dart';
+import 'package:bremind/birthday/data/static.data.dart';
 import 'package:bremind/birthday/model/birthday.dart';
+import 'package:bremind/domain/model/drop.down.action.dart';
+import 'package:bremind/domain/view/action.drop.down.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
+import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'birthday.editor.dart';
 
-class BirthdayCard extends StatelessWidget {
-  final RxBool __inEditMode = RxBool(false);
+class BirthdayTile extends AppStateView<BirthdaysController> {
   final ABirthday birthday;
   final double? width;
   final double? height;
   final Function(ABirthday birthday) onEdit;
   final Function(ABirthday birthday) onDelete;
+  final VoidCallback? onSelect;
 
-  BirthdayCard(
+  BirthdayTile(
       {Key? key,
       this.width = 160,
+      this.onSelect,
       this.height = 260,
       required this.onDelete,
       required this.birthday,
       required this.onEdit})
-      : super(key: key) {
-    // Timer(const Duration(seconds: 5), () {
-    //   BirthdaysController.instance.update([birthday.id]);
-    //   __counter.value++;
-    // });
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
-  }
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
-      () => AnimatedSwitcher(
-        duration: const Duration(seconds: 1),
-        child: __inEditMode.value
-            ? BirthdayEditor(
-                onSave: (ABirthday birthday) {
-                  onEdit(birthday);
-                },
-                birthdayValue: birthday,
-              )
-            : Card(
-                elevation: 1,
-                color: birthday.isPast
-                    ? Colors.blueGrey.withAlpha(50)
-                    : Get.theme.colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: SizedBox(
-                  width: width,
-                  height: height,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            width: Get.width,
-                            decoration: const BoxDecoration(
-                                color: Colors.black,
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.white12,
-                                      Colors.white24
-                                    ])),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                    BirthdaysController.monthsShortForm[
-                                        birthday.date.month - 1],
-                                    style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w200,
-                                        fontSize: 17)),
-                                Text(birthday.date.day.toString(),
-                                    style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 40)),
-                                Text(birthday.name,
-                                    style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14)),
-                                CountdownTimer(
-                                  endWidget: const SizedBox(),
-                                  endTime: birthday
-                                      .dateWithThisYear.millisecondsSinceEpoch,
-                                  onEnd: () {},
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.black87,
-                                ),
-                                onPressed: () {
-                                  BirthdaysController.editMode.value = true;
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.black87,
-                                ),
-                                onPressed: () {
-                                  onDelete(birthday);
-                                },
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+      () => SizedBox(
+        width: adapter.adapt(
+            phone: adapter.width, tablet: adapter.width, desktop: 600),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          child: controller.currentBirthdayInEdit.value == birthday.id
+              ? BirthdayEditor(
+                  onSave: (ABirthday birthday) {
+                    controller.closeBirthdayEditor();
+                    onEdit(birthday);
+                  },
+                  onDelete: () {
+                    onDelete(birthday);
+                  },
+                  birthdayValue: birthday,
+                  onCancel: () {
+                    controller.closeBirthdayEditor();
+                  },
+                )
+              : Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
                   ),
-                )),
+                  child: ListTile(
+                    onTap: () {
+                      onEdit(birthday);
+                      controller.editBirthday(birthday.id);
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "${birthday.name.capitalizeFirst} ",
+                            style: Adaptive(ctx)
+                                .textTheme
+                                .headline6
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    ),
+                    trailing: ActionDropDown(actions: [
+                      DropDownAction("Delete", () {
+                        onDelete(birthday);
+                      }),
+                      DropDownAction("Edit", () {
+                        onEdit(birthday);
+                        controller.editBirthday(birthday.id);
+                      }),
+                      DropDownAction("View", () {
+                        onSelect != null ? onSelect!() : () {};
+                      })
+                    ]),
+                    subtitle: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: Row(
+                        children: [
+                          Text(
+                            "${StaticData.monthsShortForm[birthday.date.month - 1]} ${birthday.date.day.toString()}  ",
+                          ),
+                          Text(birthday.formattedBirthday(ctx)),
+                        ],
+                      ),
+                    ),
+                  )),
+        ),
       ),
     );
   }
+
+  /// use of routes, we are using routes for two things , one is to store the current list and now its to get the current birthday in edit mode.
 }

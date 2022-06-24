@@ -5,48 +5,44 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// used to filer birthdays
 class ActionDropDown extends StatelessWidget {
-  final List<DropDownAction> actions;
+   final DropDownAction _empty =DropDownAction("    ", (){});
+  late List<DropDownAction> _actions;
 
 
 
-  const ActionDropDown(
-      {Key? key, required this.actions})
-      : super(key: key);
+   ActionDropDown(
+      {Key? key, required final List<DropDownAction> actions})
+      : super(key: key){
+     _actions = [...actions,_empty];
+
+   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: const Border.fromBorderSide(
-                BorderSide(color: Colors.black45, width: 0.8))),
-        child: DropdownButton<DropDownAction>(
-          value: actions.first,
-          icon: const Icon(Icons.more_vert),
-          elevation: 16,
-          borderRadius: BorderRadius.circular(12),
-          style: GoogleFonts.poppins(),
-          underline: Container(
-            height: 2,
-          ),
-          onChanged: (DropDownAction? newValue) {
-
-          },
-          items: actions.map<DropdownMenuItem<DropDownAction>>((DropDownAction value) {
-            return DropdownMenuItem<DropDownAction>(
-              value: value,
-              onTap: () {
-                value.action();
-              },
-              child: Text(
-                " ${value.name}",
-                style: GoogleFonts.poppins(color: Colors.black),
-              ),
-            );
-          }).toList(),
-        ),
+    return DropdownButton<DropDownAction>(
+      value: _empty,
+      icon: Row(mainAxisAlignment: MainAxisAlignment.end,children: [const Icon(Icons.more_vert)],),
+      elevation: 16,
+      borderRadius: BorderRadius.circular(0),
+      selectedItemBuilder: (c){
+        /// showing all actions as empty values
+        return _actions.map((e) => const SizedBox(width: 50,)).toList();
+      },
+      underline: Container(
+        height: 2,
       ),
+      onChanged: (DropDownAction? newValue) {
+        newValue?.action();
+      },
+      items: _actions.map<DropdownMenuItem<DropDownAction>>((DropDownAction value) {
+        return DropdownMenuItem<DropDownAction>(
+          value: value,
+          child: Text(
+            value.name,
+            style: GoogleFonts.poppins(color: Colors.black),
+          ),
+        );
+      }).toList(),
     );
   }
 }

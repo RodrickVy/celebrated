@@ -1,5 +1,5 @@
-import 'package:bremind/account/models/account.dart';
-import 'package:bremind/account/models/content_interaction.dart';
+import 'package:bremind/authenticate/models/account.dart';
+import 'package:bremind/authenticate/models/content_interaction.dart';
 import 'package:bremind/authenticate/models/auth.with.dart';
 import 'package:bremind/domain/model/imodel.factory.dart';
 import 'package:bremind/util/enum.dart';
@@ -21,50 +21,35 @@ class AccountUserFactory extends IModelFactory<AccountUser> {
       'emailVerified': model.emailVerified,
       'claims': model.claims,
       'avatar': model.avatar,
-      "bio":model.bio,
+      "bio": model.bio,
       'interactions': model.interactions.map((e) => e.toMap()).toList(),
+      "birthdate": model.birthdate.millisecondsSinceEpoch,
+      "settings": model.settings
     };
   }
 
   @override
-  fromJson(Map<String, dynamic> map) {
+  fromJson(Map<String, dynamic> json) {
     return AccountUser(
-      photoUrl: map['photoUrl'] as String,
-      phone: map['phone'] as String,
-      email: map['email'] as String,
-      bio:map['bio']??"Tell use a bit about yourself",
-      authMethod: EnumSerialize.fromJson(AuthWith.values, map['authMethod']),
-      providerId: map['providerId'] as String,
-      displayName: map['displayName'] as String,
-      uid: map['guid'] as String,
-      lastLogin: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
-      timeCreated: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
-      name: map['name'] as String,
-      emailVerified: map['emailVerified'] as bool,
-      claims: map['claims'] as Map<String, dynamic>,
-      avatar: map['avatar'] as String,
-      interactions: List.from(map['interactions'])
+      photoUrl: json['photoUrl'] as String,
+      phone: json['phone'] as String,
+      email: json['email'] as String,
+      bio: json['bio'] ?? "Tell use a bit about yourself",
+      authMethod: EnumSerialize.fromJson(AuthWith.values, json['authMethod']),
+      providerId: json['providerId'] as String,
+      displayName: json['displayName'] as String,
+      uid: json['guid'] as String,
+      lastLogin: DateTime.fromMillisecondsSinceEpoch(json['lastLogin']),
+      timeCreated: DateTime.fromMillisecondsSinceEpoch(json['timeCreated']),
+      name: json['name'] as String,
+      emailVerified: json['emailVerified'] as bool,
+      claims: json['claims'] as Map<String, dynamic>,
+      avatar: json['avatar'] as String,
+      interactions: List.from(json['interactions'])
           .map((e) => UserContentInteraction.fromMap(e))
           .toList(),
+      settings: json["settings"]??{},
+      birthdate: DateTime.fromMillisecondsSinceEpoch(json['birthdate'] ??json['timeCreated']),
     );
-  }
-
-  static AccountUser empty() {
-    return AccountUser(
-        claims: {},
-        timeCreated: DateTime.now(),
-        interactions: [],
-        name: "",
-        bio: "",
-        emailVerified: false,
-        uid: "",
-        lastLogin: DateTime.now(),
-        authMethod: AuthWith.EmailLink,
-        avatar: "",
-        displayName: "",
-        providerId: "",
-        email: "",
-        photoUrl: "",
-        phone: "");
   }
 }

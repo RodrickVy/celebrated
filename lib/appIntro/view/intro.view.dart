@@ -1,10 +1,12 @@
 import 'package:bremind/app.swatch.dart';
-import 'package:bremind/domain/view/page.view.dart';
-import 'package:bremind/splash/interface/splash.controller.interface.dart';
+import 'package:bremind/appIntro/interface/intro.controller.interface.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
 
+
+/// The app's intro view, with no dependency on the actual controller since this can change anytime.
 class AppIntro<C extends IAppIntroController> extends AppStateView<C> {
   @override
   AppIntro({Key? key}) : super(key: key);
@@ -15,7 +17,7 @@ class AppIntro<C extends IAppIntroController> extends AppStateView<C> {
       () => Container(
         width:  adapter.width,
         height: adapter.height,
-        color:  adapter.adapt(phone: null, tablet: null, desktop: AppSwatch.primary.shade500),
+        color:  AppSwatch.primary.shade500,
         padding:  EdgeInsets.zero,
         alignment: Alignment.center,
         child: Container(
@@ -40,7 +42,7 @@ class AppIntro<C extends IAppIntroController> extends AppStateView<C> {
                       padding: const EdgeInsets.all(20.0),
                       child: OutlinedButton(
                           onPressed: () {
-                            controller.skipSplash();
+                            controller.skipIntro();
                           },
                           style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: Colors.transparent)),

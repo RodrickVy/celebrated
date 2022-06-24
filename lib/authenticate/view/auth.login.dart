@@ -1,35 +1,32 @@
+import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:bremind/domain/view/app.button.dart';
+import 'package:bremind/domain/view/app.state.view.dart';
+import 'package:bremind/domain/view/app.text.field.dart';
+import 'package:bremind/navigation/controller/nav.controller.dart';
+import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/afro_spinner.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/authenticate/interface/auth.controller.interface.dart';
-import 'package:bremind/authenticate/models/auth.with.dart';
-import 'package:bremind/authenticate/view/auth.password.recovery.view.dart';
-import 'package:bremind/authenticate/view/form.submit.button.dart';
-import 'package:bremind/authenticate/view/form.text.field.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:auth_buttons/auth_buttons.dart';
-import 'package:bremind/support/view/notification.widget.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bremind/support/view/feedback.spinner.dart';
+
+import 'package:bremind/support/view/notification.view.dart';
+import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'auth.button.dart';
 
+/// a login form , for authentication
+/// Uses the feedback spinner for actions as well as local [NotificatonsView] for errors,warning.
 // ignore: must_be_immutable
-class LoginFormView extends StatelessWidget {
-
-  final IAuthController controller = Get.find<AuthController>();
-  final TextEditingController nameTextController = TextEditingController();
+class LoginFormView extends AppStateView<AuthController> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
 
   LoginFormView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Center(
       child: SizedBox(
         width: 320,
@@ -41,8 +38,8 @@ class LoginFormView extends StatelessWidget {
             ProviderButtons(
               key: UniqueKey(),
             ),
-            SpinnerView(
-              spinnerKey: AfroSpinKeys.signInForm,
+            FeedbackSpinner(
+              spinnerKey: FeedbackSpinKeys.signInForm,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
@@ -50,14 +47,11 @@ class LoginFormView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        FormTextField(
+                        AppTextField(
                           fieldIcon: Icons.email,
                           label: "Email",
                           hint: "eg. john@email.com",
                           controller: emailTextController,
-                          formValidator: (value) {
-                            return  controller.emailFormValidator.validate(value);
-                          },
                           key: UniqueKey(),
                           keyboardType: TextInputType.emailAddress,
                           autoFillHints: const [AutofillHints.email],
@@ -65,35 +59,50 @@ class LoginFormView extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        FormTextField(
+                        AppTextField(
                           fieldIcon: Icons.vpn_key,
                           label: "Password",
                           hint: "minimum 6 characters",
                           controller: passwordTextController,
-                          obscureText: true,
                           key: UniqueKey(),
+                          obscureOption: true,
                           keyboardType: TextInputType.visiblePassword,
                           autoFillHints: const [AutofillHints.password],
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        const NotificatonsView( ),
-                        FormSubmitButton(
+                        const NotificatonsView(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            AppButton(
+                                label: "forgot password?",
+                                isTextButton: true,
+                                key: UniqueKey(),
+                                onPressed: () {
+                                  NavController.instance
+                                      .to(AppRoutes.authPasswordReset);
+                                }),
+                          ],
+                        ),
+                        AppButton(
                           key: UniqueKey(),
-
                           child: Text(
                             "Sign In",
                             style: GoogleFonts.poppins(fontSize: 16),
                           ),
                           onPressed: () async {
-                            FeedbackController.spinnerUpdateState(
-                                key: AfroSpinKeys.signInForm, isOn: true);
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.signInForm, isOn: true);
                             await controller.signInWithEmail(
                                 email: emailTextController.value.text,
                                 password: passwordTextController.value.text);
-                            FeedbackController.spinnerUpdateState(
-                                key: AfroSpinKeys.signInForm, isOn: false);
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.signInForm, isOn: false);
                           },
                         ),
                       ]),

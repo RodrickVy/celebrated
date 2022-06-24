@@ -1,8 +1,6 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:bremind/app.swatch.dart';
-import 'package:bremind/domain/view/page.view.dart';
 import 'package:bremind/navigation/interface/controller.interface.dart';
-import 'package:bremind/util/adaptive.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,26 +11,27 @@ class AppBottomNavBar<T extends INavController> extends StatelessWidget {
   AppBottomNavBar({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext ctx) {
+  Widget build(BuildContext context) {
     return BottomNavyBar(
       selectedIndex: controller.currentItemIndex,
       showElevation: true,
       itemCornerRadius: 24,
-
+      backgroundColor: AppSwatch.primaryAccent,
       curve: Curves.easeIn,
       onItemSelected: (index) {
         controller.toAppPageIndex(index );
       },
+
       items: <BottomNavyBarItem>[
         ...controller.items.map2((item, index) {
           return BottomNavyBarItem(
             icon: Icon(
               item.icon,
-              color: Colors.black87,
+              color: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54,
             ),
-            activeColor: AppSwatch.primary.shade500,
+            activeColor: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54,
 
-            title: Text(item.name,style: TextStyle(color: controller.currentItemIndex == index ? Colors.black:Colors.black54),),
+            title: Text(item.name,style: TextStyle(color: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54),),
           );
         }).toList()
       ],

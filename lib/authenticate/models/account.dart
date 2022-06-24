@@ -1,8 +1,8 @@
+import 'package:bremind/authenticate/models/auth.user.dart';
 import 'package:bremind/authenticate/models/content_interaction.dart';
 import 'package:bremind/authenticate/models/user.content.interaction.type.dart';
 import 'package:bremind/authenticate/models/auth.with.dart';
 import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/util/enum.dart';
 
 class AccountUser implements IModel {
   final String photoUrl;
@@ -33,9 +33,15 @@ class AccountUser implements IModel {
 
   final String bio;
 
+  final DateTime birthdate;
+
+  final Map<String, bool> settings;
+
   AccountUser({
     required this.claims,
     required this.bio,
+    required this.birthdate,
+    required this.settings,
     required this.timeCreated,
     required this.interactions,
     required this.name,
@@ -71,48 +77,48 @@ class AccountUser implements IModel {
   //       List.from(claims["hasDeleteAccess"]!).contains(dbpath);
   // }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'photoUrl': photoUrl,
-      'phone': phone,
-      'email': email,
-      'authMethod': EnumSerialize.toJson(authMethod),
-      'providerId': providerId,
-      'displayName': displayName,
-      'guid': uid,
-      'lastLogin': lastLogin.millisecondsSinceEpoch,
-      'timeCreated': timeCreated.millisecondsSinceEpoch,
-      'name': name,
-      'emailVerified': emailVerified,
-      'claims': claims,
-      'avatar': avatar,
-      "bio": bio,
-      'interactions': interactions.map((e) => e.toMap()).toList(),
-    };
-  }
+  // Map<String, dynamic> toMap() {
+  //   return {
+  //     'photoUrl': photoUrl,
+  //     'phone': phone,
+  //     'email': email,
+  //     'authMethod': EnumSerialize.toJson(authMethod),
+  //     'providerId': providerId,
+  //     'displayName': displayName,
+  //     'guid': uid,
+  //     'lastLogin': lastLogin.millisecondsSinceEpoch,
+  //     'timeCreated': timeCreated.millisecondsSinceEpoch,
+  //     'name': name,
+  //     'emailVerified': emailVerified,
+  //     'claims': claims,
+  //     'avatar': avatar,
+  //     "bio": bio,
+  //     'interactions': interactions.map((e) => e.toMap()).toList(),
+  //   };
+  // }
 
-  factory AccountUser.fromMap(Map<String, dynamic> map) {
-    return AccountUser(
-      bio: map['bio'] ?? "Tell use a bit about yourself",
-      photoUrl: map['photoUrl'] as String,
-      phone: map['phone'] as String,
-      email: map['email'] as String,
-      authMethod: map['authMethod'] as AuthWith,
-      providerId: map['providerId'] as String,
-      displayName: map['displayName'] as String,
-      uid: map['guid'] as String,
-      lastLogin: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
-      timeCreated: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
-      name: map['name'] as String,
-      emailVerified: map['emailVerified'] as bool,
-      claims: map['claims'] as Map<String, dynamic>,
-      avatar: map['avatar'] as String,
-      interactions: List.from(map['interactions'])
-          .map((e) => UserContentInteraction.fromMap(e))
-          .toList(),
-    );
-  }
-
+  // factory AccountUser.fromMap(Map<String, dynamic> map) {
+  //   return AccountUser(
+  //     bio: map['bio'] ?? "Tell use a bit about yourself",
+  //     photoUrl: map['photoUrl'] as String,
+  //     phone: map['phone'] as String,
+  //     email: map['email'] as String,
+  //     authMethod: map['authMethod'] as AuthWith,
+  //     providerId: map['providerId'] as String,
+  //     displayName: map['displayName'] as String,
+  //     uid: map['guid'] as String,
+  //     lastLogin: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
+  //     timeCreated: DateTime.fromMillisecondsSinceEpoch(map['lastLogin']),
+  //     name: map['name'] as String,
+  //     emailVerified: map['emailVerified'] as bool,
+  //     claims: map['claims'] as Map<String, dynamic>,
+  //     avatar: map['avatar'] as String,
+  //     interactions: List.from(map['interactions'])
+  //         .map((e) => UserContentInteraction.fromMap(e))
+  //         .toList(),
+  //   );
+  // }
+  //
   static AccountUser empty() {
     return AccountUser(
         claims: {},
@@ -129,7 +135,9 @@ class AccountUser implements IModel {
         providerId: "",
         email: "",
         photoUrl: "",
-        phone: "");
+        phone: "",
+        birthdate: DateTime.now(),
+        settings: {});
   }
 
   bool isEmpty() {
@@ -138,6 +146,16 @@ class AccountUser implements IModel {
 
   @override
   String get id => uid;
+
+  bool hasInteracted(String contentId, UserContentInteractionType type) {
+    try {
+      interactions.firstWhere(
+          (element) => element.contentId == contentId && element.type == type);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
   AccountUser copyWith({
     String? photoUrl,
@@ -155,6 +173,8 @@ class AccountUser implements IModel {
     String? avatar,
     List<UserContentInteraction>? interactions,
     String? bio,
+    DateTime? birthdate,
+    Map<String, bool>? settings,
   }) {
     return AccountUser(
       photoUrl: photoUrl ?? this.photoUrl,
@@ -172,20 +192,29 @@ class AccountUser implements IModel {
       avatar: avatar ?? this.avatar,
       interactions: interactions ?? this.interactions,
       bio: bio ?? this.bio,
+      birthdate: birthdate ?? this.birthdate,
+      settings: settings ?? this.settings,
     );
   }
 
-  bool hasInteracted(String contentId, UserContentInteractionType type) {
-    try {
-      interactions.firstWhere(
-          (element) => element.contentId == contentId && element.type == type);
-      return true;
-    } catch (_) {
-      return false;
-    }
+  static AccountUser fromAuthUser(AuthUser user) {
+    return AccountUser(
+        claims: {},
+        timeCreated: DateTime.now(),
+        interactions: [],
+        bio: "",
+        name: user.userName,
+        emailVerified: user.emailVerified,
+        uid: user.uid,
+        lastLogin: DateTime.now(),
+        authMethod: AuthWith.Password,
+        avatar: user.avatar,
+        displayName: user.userName,
+        providerId: "",
+        email: user.email,
+        photoUrl: user.avatar,
+        phone: user.phoneNumber ?? "",
+        birthdate: DateTime.now(),
+        settings: {});
   }
-
-
-
-
 }

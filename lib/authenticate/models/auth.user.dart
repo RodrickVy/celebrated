@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 class AuthUser {
   final String userName;
   final String email;
@@ -45,15 +47,15 @@ class AuthUser {
 
   Map<String, dynamic> toMap() {
     return {
-      'userName': this.userName,
-      'email': this.email,
-      'authWith': this.authWith,
-      'password': this.password,
-      'avatar': this.avatar,
-      'emailVerified': this.emailVerified,
-      'isAnonymous': this.isAnonymous,
-      'phoneNumber': this.phoneNumber,
-      'uid': this.uid,
+      'userName': userName,
+      'email': email,
+      'authWith': authWith,
+      'password': password,
+      'avatar': avatar,
+      'emailVerified': emailVerified,
+      'isAnonymous': isAnonymous,
+      'phoneNumber': phoneNumber,
+      'uid': uid,
     };
   }
 
@@ -69,5 +71,22 @@ class AuthUser {
       phoneNumber: map['phoneNumber'] as String,
       uid: map['uid'] as String,
     );
+  }
+
+  static AuthUser fromFireAuth(User? fireUser){
+    if(fireUser != null){
+      return AuthUser(
+          userName: fireUser.displayName ?? "",
+          email: fireUser.email ?? "",
+          uid: fireUser.uid,
+          emailVerified: fireUser.emailVerified,
+          isAnonymous: fireUser.isAnonymous,
+          phoneNumber: fireUser.phoneNumber,
+          authWith: fireUser.providerData.first.providerId,
+          password: "",
+          avatar: fireUser.photoURL ??
+              "assets/defualt_icons/avatar_outline.png");
+    }
+    return empty();
   }
 }

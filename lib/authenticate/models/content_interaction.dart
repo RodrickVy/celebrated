@@ -60,13 +60,13 @@ class UserContentInteraction {
   }
 
   // Define that two persons are equal if their SSNs are equal
+  @override
+  // ignore: hash_and_equals
   bool operator ==(dynamic other) {
     return other.id == id;
   }
 
-  @override
-  // TODO: implement hashCode
-  int get hashCode => super.hashCode;
+
 
   UserContentInteraction copyWith({
     String? userId,

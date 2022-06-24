@@ -3,14 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-class SpinnerView extends StatelessWidget {
+
+/// part of a feedback system that uses  a bool state and this spinner widget , to show an action in progress.
+/// 1. The key given this widget  is registered by this view if not already registered.
+/// 2. This view  with the key is wrapped around the widget doing the work ,
+/// 3. When action is called , you use [FeedbackService] spinnerUpdateState() to set the spinner to load
+/// 4. When action is complete you set the state to false, meaning the spinner should stop
+/// 5. using the key of the widget you can access the loading anywhere the app
+/// 
+/// Serves as a great means of feedback even on small components as buttons,
+/// there is also a spinner widget app wide, that any part of the app can spin
+/// to show something loading , understanding that the user cant do anything until the spinner is done.
+/// 
+/// Issues:
+///  - setMake() need s build ... : solution: makes sure you update state in the postFrameCallBack()
+class FeedbackSpinner extends StatelessWidget {
   final Widget child;
   final bool defaultState;
   final Key spinnerKey;
   final Function()? onSpinEnd;
   final Function()? onSpinStart;
 
-  SpinnerView(
+  FeedbackSpinner(
       {Key? key, required this.child,
       this.defaultState = false,
       required this.spinnerKey,
@@ -18,22 +32,21 @@ class SpinnerView extends StatelessWidget {
       this.onSpinStart})
       : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FeedbackController.spinnerDefineState(
+      FeedbackService.spinnerDefineState(
           key: spinnerKey, isOn: defaultState);
-      FeedbackController.listenToSpinner(key: spinnerKey).listen((p0) {
+      FeedbackService.listenToSpinner(key: spinnerKey).listen((p0) {
         if (p0 == false) {
           onSpinEnd != null ? onSpinEnd!() : () {};
         } else {
           onSpinStart != null ? onSpinStart!() : () {};
         }
-        Get.log("loading $defaultState");
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final spinner = FeedbackController.listenToSpinner(key: spinnerKey);
+    final spinner = FeedbackService.listenToSpinner(key: spinnerKey);
     return Obx(
       () => Stack(
         children: [

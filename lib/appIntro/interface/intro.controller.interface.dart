@@ -1,18 +1,20 @@
-import 'package:bremind/splash/models/splash.item.dart';
+import 'package:bremind/appIntro/models/intro.item.dart';
 
+/// an interface of a controller that manages the app intro experience
 abstract class IAppIntroController {
-  List<SplashItem> get splashItems;
+  List<IntroItem> get splashItems;
 
   int get currentItemIndex;
 
-  SplashItem get currentItem;
+  IntroItem get currentItem;
 
   bool get skipped;
 
+  IntroItem get homeItem;
 
   void nextScreen();
 
   void previousScreen();
 
-  void skipSplash();
+  void skipIntro();
 }

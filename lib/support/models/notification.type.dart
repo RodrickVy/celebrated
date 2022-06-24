@@ -1,5 +1,6 @@
 enum NotificationType{
   error,
   success,
-  warning
+  warning,
+  neutral
 }

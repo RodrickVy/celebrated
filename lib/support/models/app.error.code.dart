@@ -1,5 +1,5 @@
 
-enum AppErrorCodes {
+enum ResponseCode {
   unknownError,
   invalidRequest,
   invalidResponse,
@@ -59,5 +59,8 @@ enum AppErrorCodes {
   unknown,
   loadingQueryFromRouteFailed,
   imageDownloadFailed,
-  invalidFilterRequest
+  invalidFilterRequest,
+  accessRestricted,
+  normal,
+  prompt
 }

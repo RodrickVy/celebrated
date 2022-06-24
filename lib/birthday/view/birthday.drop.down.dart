@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// used to filer birthdays
 class BirthdaysDropDown extends StatelessWidget {
   final List<String> values;
   final Rx<String?> _value = Rx<String?>(null);
@@ -20,28 +21,28 @@ class BirthdaysDropDown extends StatelessWidget {
     return Obx(
       () => Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(0),
             border: const Border.fromBorderSide(
                 BorderSide(color: Colors.black45, width: 0.8))),
         child: DropdownButton<String>(
           value: _value.value??defaultValue,
           icon: const Icon(Icons.arrow_drop_down),
           elevation: 16,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(0),
           style: GoogleFonts.poppins(),
           underline: Container(
             height: 2,
           ),
           onChanged: (String? newValue) {
-
+            if(newValue
+                != null){
+              _value(newValue);
+              onSelect(newValue);
+            }
           },
           items: values.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
-              onTap: () {
-                _value(value);
-                onSelect(value);
-              },
               child: Text(
                 " $value",
                 style: GoogleFonts.poppins(color: Colors.black),

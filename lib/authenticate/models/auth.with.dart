@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: constant_identifier_names
+
 /// Alleon representation of firebase auth Providers that alleon may support.
 /// This list may change at anytime to suit needs of Alleon support Auths.
 enum AuthWith {

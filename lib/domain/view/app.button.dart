@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class FormSubmitButton extends StatelessWidget {
+/// simple app button with little customization to give consistence look throughout the app.
+class AppButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String? label;
   final double minWidth;
   final double buttonHeight;
   final double? elevation;
+  final bool isTextButton;
 
 
   /// overrides the the text widget holding the label
   final Widget? child;
 
-  FormSubmitButton(
+  AppButton(
       {this.child,
       this.minWidth = 190,
       this.buttonHeight = 30,
       this.elevation,
+        this.isTextButton = false,
       required Key key,
       required this.onPressed,
       this.label})
@@ -32,9 +33,10 @@ class FormSubmitButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(14),
             shadowColor: Colors.transparent,
+            primary:isTextButton?Colors.transparent:null,
             onSurface:  Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5.0),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
               side: BorderSide.none,
             ),
             elevation: 0,

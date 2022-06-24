@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
     projectId: 'breminderapp',
     storageBucket: 'breminderapp.appspot.com',
     iosClientId: '651776985530-vf9h68tretevaim8cjs4u0ir40dv4cqr.apps.googleusercontent.com',
-    iosBundleId: 'com.bremind.bremind',
+    iosBundleId: 'com.rudo.bereminder',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -78,6 +78,6 @@ class DefaultFirebaseOptions {
     projectId: 'breminderapp',
     storageBucket: 'breminderapp.appspot.com',
     iosClientId: '651776985530-vf9h68tretevaim8cjs4u0ir40dv4cqr.apps.googleusercontent.com',
-    iosBundleId: 'com.bremind.bremind',
+    iosBundleId: 'com.rudo.bereminder',
   );
 }

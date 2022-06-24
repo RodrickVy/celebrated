@@ -9,10 +9,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:651776985530:android:c85c47ae97e8ba92173583",
         "android_client_info": {
-          "package_name": "com.bremind.bremind"
+          "package_name": "com.rudo.bereminder"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "651776985530-hos18gbgmta2ebh959evdtjibdhk4u0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rudo.bereminder",
+            "certificate_hash": "919fda9b61cdbc000042b68d14ad264cc57150ea"
+          }
+        },
         {
           "client_id": "651776985530-g9e93f9lel1cn11687jibqpe9l3ai6jr.apps.googleusercontent.com",
           "client_type": 3
@@ -34,7 +42,7 @@
               "client_id": "651776985530-vf9h68tretevaim8cjs4u0ir40dv4cqr.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.bremind.bremind"
+                "bundle_id": "com.rudo.bereminder"
               }
             }
           ]

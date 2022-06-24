@@ -5,6 +5,7 @@ import 'package:bremind/support/models/notification.type.dart';
 
 class AppNotificationFactory extends IModelFactory<AppNotification> {
 
+  @override
   Map<String, dynamic> toJson(AppNotification model) {
     return {
       'type': model.type,
@@ -17,15 +18,17 @@ class AppNotificationFactory extends IModelFactory<AppNotification> {
     };
   }
 
-  fromJson(Map<String, dynamic> map) {
+  @override
+  AppNotification fromJson(Map<String, dynamic> json) {
     return AppNotification(
-      type: map['type'] as NotificationType,
-      code: map['code'] as AppErrorCodes,
-      title: map['title'] as String,
-      stack: map['stack'] as String,
-      message: map['message'] as String,
-      timestamp: map['timestamp'] as int,
-      route: map['route'] as String,
+      type: json['type'] as NotificationType,
+      code: json['code'] as ResponseCode,
+      title: json['title'] as String,
+      stack: json['stack'] as String,
+      message: json['message'] as String,
+      timestamp: json['timestamp'] as int,
+      route: json['route'] as String,
+      appWide: false,
     );
   }
 

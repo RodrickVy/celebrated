@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+/// service that handles device notifications
 class NotificationService {
   //Singleton pattern
   static final NotificationService _notificationService =

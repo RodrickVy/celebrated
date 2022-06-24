@@ -1,5 +1,6 @@
 name: bremind
-description: a birthday reminder app
+description: make it stress-free & inexpensive for people to remember, plan and celebrate others one birthday at a time. We add meaning, connection & fun to the days that matter.
+
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -29,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,15 +50,17 @@ dependencies:
   firebase_auth: ^3.3.8
   cloud_firestore: ^3.1.9
   firebase_storage: ^10.2.8
-  image_downloader: ^0.31.0
-  downloads_path_provider_28: ^0.1.2
   permission_handler: ^9.2.0
   share_plus: ^4.0.4
   date_time_picker: ^2.1.0
   flutter_countdown_timer: ^4.1.0
   flutter_local_notifications: ^8.2.0
-  collapsible_sidebar: ^2.0.1+2
   bottom_navy_bar: ^6.0.0
+  contextmenu: ^3.0.0
+  lit_relative_date_time: ^1.2.0
+  google_sign_in: ^5.3.3
+  card_swiper: ^2.0.4
+  url_launcher: ^6.1.4
 
 dev_dependencies:
   flutter_test:
@@ -69,11 +74,11 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter_icons:
-  image_path: "assets/b-remind-logo-1024.png"
+  image_path: "assets/logos/b-remind-logo-1024.png"
   android: true
   ios: true
   remove_alpha_ios: true
-  adaptive_icon_foreground: "assets/b-remind-logo-1024.png"
+  adaptive_icon_foreground: "assets/logos/b-remind-logo-1024.png"
   adaptive_icon_background: "#fcc21b"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -83,7 +88,7 @@ flutter_icons:
 
 flutter_native_splash:
   color: "#ffffff"
-  image: "assets/b-reminder-full-logo.png"
+  image: "assets/logos/b-remind-logo-1024.png"
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -93,9 +98,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - b-reminder-full-logo.png
     - assets/intro/
     - assets/defualt_icons/
+    - assets/logos/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

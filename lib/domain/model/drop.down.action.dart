@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 class DropDownAction{
   final String name;
-  final Function action;
+  final VoidCallback action;
 
-  DropDownAction(this.name, this.action);
+  const DropDownAction(this.name, this.action);
 }

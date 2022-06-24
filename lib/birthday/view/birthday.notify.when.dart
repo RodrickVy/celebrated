@@ -1,14 +1,20 @@
+import 'package:bremind/app.theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BirthdaysDropDown extends StatelessWidget {
+/// used in birthday editor to select the time to be notified.
+class NotifyWhen extends StatelessWidget {
   final List<String> values;
   final Rx<String?> _value = Rx<String?>(null);
-  final Function(String value)  onSelect;
+  final Function(String value) onSelect;
   final String defaultValue;
-  BirthdaysDropDown(
-      {Key? key, required this.values, required this.defaultValue , required this.onSelect})
+
+  NotifyWhen(
+      {Key? key,
+      required this.values,
+      required this.defaultValue,
+      required this.onSelect})
       : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _value(defaultValue);
@@ -19,22 +25,23 @@ class BirthdaysDropDown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Container(
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: const Border.fromBorderSide(
-                BorderSide(color: Colors.black45, width: 0.8))),
+          color:Colors.transparent,
+          borderRadius: BorderRadius.circular(0),
+          // border: const Border.fromBorderSide(
+          //     BorderSide(color: Colors.black45, width: 0.8))
+        ),
         child: DropdownButton<String>(
-          value: _value.value??defaultValue,
+          value: _value.value ?? defaultValue,
           icon: const Icon(Icons.arrow_drop_down),
           elevation: 16,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(0),
           style: GoogleFonts.poppins(),
           underline: Container(
             height: 2,
           ),
-          onChanged: (String? newValue) {
-
-          },
+          onChanged: (String? newValue) {},
           items: values.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -43,8 +50,8 @@ class BirthdaysDropDown extends StatelessWidget {
                 onSelect(value);
               },
               child: Text(
-                " $value",
-                style: GoogleFonts.poppins(color: Colors.black),
+                "$value days",
+                style: TextStyle(color: Colors.black),
               ),
             );
           }).toList(),

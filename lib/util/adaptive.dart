@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Adaptives {
+class Adaptive {
   final BuildContext context;
-  Adaptives( this.context);
+  Adaptive( this.context);
   /// The same of MediaQuery.of(context).size
   Size get mediaQuerySize => MediaQuery.of(context).size;
 

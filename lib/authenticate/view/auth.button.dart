@@ -1,8 +1,8 @@
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/afro_spinner.dart';
+import 'package:bremind/support/view/feedback.spinner.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/authenticate/interface/auth.controller.interface.dart';
+
 import 'package:bremind/authenticate/models/auth.with.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:auth_buttons/auth_buttons.dart';
@@ -12,15 +12,16 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum ProviderAction { signUp, signIn }
-
+/// provider buttons to be used  by auth later , currently not in use
 class ProviderButtons extends StatelessWidget {
-  final IAuthController controller = Get.find<AuthController>();
+  final AuthController controller = Get.find<AuthController>();
   final bool darkMode = false;
   final AuthButtonStyle? style = AuthButtonStyle(
-    padding: EdgeInsets.all(12),
+    padding: const EdgeInsets.all(12),
 
     borderWidth: 0.2,
     separator: 40,
+borderRadius: 0,
     iconType: AuthIconType.secondary,
     textStyle: GoogleFonts.poppins(
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
@@ -32,7 +33,7 @@ class ProviderButtons extends StatelessWidget {
 
   final double runSpacing = 10;
   final List<AuthWith> methods = [
-    // AuthWith.Google,
+    AuthWith.Google,
     // AuthWith.Apple,
     // AuthWith.Facebook,
     // AuthWith.Github
@@ -44,39 +45,42 @@ class ProviderButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SpinnerView(
-      spinnerKey: AfroSpinKeys.authProviderButtons,
+    return FeedbackSpinner(
+      spinnerKey: FeedbackSpinKeys.authProviderButtons,
       child: SizedBox(
         width: Get.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[...buttonsWithSpacing],
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[...buttonsWithSpacing],
+          ),
         ),
       ),
     );
   }
 
   List<Widget> get buttonsWithSpacing {
-    List<Widget> __widgets = [];
+    List<Widget> widgets = [];
 
     methods
         .map((method) => _methodButton(method))
         .toList()
         .forEach2((Widget button, int index) {
       if (index == methods.length - 1) {
-        __widgets.add(button);
+        widgets.add(button);
       } else {
         if (index == 0 && methods.length == 1) {
-          __widgets.add(button);
+          widgets.add(button);
         } else {
-          __widgets.add(button);
-          __widgets.add(space);
+          widgets.add(button);
+          widgets.add(space);
         }
       }
     });
 
-    return __widgets;
+    return widgets;
   }
 
   Widget _methodButton(AuthWith method)  {
@@ -209,12 +213,12 @@ class ProviderButtons extends StatelessWidget {
           style: style,
         );
       default:
-        return SizedBox(
+        return const SizedBox(
           height: 0,
           width: 0,
         );
     }
-    ;
+
   }
 
   String get _actionText {
@@ -232,10 +236,10 @@ class ProviderButtons extends StatelessWidget {
     );
   }
 
-  _action(AuthWith _action) async {
-    FeedbackController.spinnerUpdateState(key: AfroSpinKeys.authProviderButtons, isOn: true);
+  _action(AuthWith action) async {
+    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.authProviderButtons, isOn: true);
     await () async {
-      switch (_action) {
+      switch (action) {
         case AuthWith.EmailLink:
         case AuthWith.Facebook:
           return controller.signInWithPopUpProvider(
@@ -261,6 +265,6 @@ class ProviderButtons extends StatelessWidget {
       }
     }();
 
-    FeedbackController.spinnerUpdateState(key: AfroSpinKeys.authProviderButtons, isOn: false);
+    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.authProviderButtons, isOn: false);
   }
 }

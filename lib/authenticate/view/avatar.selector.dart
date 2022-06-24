@@ -9,7 +9,7 @@ class AvatarEditorView extends AppStateView<AuthController> {
   AvatarEditorView({Key? key}) : super(key: key);
 
   @override
-  Widget view({required BuildContext ctx, required Adaptives adapter}) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [

@@ -7,15 +7,15 @@ import 'package:get/get.dart';
 class NavController extends GetxController implements INavController {
   @override
   String get currentItem {
-    return "/${Get.currentRoute.split("/").sublist(1).first}";
+    return "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
   }
 
   @override
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  static NavController instance  = Get.find<NavController>();
+  static NavController instance = Get.find<NavController>();
 
-  final RxInt _currentIndex = RxInt(0);
+  final RxInt currentBottomBarIndex = RxInt(0);
 
   @override
   List<AppPage> get items => AppRoutes.items;
@@ -42,11 +42,11 @@ class NavController extends GetxController implements INavController {
   }
 
   @override
-  int get currentItemIndex => _currentIndex.value;
+  int get currentItemIndex => currentBottomBarIndex.value;
 
   @override
   toAppPageIndex(int index) {
-    _currentIndex(index);
+    currentBottomBarIndex(index);
     to(AppRoutes.items[index].route);
   }
 
@@ -60,5 +60,45 @@ class NavController extends GetxController implements INavController {
   void openDrawer() {
     scaffoldKey.currentState!.openDrawer();
     Get.log("opening");
+  }
+
+  void withParam(String key, String value) {
+    Get.log("Adding $key with $value");
+    Get.toNamed(currentRouteWithParams({...Get.parameters, key: value}));
+  }
+
+  String currentRouteWithParams(Map<String, String?> parameters) {
+    String route = Get.currentRoute.split("?").first + paramsRouteSectionFromParams(parameters);
+    Get.log("full route is $route is route");
+    return route;
+  }
+
+  String paramsRouteSectionFromParams(Map<String, String?> parameters) {
+    List<String> params = parameters.keys
+        .where((key) =>
+    parameters[key] != null && parameters[key]!.isNotEmpty)
+        .map((key) {
+      return "$key=${parameters[key]}";
+    }).toList();
+    if (params.isNotEmpty) {
+
+
+
+      if (params.length == 1) {
+        return "?${params.first}";
+      } else {
+        return "?${params.first}&${params.sublist(1).join("&")}";
+      }
+    } else {
+      return "";
+    }
+  }
+
+  void popParam(String key) {
+    Get.toNamed(currentRouteWithParams(Get.parameters..remove(key)));
+  }
+
+  void back() {
+    Get.back();
   }
 }

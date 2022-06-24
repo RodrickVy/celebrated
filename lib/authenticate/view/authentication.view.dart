@@ -1,54 +1,62 @@
-import 'package:bremind/domain/view/page.view.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:bremind/authenticate/models/auth.pages.dart';
+import 'package:bremind/authenticate/view/profile.view.dart';
+import 'package:bremind/domain/model/enum.dart';
+import 'package:bremind/domain/view/app.page.view.dart';
 import 'package:bremind/authenticate/view/auth.login.dart';
 import 'package:bremind/authenticate/view/auth.password.recovery.view.dart';
 import 'package:bremind/authenticate/view/auth.signup.dart';
 import 'package:bremind/authenticate/view/signout.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/views/app.bottom.nav.bar.dart';
-import 'package:bremind/navigation/views/app.drawer.dart';
+import 'package:bremind/navigation/controller/route.names.dart';
+import 'package:bremind/navigation/views/app.bar.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AuthView extends AppView<AuthController> {
+/// Main auth page , contains the different forms (login,sing-up,recovery)  for successful user authentication.
+/// Uses a default tab bar.
+class AuthView extends AppPageView<AuthController> {
   AuthView({Key? key}) : super(key: key);
 
   @override
-  Widget view({required BuildContext ctx, required Adaptives adapter}) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
+  return Obx(() {
+    if (AuthController.instance.isAuthenticated.value == true) {
+      return ProfileView(
+        key: const Key("${AppRoutes.auth}profile"),
+      );
+    }
     return DefaultTabController(
       length: 3,
+      key: UniqueKey(),
+      initialIndex: initialPage,
+
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 1,
-          toolbarHeight: 20,
-          bottom: TabBar(
-            unselectedLabelColor:
-                Theme.of(ctx).tabBarTheme.unselectedLabelColor,
-            labelStyle: Theme.of(ctx).tabBarTheme.labelStyle,
-            unselectedLabelStyle:
-                Theme.of(ctx).tabBarTheme.unselectedLabelStyle,
-            labelColor: Colors.black87,
-            onTap: (_) {
-              Get.log("Tab tapped");
-              FeedbackController.clearErrorNotification();
-            },
-            indicatorColor: Theme.of(ctx).colorScheme.secondaryContainer,
-            tabs: const <Tab>[
-              Tab(
-                text: 'Sign In',
-              ),
-              Tab(text: 'Sign Up'),
-              Tab(text: 'Recover Password'),
-            ],
-          ),
-          leading: const SizedBox(
-            width: 0,
-          ),
-        ),
+        key: UniqueKey(),
+        appBar:  AppTopBar.buildWithBottom(ctx, TabBar(
+          unselectedLabelColor:
+          Theme.of(ctx).tabBarTheme.unselectedLabelColor,
+          labelStyle: Theme.of(ctx).tabBarTheme.labelStyle,
+          unselectedLabelStyle:
+          Theme.of(ctx).tabBarTheme.unselectedLabelStyle,
+          labelColor: Colors.black87,
+          onTap: (_) {
+            Get.log("Tab tapped");
+            FeedbackService.clearErrorNotification();
+          },
+          indicatorColor: Theme.of(ctx).colorScheme.secondaryContainer,
+          isScrollable: true,
+          tabs: const <Tab>[
+            Tab(
+              text: 'Sign In',
+            ),
+            Tab(text: 'Sign Up'),
+            Tab(text: 'Reset Password'),
+          ],
+        )),
         body: Obx(
-          () => TabBarView(children: [
+              () => TabBarView(children: [
             if (controller.isAuthenticated.isTrue) SignOutView(),
             if (controller.isAuthenticated.isTrue) SignOutView(),
             if (controller.isAuthenticated.isTrue) SignOutView(),
@@ -57,8 +65,20 @@ class AuthView extends AppView<AuthController> {
             if (controller.isAuthenticated.isFalse) RecoverPasswordView(),
           ]),
         ),
-        bottomNavigationBar:null,
+        bottomNavigationBar: null,
       ),
     );
+  });
+  }
+
+  int get initialPage {
+    try {
+      AuthPages pageInRoute = AnEnum.fromJson(AuthPages.values,
+          Get.parameters["page"] ?? AnEnum.toJson(AuthPages.sign_in));
+      Get.log("Current page is $pageInRoute");
+      return AuthPages.values.indexOf(pageInRoute);
+    } catch (_) {
+      return 0;
+    }
   }
 }
