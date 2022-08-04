@@ -43,7 +43,7 @@ class BListView extends AppStateView<BirthdaysController> {
 
   List<DropDownAction> get _actions {
     return [
-      DropDownAction("Share Link", () {
+      DropDownAction("Share Link", Icons.share,() {
         final RxBool shareOn = board.viewingId.isNotEmpty.obs;
         final String viewId =
             shareOn.value ? board.viewingId : board.generateViewId();
@@ -129,7 +129,7 @@ class BListView extends AppStateView<BirthdaysController> {
               )),
         );
       }),
-      DropDownAction("Invite Others to add their birthdays", () {
+      DropDownAction("Invite Others to add their birthdays",Icons.add_link, () {
         final RxBool shareOn = board.addingId.isNotEmpty.obs;
         final String addId =
             shareOn.value ? board.addingId : board.generateAddingId();
@@ -300,7 +300,7 @@ class BListView extends AppStateView<BirthdaysController> {
       //     ),
       //   );
       // }),
-      DropDownAction("Delete", () {
+      DropDownAction("Delete", Icons.delete,() {
         FeedbackService.announce(
           ///todo change Error Codes to notification codes
           notification: AppNotification(
@@ -358,68 +358,99 @@ class BListView extends AppStateView<BirthdaysController> {
       width: adapter.width,
       child: SizedBox(
         child: ListView(padding: EdgeInsets.zero, children: [
-          ListTile(
-            dense: true,
-            // leading: Padding(
-            //   padding: const EdgeInsets.all(4.0),
-            //   child: ToggleButtons(
-            //     onPressed: (int index) {
-            //       goToViewMode(BirthdayViewMode.values[index]);
-            //     },
-            //     selectedColor: Colors.transparent,
-            //     isSelected:
-            //         BirthdayViewMode.values.map((e) => e == viewMode.value).toList(),
-            //     children: const <Widget>[
-            //       Icon(Icons.check_box_outline_blank_outlined),
-            //       Icon(Icons.calendar_view_day),
-            //     ],
-            //   ),
-            // ),
-            contentPadding: EdgeInsets.zero,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // ListTile(
+          //   dense: true,
+          //   // leading: Padding(
+          //   //   padding: const EdgeInsets.all(4.0),
+          //   //   child: ToggleButtons(
+          //   //     onPressed: (int index) {
+          //   //       goToViewMode(BirthdayViewMode.values[index]);
+          //   //     },
+          //   //     selectedColor: Colors.transparent,
+          //   //     isSelected:
+          //   //         BirthdayViewMode.values.map((e) => e == viewMode.value).toList(),
+          //   //     children: const <Widget>[
+          //   //       Icon(Icons.check_box_outline_blank_outlined),
+          //   //       Icon(Icons.calendar_view_day),
+          //   //     ],
+          //   //   ),
+          //   // ),
+          //   contentPadding: EdgeInsets.zero,
+          //   title: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       // Expanded(
+          //       //   child: Padding(
+          //       //     padding: const EdgeInsets.all(8.0),
+          //       //     child: ColorDropDown(
+          //       //       values: StaticData.colorsList,
+          //       //       defaultValue: board.hex,
+          //       //       onSelect: (int value) async {
+          //       //         await controller.updateContent(
+          //       //           board.id,
+          //       //           {"hex": value},
+          //       //         );
+          //       //       },
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //       Expanded(
+          //         flex: 4,
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //           child: EditableTextView(
+          //             icon: Icons.delete,
+          //             onIconPressed: () {},
+          //             key: const Key("_board_name_editor"),
+          //             textValue: board.name,
+          //             label: 'list name',
+          //             editMode: beginAtEditName,
+          //             background: Colors.transparent,
+          //             onSave: (String value) async {
+          //               FeedbackService.spinnerUpdateState(
+          //                   key: spinnerKey, isOn: true);
+          //               await controller.updateContent(board.id, {"name": value});
+          //               FeedbackService.spinnerUpdateState(
+          //                   key: spinnerKey, isOn: false);
+          //             },
+          //           ),
+          //         ),
+          //       ),
+          //       ActionDropDown(
+          //         actions: _actions,
+          //       )
+          //     ],
+          //   ),
+          //
+          //   tileColor: Colors.white,
+          // ),
+          Container(
+            width: Get.width,
+            height: 70,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ColorDropDown(
-                      values: StaticData.colorsList,
-                      defaultValue: board.hex,
-                      onSelect: (int value) async {
-                        await controller.updateContent(
-                          board.id,
-                          {"hex": value},
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: EditableTextView(
-                    icon: Icons.delete,
-                    onIconPressed: () {},
-                    key: const Key("_board_name_editor"),
-                    textValue: board.name,
-                    label: 'list name',
-                    editMode: beginAtEditName,
-                    background: Colors.transparent,
-                    onSave: (String value) async {
-                      FeedbackService.spinnerUpdateState(
-                          key: spinnerKey, isOn: true);
-                      await controller.updateContent(board.id, {"name": value});
-                      FeedbackService.spinnerUpdateState(
-                          key: spinnerKey, isOn: false);
-                    },
-                  ),
-                ),
-                ActionDropDown(
-                  actions: _actions,
-                )
-              ],
-            ),
+              ..._actions
+                  .map((e) => Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(8.0),
+                child: AppButton(
+                  key: UniqueKey(),
+                  onPressed: () {
+                    e.action();
+                  },
 
-            tileColor: Colors.white,
+                  child:Row(children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(e.icon),
+                    ),
+                    Text(e.name,style: Adaptive(ctx).textTheme.bodyText2,)
+                  ],) ,
+                ),
+              ))
+                  .toList(),
+            ],),
           ),
           SizedBox(
             child: Wrap(
@@ -532,18 +563,7 @@ class BListView extends AppStateView<BirthdaysController> {
           //     //     ],
           //     //   ),
           //     // ),
-          //     // ..._actions
-          //     //     .map((e) => Padding(
-          //     //           padding: const EdgeInsets.all(8.0),
-          //     //           child: AppButton(
-          //     //             key: UniqueKey(),
-          //     //             onPressed: () {
-          //     //               e.action();
-          //     //             },
-          //     //             label: e.name,
-          //     //           ),
-          //     //         ))
-          //     //     .toList()
+
           //   ],
           // ),
           SizedBox(

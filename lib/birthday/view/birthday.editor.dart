@@ -8,11 +8,9 @@ import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/birthday/model/birthday.dart';
 import 'package:bremind/birthday/view/birthday.notify.when.dart';
 import 'package:bremind/util/adaptive.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
 
 /// an editor for a birthday  can take , a full or empty object and returns you and edited one whent he user saves.
 class BirthdayEditor extends AppStateView<BirthdaysController> {
@@ -25,10 +23,16 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
   final Function() onDelete;
   final String id = const Uuid().v4();
 
-
   final Function(ABirthday birthday) onSave;
   final Function() onCancel;
-  BirthdayEditor({required this.onSave,required this.onDelete,this.configureRemindTime = true,required this.onCancel, this.birthdayValue, Key? key})
+
+  BirthdayEditor(
+      {required this.onSave,
+      required this.onDelete,
+      this.configureRemindTime = true,
+      required this.onCancel,
+      this.birthdayValue,
+      Key? key})
       : super(key: key) {
     if (birthdayValue != null) {
       if (birthdayValue!.id.isEmpty) {
@@ -40,10 +44,15 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
       birthday = ABirthday.empty().copyWith(id: id);
     }
 
-    _nameEditorController = TextEditingController(text: birthday.name.capitalizeFirst);
+    _nameEditorController =
+        TextEditingController(text: birthday.name.capitalizeFirst);
     _birthdateController =
         TextEditingController(text: birthday.date.toString());
-    _remindDaysBefore = birthday.dateWithThisYear.difference(birthday.remindMeWhen).inDays;
+    final daysBefore = birthday.dateWithThisYear
+        .difference(DateTime(DateTime.now().year, birthday.remindMeWhen.month,
+            birthday.remindMeWhen.day))
+        .inDays;
+    _remindDaysBefore = daysBefore < 15 ? daysBefore : 3;
   }
 
   @override
@@ -61,7 +70,7 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
               BirthdayDateForm(
                   birthdateController: _birthdateController,
                   nameTextController: _nameEditorController),
-              if(configureRemindTime)
+              if (configureRemindTime)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -69,7 +78,10 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
                       const Text("Remind me      "),
                       Flexible(
                         child: NotifyWhen(
-                            values: [(_remindDaysBefore > 15 || _remindDaysBefore < 0?_remindDaysBefore.toString():'16'),...List.generate(15, (index) => (index + 1).toString())],
+                            values: [
+                              ...List.generate(
+                                  15, (index) => (index + 1).toString())
+                            ],
                             defaultValue: _remindDaysBefore.toString(),
                             onSelect: (String day) {
                               _remindDaysBefore = int.parse(day);
@@ -115,10 +127,8 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
                           name: _nameEditorController.text,
                           date: DateTime.parse(_birthdateController.value.text),
                           remindMeWhen: DateTime.parse(
-                              _birthdateController.value.text)
-                              .subtract(Duration(days: _remindDaysBefore))
-                      )
-                      );
+                                  _birthdateController.value.text)
+                              .subtract(Duration(days: _remindDaysBefore))));
                     },
                   ),
                 ],

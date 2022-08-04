@@ -3,6 +3,7 @@ import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/birthday/model/birthday.dart';
 import 'package:bremind/birthday/model/birthday.list.dart';
 import 'package:bremind/birthday/model/birthday.view.mode.dart';
+import 'package:bremind/birthday/view/birthday.tile.view.only.dart';
 import 'package:bremind/domain/model/enum.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
@@ -44,7 +45,7 @@ class BoardViewOnly extends AppPageView<BirthdaysController> {
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                        "Can't load this birthday list, its not found , maybe the author has taken it down."),
+                        "Can't load this birthday list, its not found , this link has expired."),
                   ),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -81,10 +82,9 @@ class BoardViewOnly extends AppPageView<BirthdaysController> {
               FeedbackService.announce(
                   notification: AppNotification.empty().copyWith(
                       title:
-                      "Edit this list",
+                      "This list is yours , you can edit it",
                       type: NotificationType.neutral,
                       appWide: false,
-
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: Row(
@@ -94,9 +94,10 @@ class BoardViewOnly extends AppPageView<BirthdaysController> {
                                 key: UniqueKey(),
                                 child: const Text("Edit"),
                                 onPressed: () {
+                                  BirthdaysController.instance.currentListId(board.id);
                                   NavController.instance
                                       .to(AppRoutes.lists);
-                                  BirthdaysController.instance.currentListId(board.id);
+
 
                                 }),
                           ],
@@ -206,18 +207,9 @@ class BoardViewOnly extends AppPageView<BirthdaysController> {
                         ...board.birthdaysList.map((ABirthday birthday) {
                           switch (viewMode) {
                             case BirthdayViewMode.tiles:
-                              return BirthdayTile(
-                                birthday: birthday,
-                                onEdit: (ABirthday birthday) async {},
-                                onDelete: (ABirthday birthday) async {},
-                              );
+                              return BirthdayCard1ViewOnly( birthday: birthday, );
                             case BirthdayViewMode.cards:
-                              return BirthdayCard2ViewOnly(
-
-                                birthday: birthday,
-
-
-                              );
+                              return BirthdayCard2ViewOnly( birthday: birthday, );
                           }
                         }),
                       ],

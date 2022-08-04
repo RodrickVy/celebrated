@@ -3,6 +3,7 @@ import 'package:bremind/birthday/data/static.data.dart';
 import 'package:bremind/birthday/model/birthday.dart';
 import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/util/adaptive.dart';
+import 'package:bremind/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,9 +27,6 @@ class BirthdayCard2ViewOnly extends AppStateView<BirthdaysController> {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
      return Card(
           elevation: 1,
-          color: birthday.isPast
-              ? Colors.blueGrey.withAlpha(50)
-              : Get.theme.colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -53,8 +51,7 @@ class BirthdayCard2ViewOnly extends AppStateView<BirthdaysController> {
                 child: Column(
                   children: [
                     Text(
-                        StaticData.monthsShortForm[
-                        birthday.date.month - 1],
+                        birthday.date.monthInShortForm,
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w200,
                             fontSize: 17)),

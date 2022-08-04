@@ -61,6 +61,8 @@ dependencies:
   google_sign_in: ^5.3.3
   card_swiper: ^2.0.4
   url_launcher: ^6.1.4
+  pricing_cards: ^0.0.7
+  flutter_sms: ^2.3.3
 
 dev_dependencies:
   flutter_test:

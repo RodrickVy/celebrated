@@ -66,7 +66,7 @@ class BListInfo extends AppStateView<BirthdaysController> {
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "You can choose to organize birthdays in different categories! Keep up to 100 different birthdays. Click the +add button at the top.",
+                "You can choose to organize birthdays in different lists! Click the +add button at the top.",
                 style: adapter.textTheme.headline6,
                 textAlign: TextAlign.center,
               ),

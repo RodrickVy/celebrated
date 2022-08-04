@@ -128,20 +128,20 @@ class SupportView extends AppPageView<AuthController> {
               ),
               ExpansionTile(
                 title: Text(
-                  "Remembering Features",
+                  "App Features",
                   style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 initiallyExpanded: true,
-                subtitle: Text(
-                  "Features that help you remember birthdays",
-                  style: adapter.textTheme.bodyText1,
-                ),
+                // subtitle: Text(
+                //   "",
+                //   style: adapter.textTheme.bodyText1,
+                // ),
                 children: [
                   ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)),
                     title: Text(
-                      "Organize birthdays by lists for eg. school,work ,friends & family",
+                      "Group related birthdays into lists",
                       style: adapter.textTheme.subtitle1,
                     ),
                     trailing: const Icon(
@@ -153,7 +153,7 @@ class SupportView extends AppPageView<AuthController> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)),
                     title: Text(
-                      "Share birthday reminders by link",
+                      "Send out birthday collection link",
                       style: adapter.textTheme.subtitle1,
                     ),
                     trailing: const Icon(
@@ -165,31 +165,7 @@ class SupportView extends AppPageView<AuthController> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)),
                     title: Text(
-                      "Allow others to view your birthday list by link",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.check,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "Invite a large group to add their birthdays to a list by an invite link",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.check,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "set number of days prior you want to be reminded of birthday",
+                      "Easy link members subscription to lists to get notified",
                       style: adapter.textTheme.subtitle1,
                     ),
                     trailing: const Icon(
@@ -201,31 +177,7 @@ class SupportView extends AppPageView<AuthController> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)),
                     title: Text(
-                      "Disable list notifications",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.timelapse_sharp,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "In phone notification of birthday",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.timelapse_sharp,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "Auto-text-message reminders",
+                      "Birthday card that all can sign",
                       style: adapter.textTheme.subtitle1,
                     ),
                     trailing: const Icon(
@@ -244,109 +196,109 @@ class SupportView extends AppPageView<AuthController> {
                   )
                 ],
               ),
-              ExpansionTile(
-                title: Text(
-                  "Planning Features",
-                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
-
-                ),
-                subtitle: Text(
-                  "Features that help you celebrate birthdays",
-                  style: adapter.textTheme.bodyText1,
-                ),
-                children: [
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "create a guest list, that you can auto-send messages , update etc to.",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.timelapse_sharp,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "create a birthday a personal card",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.timelapse_sharp,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "create virtual gifts from  online products and wrap them virtually",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    trailing: const Icon(
-                      Icons.timelapse_sharp,
-                      size: 25,
-                    ),
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "more coming....",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    leading: const Icon(
-                      Icons.add,
-                      size: 25,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AppButton(
-                        key: UniqueKey(),
-                        label: "Suggest A Feature",
-                        onPressed: () async {
-                          await suggestFeature();
-                        }),
-                  )
-                ],
-              ),
-              ExpansionTile(
-                title: Text(
-                  "Celebrating Features",
-                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  "Features that help you plan birthday events",
-                  style: adapter.textTheme.bodyText1,
-                ),
-                children: [
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0)),
-                    title: Text(
-                      "more coming soon....",
-                      style: adapter.textTheme.subtitle1,
-                    ),
-                    leading: const Icon(
-                      Icons.add,
-                      size: 25,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AppButton(
-                        key: UniqueKey(),
-                        label: "Suggest A Feature",
-                        onPressed: () async {
-                          await suggestFeature();
-                        }),
-                  )
-                ],
-              ),
+              // ExpansionTile(
+              //   title: Text(
+              //     "Planning Features",
+              //     style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+              //
+              //   ),
+              //   subtitle: Text(
+              //     "Features that help you celebrate birthdays",
+              //     style: adapter.textTheme.bodyText1,
+              //   ),
+              //   children: [
+              //     ListTile(
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(0)),
+              //       title: Text(
+              //         "create a guest list, that you can auto-send messages , update etc to.",
+              //         style: adapter.textTheme.subtitle1,
+              //       ),
+              //       trailing: const Icon(
+              //         Icons.timelapse_sharp,
+              //         size: 25,
+              //       ),
+              //     ),
+              //     ListTile(
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(0)),
+              //       title: Text(
+              //         "create a birthday a personal card",
+              //         style: adapter.textTheme.subtitle1,
+              //       ),
+              //       trailing: const Icon(
+              //         Icons.timelapse_sharp,
+              //         size: 25,
+              //       ),
+              //     ),
+              //     ListTile(
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(0)),
+              //       title: Text(
+              //         "create virtual gifts from  online products and wrap them virtually",
+              //         style: adapter.textTheme.subtitle1,
+              //       ),
+              //       trailing: const Icon(
+              //         Icons.timelapse_sharp,
+              //         size: 25,
+              //       ),
+              //     ),
+              //     ListTile(
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(0)),
+              //       title: Text(
+              //         "more coming....",
+              //         style: adapter.textTheme.subtitle1,
+              //       ),
+              //       leading: const Icon(
+              //         Icons.add,
+              //         size: 25,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: AppButton(
+              //           key: UniqueKey(),
+              //           label: "Suggest A Feature",
+              //           onPressed: () async {
+              //             await suggestFeature();
+              //           }),
+              //     )
+              //   ],
+              // ),
+              // ExpansionTile(
+              //   title: Text(
+              //     "Celebrating Features",
+              //     style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+              //   ),
+              //   subtitle: Text(
+              //     "Features that help you plan birthday events",
+              //     style: adapter.textTheme.bodyText1,
+              //   ),
+              //   children: [
+              //     ListTile(
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(0)),
+              //       title: Text(
+              //         "more coming soon....",
+              //         style: adapter.textTheme.subtitle1,
+              //       ),
+              //       leading: const Icon(
+              //         Icons.add,
+              //         size: 25,
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: AppButton(
+              //           key: UniqueKey(),
+              //           label: "Suggest A Feature",
+              //           onPressed: () async {
+              //             await suggestFeature();
+              //           }),
+              //     )
+              //   ],
+              // ),
 
               Padding(
                 padding: const EdgeInsets.all(30.0),

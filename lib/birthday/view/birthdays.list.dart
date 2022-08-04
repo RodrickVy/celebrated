@@ -6,17 +6,16 @@ import 'package:bremind/birthday/model/birthday.list.dart';
 import 'package:bremind/birthday/view/b.list.empty.dart';
 import 'package:bremind/birthday/view/b.list.view.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
+import 'package:bremind/domain/view/editable.text.field.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/navigation/views/app.bar.dart';
+import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/util/adaptive.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
-
-
-
 
 class BirthdayBoardsView extends AppPageView<BirthdaysController> {
   BirthdayBoardsView({Key? key}) : super(key: key);
@@ -25,19 +24,38 @@ class BirthdayBoardsView extends AppPageView<BirthdaysController> {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
       () {
-        controller.currentListId.value;
+        controller.orderedBoards;
         controller.currentBirthdayInEdit.value;
         return BListTabView(
           boards: controller.orderedBoards,
           tabs: [
             ...controller.orderedBoards
                 .map2(
-                  (BirthdayBoard list,index) => Tab(
-
+                  (BirthdayBoard list, index) => Tab(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          list.name,
+                        SizedBox(
+                          width: 200,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: EditableTextView(
+                              icon: Icons.delete,
+                              onIconPressed: () {},
+                              key:  Key(list.name),
+                              textValue: list.name,
+                              label: 'list name',
+                              background: Colors.transparent,
+                              onSave: (String value) async {
+                                FeedbackService.spinnerUpdateState(
+                                    key: Key(list.name), isOn: true);
+                                await controller
+                                    .updateContent(list.id, {"name": value});
+                                FeedbackService.spinnerUpdateState(
+                                    key: Key(list.name), isOn: false);
+                              },
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -51,9 +69,7 @@ class BirthdayBoardsView extends AppPageView<BirthdaysController> {
                   ),
                 )
                 .toList(),
-
             Tab(
-
               child: GestureDetector(
                 onTap: () async {
                   await controller.createNewList();
@@ -84,28 +100,35 @@ class BirthdayBoardsView extends AppPageView<BirthdaysController> {
           ],
           actionButton: Obx(
             () {
-              if(AuthController.instance.isAuthenticated.isFalse || controller.currentListId.value.isEmpty || controller.birthdayBoards[controller.currentListId.value] != null){
-                 return const SizedBox();
-
-
+              if (AuthController.instance.isAuthenticated.isFalse ||
+                  controller.currentListId.value.isEmpty ||
+                  controller.birthdayBoards[controller.currentListId.value] ==
+                      null) {
+                return const SizedBox();
               }
-              return FloatingActionButton.extended(
-                tooltip: "add a new list" ,
-                onPressed: () async {
-                  final String id = const Uuid().v4();
-                  controller.currentBirthdayInEdit(id);
-                  await controller.updateContent(controller.currentListId.value, {
-                    "birthdays": controller.birthdayBoards[controller.currentListId.value]!
-                        .withAddedBirthday(ABirthday.empty().copyWith(id: id))
-                        .birthdays
-                        .values
-                        .map((value) => BirthdayFactory().toJson(value))
-                        .toList()
-                  });
-                },
-                icon: const Icon(Icons.add) ,
-                label: const Text("Add Birthday"),
-              );
+              if (controller.birthdayBoards.value.isNotEmpty) {
+                return FloatingActionButton.extended(
+                  tooltip: "add a new list",
+                  onPressed: () async {
+                    final String id = const Uuid().v4();
+                    controller.currentBirthdayInEdit(id);
+                    await controller
+                        .updateContent(controller.currentListId.value, {
+                      "birthdays": controller
+                          .birthdayBoards[controller.currentListId.value]!
+                          .withAddedBirthday(ABirthday.empty().copyWith(id: id))
+                          .birthdays
+                          .values
+                          .map((value) => BirthdayFactory().toJson(value))
+                          .toList()
+                    });
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text("Add Birthday"),
+                );
+              }
+
+              return const SizedBox();
             },
           ),
         );
@@ -126,7 +149,7 @@ class BListTabView extends StatelessWidget {
       {required this.initialPage,
       this.actionButton,
       required this.pagesLength,
-        required this.boards,
+      required this.boards,
       required this.tabs,
       required this.views,
       Key? key})
@@ -138,22 +161,22 @@ class BListTabView extends StatelessWidget {
       length: pagesLength,
       initialIndex: initialPage,
       child: Scaffold(
-        appBar:  AppTopBar.buildWithBottom(
+        appBar: AppTopBar.buildWithBottom(
             context,
             Container(
               width: Adaptive(context).width,
-              alignment: Alignment.center,
-              color: AppRoutes.lists ==
-                  NavController.instance.currentItem &&
-                  BirthdaysController.instance.birthdayBoards[
-                  BirthdaysController.instance.currentListId.value] !=
-                      null
-                  ? BirthdaysController
-                  .instance
-                  .birthdayBoards[
-              BirthdaysController.instance.currentListId.value]!
-                  .color
-                  : Colors.transparent,
+              alignment: Alignment.centerLeft,
+              // color: AppRoutes.lists ==
+              //     NavController.instance.currentItem &&
+              //     BirthdaysController.instance.birthdayBoards[
+              //     BirthdaysController.instance.currentListId.value] !=
+              //         null
+              //     ? BirthdaysController
+              //     .instance
+              //     .birthdayBoards[
+              // BirthdaysController.instance.currentListId.value]!
+              //     .color
+              //     : Colors.transparent,
               child: TabBar(
                   unselectedLabelColor:
                       Theme.of(context).tabBarTheme.unselectedLabelColor,
@@ -163,16 +186,16 @@ class BListTabView extends StatelessWidget {
                   labelColor: Colors.black87,
                   onTap: (int index) {
                     // FeedbackService.clearErrorNotification();
-                  // NavController.instance.withParam("listId",);
-                    BirthdaysController.instance.currentListId( boards[index].id);
-                    BirthdaysController.instance.currentListId.refresh();
+                    // NavController.instance.withParam("listId",);
+                    //   BirthdaysController.instance.currentListId( boards[index].id);
+                    //   BirthdaysController.instance.currentListId.refresh();
+                    if(index == boards.length){
+                      BirthdaysController.instance.createNewList();
+                    }
                   },
                   isScrollable: true,
-
-
                   padding: EdgeInsets.zero,
-                  indicatorColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
+                  indicatorColor: Theme.of(context).colorScheme.secondaryContainer,
                   tabs: tabs),
             )),
         body: TabBarView(

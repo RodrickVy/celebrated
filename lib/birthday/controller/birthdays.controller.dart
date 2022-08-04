@@ -56,7 +56,7 @@ class BirthdaysController extends GetxController
       if (authenticated) {
         birthdayBoards(Map.fromIterable(await getCollectionAsList(null),
             key: (e) => e.id, value: (e) => e));
-        BirthdaysController.instance.currentListId( orderedBoards[0].id);
+        BirthdaysController.instance.currentListId( orderedBoards.isNotEmpty ? orderedBoards[0].id:"");
         BirthdaysController.instance.currentListId.refresh();
         // birthdayBoards.values.map((e)async{
         //   if(e.authorName != AuthController.instance.accountUser.value.displayName){
@@ -265,5 +265,10 @@ class BirthdaysController extends GetxController
 
   String getBirthdayShareUrl(String listId, String birthdayId) {
     return "${AppRoutes.domainUrlBase}${AppRoutes.birthday}?list=$listId&birthdayId=$birthdayId";
+  }
+
+
+  sendReminders(){
+
   }
 }

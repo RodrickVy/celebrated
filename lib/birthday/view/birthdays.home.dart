@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bremind/app.swatch.dart';
 import 'package:bremind/appIntro/controller/intro.controller.dart';
 import 'package:bremind/authenticate/view/signout.view.dart';
@@ -18,8 +20,24 @@ import 'package:url_launcher/url_launcher.dart';
 class BirthdaysExplorer extends AppPageView<IntroScreenController> {
   BirthdaysExplorer({Key? key}) : super(key: key);
 
+  final RxInt textIndex = 0.obs;
+  final List<String> words = [
+    'families',
+    'businesses',
+    'churches',
+    'organizations'
+  ];
+
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
+    int index = 0;
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      index++;
+      textIndex(index);
+      if (index == words.length - 1) {
+        index = 0;
+      }
+    });
     return Container(
       width: adapter.width,
       height: adapter.height,
@@ -30,7 +48,6 @@ class BirthdaysExplorer extends AppPageView<IntroScreenController> {
         width: adapter.adapt(
             phone: adapter.width, tablet: adapter.width, desktop: 800),
         margin: EdgeInsets.zero,
-
         child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
@@ -48,11 +65,12 @@ class BirthdaysExplorer extends AppPageView<IntroScreenController> {
             //     fit: BoxFit.fitWidth,
             //   ),
             // ),
-            Text(
-              "We make it stress-free & inexpensive to remember, plan and celebrate birthdays.",
-              style: adapter.textTheme.headline4,
-              textAlign: TextAlign.left,
-            ),
+            Container(
+                child: Image.asset(
+              "assets/logos/banner.png",
+              width: Get.width,
+              fit: BoxFit.fitWidth,
+            )),
 
             Card(
               elevation: 0,
@@ -64,114 +82,256 @@ class BirthdaysExplorer extends AppPageView<IntroScreenController> {
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.all(8.0),
                 child: Wrap(
-                  alignment: WrapAlignment.center,
+                  alignment: WrapAlignment.start,
                   children: [
-                    Image.asset("assets/intro/party.png"),
+                    // Image.asset("assets/intro/party.png"),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(text: "For  ", style:adapter.textTheme.headline4?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),children: [
+                          TextSpan(
+                            text: "families",
+                            style: adapter.textTheme.headline4?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent),
+                          ),
+                          const TextSpan(text:" / "),
+                          TextSpan(
+                            text: "schools",
+                            style: adapter.textTheme.headline4?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent),
+                          ),
+                          const TextSpan(text:" / "),
+                          TextSpan(
+                            text: "businesses",
+                            style: adapter.textTheme.headline4?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color:        Colors.orange,),
+                          ),
+                          const TextSpan(text:" / "),
+                          TextSpan(
+                            text: 'churches',
+                            style: adapter.textTheme.headline4?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color:     Colors.green,),
+                          ),
+                        const TextSpan(text:" / "),
+                        const TextSpan(
+                            text: " or any ",
+                        ),
+                          TextSpan(
+                            text: 'organizations',
+                            style: adapter.textTheme.headline4?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue),
+
+                          ),
+                          TextSpan(
+                            text:" that want to express appreciation when it matters.",
+                            style: adapter.textTheme.headline4?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                          ),
+                        ]),
+                      ),
+                    ),
+
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        " We want to add meaning, connection & fun to the days that matter.",
-                        style: adapter.textTheme.headline6
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)),
-              margin: EdgeInsets.all(
-                  adapter.adapt(phone: 6, tablet: 8, desktop: 12)),
-              child: Padding(
-                padding: EdgeInsets.all(
-                    adapter.adapt(phone: 12, tablet: 14, desktop: 20)),
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Join The Early Research",
-                        style: adapter.textTheme.headline4?.copyWith(fontWeight: FontWeight.w500),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Help us build an experience that solves the right problems. Taking this 5 min survey goes to tremendous lengths to help us create an app that's positively impactful!",
+                        "Keep track & remember birthdays across your organization.",
                         style: adapter.textTheme.headline6,
                         textAlign: TextAlign.left,
                       ),
                     ),
-                    TextButton(
-                      key: UniqueKey(),
-                      onPressed: () async {
-                        final Uri _url = Uri.parse(
-                            'https://docs.google.com/forms/d/e/1FAIpQLSfH_82VfzhlgEzsRrW0Jw_Y1sqd30kaChoGnRC5u0wpgqMYxQ/viewform?usp=sf_link');
-                        if (!await launchUrl(_url)) {
-                          FeedbackService.announce(
-                              notification: AppNotification(
-                                  title:
-                                      "Oops! Looks like we can't open this url, copy  this link instead",
-                                  appWide: true,
-                                  child: AppButton(
-                                      key: UniqueKey(),
-                                      child: Text(
-                                          "Click To Copy :https://forms.gle/yMqYcdVHchyKqza6A "),
-                                      onPressed: () {
-                                        Clipboard.setData(const ClipboardData(
-                                                text:
-                                                    "https://forms.gle/yMqYcdVHchyKqza6A"))
-                                            .then((value) {
-                                          FeedbackService.successAlertSnack(
-                                              "Link Copied!");
-                                        });
-                                      })));
-                        }
+
+                    GestureDetector(
+                      onTap: () async {
+                        await launchUrl(Uri.parse(
+                            "https://play.google.com/apps/test/com.rudo.bereminder/1"));
                       },
-                      style: ElevatedButton.styleFrom(
-                          primary: AppSwatch.primary.shade500,
-                          padding: const EdgeInsets.all(15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)
-                          ),
-                          minimumSize: const Size.fromHeight(50)),
-                      child: const Text(
-                        " Take Survey ",
-                        style: TextStyle(color: Colors.black),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "assets/logos/playbutton.png",
+                          height: 60,
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
             ),
+            // Card(
+            //   elevation: 3,
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(0)),
+            //   margin: EdgeInsets.all(
+            //       adapter.adapt(phone: 6, tablet: 8, desktop: 12)),
+            //   child: Padding(
+            //     padding: EdgeInsets.all(
+            //         adapter.adapt(phone: 12, tablet: 14, desktop: 20)),
+            //     child: Column(
+            //       children: [
+            //         Container(
+            //           alignment: Alignment.centerLeft,
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: Text(
+            //             "Join The Early Research",
+            //             style: adapter.textTheme.headline4
+            //                 ?.copyWith(fontWeight: FontWeight.w500),
+            //             textAlign: TextAlign.left,
+            //           ),
+            //         ),
+            //         Container(
+            //           alignment: Alignment.centerLeft,
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: Text(
+            //             "Help us build an experience that solves the right problems. Taking this 5 min survey goes to tremendous lengths to help us create an app that's positively impactful!",
+            //             style: adapter.textTheme.headline6,
+            //             textAlign: TextAlign.left,
+            //           ),
+            //         ),
+            //         TextButton(
+            //           key: UniqueKey(),
+            //           onPressed: () async {
+            //             final Uri _url = Uri.parse(
+            //                 'https://docs.google.com/forms/d/e/1FAIpQLSfH_82VfzhlgEzsRrW0Jw_Y1sqd30kaChoGnRC5u0wpgqMYxQ/viewform?usp=sf_link');
+            //             if (!await launchUrl(_url)) {
+            //               FeedbackService.announce(
+            //                   notification: AppNotification(
+            //                       title:
+            //                           "Oops! Looks like we can't open this url, copy  this link instead",
+            //                       appWide: true,
+            //                       child: AppButton(
+            //                           key: UniqueKey(),
+            //                           child: Text(
+            //                               "Click To Copy :https://forms.gle/yMqYcdVHchyKqza6A "),
+            //                           onPressed: () {
+            //                             Clipboard.setData(const ClipboardData(
+            //                                     text:
+            //                                         "https://forms.gle/yMqYcdVHchyKqza6A"))
+            //                                 .then((value) {
+            //                               FeedbackService.successAlertSnack(
+            //                                   "Link Copied!");
+            //                             });
+            //                           })));
+            //             }
+            //           },
+            //           style: ElevatedButton.styleFrom(
+            //               primary: AppSwatch.primary.shade500,
+            //               padding: const EdgeInsets.all(15),
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(0)),
+            //               minimumSize: const Size.fromHeight(50)),
+            //           child: const Text(
+            //             " Take Survey ",
+            //             style: TextStyle(color: Colors.black),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "We want to make your birthdays about: ",
-                style: adapter.textTheme.headline6,
-                textAlign: TextAlign.left,
-              ),
-            ),
-            ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)),
-              title: Text(
-                "Quality Time",
-                style: adapter.textTheme.headline6
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              leading: const Icon(Icons.access_time,size: 25,),
-              subtitle: const Text(
-                  "Planning & organizing to make someone day memorable can be hard and time-consuming, stress free planning tools, like auto-invites,guest-lists & budget help you focus on what matter meaningful time with the person. "),
-            ),
+   Card(
+     elevation: 4,
+     color: Colors.redAccent,
+     child: Padding(
+       padding: const EdgeInsets.all(8.0),
+       child: Wrap(
+         children: [
+           Container(
+             padding: const EdgeInsets.all(8.0),
+             child: Text(
+               "Here is what you get for free: ",
+               style: adapter.textTheme.headline4,
+               textAlign: TextAlign.left,
+             ),
+           ),
+           ListTile(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(0)),
+             title: Text(
+               "Group related birthdays into lists",
+               style: adapter.textTheme.headline6
+                   ?.copyWith(fontWeight: FontWeight.bold),
+             ),
+             leading: const Icon(
+               Icons.list_alt_outlined,
+               size: 25,
+             ),
+             subtitle: const Text(
+                 "group birthdays into your wanted lists eg. department,teams or custom"),
+           ),
+           ListTile(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(0)),
+             title: Text(
+               "Send out birthday collection link",
+               style: adapter.textTheme.headline6
+                   ?.copyWith(fontWeight: FontWeight.bold),
+             ),
+             leading: const Icon(
+               Icons.add_link,
+               size: 25,
+             ),
+             subtitle: const Text(
+                 "Easily collect birthdays of from everyone with a link"),
+           ),
+           ListTile(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(0)),
+             title: Text(
+               "Members can subscribe to lists to get notified",
+               style: adapter.textTheme.headline6
+                   ?.copyWith(fontWeight: FontWeight.bold),
+             ),
+             leading: const Icon(
+               Icons.notifications,
+               size: 25,
+             ),
+             subtitle: const Text(
+                 "any member of organization can subscribe to a birthday list notification, to get a phone text notification when its someones birthday."),
+           ),
+           ListTile(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(0)),
+             title: Text(
+               "Birthday note card that all can sign",
+               style: adapter.textTheme.headline6
+                   ?.copyWith(fontWeight: FontWeight.bold),
+             ),
+             leading: const Icon(
+               Icons.edit,
+               size: 25,
+             ),
+             subtitle: const Text(
+                 "Birthday note card that all members can sign"),
+           ),
+           ListTile(
+             shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(0)),
+             title: Text(
+               "all managed from one account",
+               style: adapter.textTheme.headline6
+                   ?.copyWith(fontWeight: FontWeight.bold),
+             ),
+             leading: const Icon(
+               Icons.account_circle,
+               size: 25,
+             ),
+             subtitle: const Text(
+                 "no need for any confusing accounts for member, all is managed by one account"),
+           ),
+         ],
+       ),
+     ),
+   ),
 
             // ListTile(
             //   shape: RoundedRectangleBorder(
@@ -186,44 +346,70 @@ class BirthdaysExplorer extends AppPageView<IntroScreenController> {
             //   trailing: const Icon(Icons.check),
             // ),
 
-            ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)),
-              leading: const Icon(Icons.handshake,size: 25,),
-              title: Text(
-                "Connection",
-                style: adapter.textTheme.headline6
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text("We help you focus on connection through ice breakers,group-games, virtual gifts  and more"),
-            ),
+         Container(
+           padding: EdgeInsets.all(12),
+           // color: Colors.redAccent.withAlpha(78),
+           child: Wrap(
+             children: [
+               Text(
+                 "Transforming Organizations!",
+                 style: adapter.textTheme.headline6
+                     ?.copyWith(fontWeight: FontWeight.bold),
+               ),
+               ListTile(
+                 shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(0)),
+                 leading: const Icon(
+                   Icons.check_box_outline_blank_outlined,
+                   size: 25,
+                 ),
+                 tileColor: Colors.green,
 
-            ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)),
-              leading: const Icon(Icons.speaker_notes_rounded,size: 25,),
-              title: Text(
-                "Expression",
-                style: adapter.textTheme.headline6
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text(
-                  "Love, care and appreciation that find no authentic expression is useless, and our reminder tool helps you express it when it matters."),
+                 title: Text(
+                   "Breaking Barriers",
+                   style: adapter.textTheme.headline6
+                       ?.copyWith(fontWeight: FontWeight.bold),
+                 ),
+                 subtitle: const Text(
+                     "Celebrated is a great way for schools, churches and any organizations to break barriers"),
+               ),
 
-            ),
+               ListTile(
+                 shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(0)),
+                 leading: const Icon(
+                   Icons.check_box_outline_blank_outlined,
+                   size: 25,
+                 ),
+                 tileColor: Colors.red,
+                 title: Text(
+                   "Expression",
+                   style: adapter.textTheme.headline6
+                       ?.copyWith(fontWeight: FontWeight.bold),
+                 ),
+                 subtitle: const Text(
+                     "We believe love, care and appreciation that find no authentic expression is useless, we help you express it when it matters."),
+               ),
 
-            ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0)),
-              title: Text(
-                "Fun",
-                style: adapter.textTheme.headline6
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text(
-                  "Birthday group icebreakers,live games and challenges to spice up the party."),
-              leading: const Icon(Icons.games,size: 25,),
-            ),
+               ListTile(
+                 shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(0)),
+                 tileColor: Colors.blue,
+                 title: Text(
+                   "Growing connection",
+                   style: adapter.textTheme.headline6
+                       ?.copyWith(fontWeight: FontWeight.bold),
+                 ),
+                 subtitle: const Text(
+                     "We help organizations connect more, not as employees,students or members but humans celebrating each other."),
+                 leading: const Icon(
+                   Icons.check_box_outline_blank_outlined,
+                   size: 25,
+                 ),
+               ),
+             ],
+           ),
+         )
 
 /*
 *
@@ -259,8 +445,6 @@ Fun -  we find fun and joy in what we do.
             //     textAlign: TextAlign.center,
             //   ),
             // ),
-
-
           ],
         ),
       ),

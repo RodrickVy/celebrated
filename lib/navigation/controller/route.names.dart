@@ -10,6 +10,8 @@ class AppRoutes {
   static const String home = "/home";
   static const String about = "/about";
   static const String lists = "/lists";
+  static const String plan = "/plan";
+  static const String celebrate = "/celebrate";
   static const String splash = "/splash";
   // static const String profile = "/profile";
   static const String privacy = "/privacy";
@@ -29,6 +31,8 @@ class AppRoutes {
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),
+    // AppPage(name: "Plan", route: plan, icon: Icons.checklist),
+    // AppPage(name: "Celebrate", route: celebrate, icon: Icons.cake),
         // AppPage(
         //     name: "boards",
         //     route: bBoard,

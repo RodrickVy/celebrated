@@ -1,3 +1,4 @@
+import 'package:bremind/birthday/model/birthday.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// service that handles device notifications
@@ -39,8 +40,32 @@ class NotificationService {
 
 
 
+  Future<void> showBirthdayNotification(ABirthday birthday) async {
+     const AndroidNotificationDetails _androidNotificationDetails =
+    AndroidNotificationDetails(
+      'channel ID',
+      'channel name',
+      'channel description',
+      playSound: true,
+      priority: Priority.high,
+      importance: Importance.high,
+    );
+
+     const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: _androidNotificationDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      "🥳🎉🎉${birthday.name}'s birthday in  ${birthday.daysRemaining()>1?'s':''}!",
+      '${birthday.name} is turning ${birthday.age()}. ',
+      platformChannelSpecifics,
+      payload: 'Notification Payload',
+    );
+  }
+
+  //
   // Future<void> showBirthdayNotification(ABirthday birthday) async {
-  //    const AndroidNotificationDetails _androidNotificationDetails =
+  //   const AndroidNotificationDetails _androidNotificationDetails =
   //   AndroidNotificationDetails(
   //     'channel ID',
   //     'channel name',
@@ -50,12 +75,12 @@ class NotificationService {
   //     importance: Importance.high,
   //   );
   //
-  //    const NotificationDetails platformChannelSpecifics =
+  //   const NotificationDetails platformChannelSpecifics =
   //   NotificationDetails(android: _androidNotificationDetails);
   //
   //   await flutterLocalNotificationsPlugin.show(
   //     0,
-  //     "🥳🎉🎉${birthday.name}'s birthday in ${birthday.daysRemaining()} day${birthday.daysRemaining()>1?'s':''}!",
+  //     "🥳🎉🎉${birthday.name}'s birthday in  ${birthday.daysRemaining()>1?'s':''}!",
   //     '${birthday.name} is turning ${birthday.age()}. ',
   //     platformChannelSpecifics,
   //     payload: 'Notification Payload',

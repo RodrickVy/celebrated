@@ -1,3 +1,4 @@
+import 'package:bremind/app.swatch.dart';
 import 'package:bremind/domain/model/toggle.option.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:flutter/material.dart';
@@ -18,25 +19,34 @@ class AppToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ToggleButtons(
-      onPressed: (int selectedIndex) {
-        onInteraction!=null?onInteraction!():(){};
-       toggleOptions.value = toggleOptions.map2((element, int optionIndex) {
-          if (selectedIndex == optionIndex) {
-            element.onSelected();
-            return element.copyWith(state: true);
+    return Obx(
+        ()=> ToggleButtons(
+        onPressed: (int selectedIndex) {
+          onInteraction!=null?onInteraction!():(){};
+         toggleOptions.value = toggleOptions.map2((element, int optionIndex) {
+            if (selectedIndex == optionIndex) {
+              element.onSelected();
 
-          } else if (!multiselect) {
-            return element.copyWith(state: false);
-          } else {
-            return element;
-          }
-        }).toList();
+              if(multiselect){
+                return element .copyWith(state: !element.state);
+              }else{
+                return element.copyWith(state: true);
+              }
 
-      },
-      selectedColor: Colors.black38,
-      isSelected: toggleOptions.map((element) => element.state).toList(),
-      children: toggleOptions.map((element) => element.view).toList(),
+
+            } else if (!multiselect) {
+              return element.copyWith(state: false);
+            } else {
+              return element;
+            }
+          }).toList();
+
+        },
+        selectedColor: Colors.black,
+          selectedBorderColor: AppSwatch.primaryAccent,
+        isSelected: toggleOptions.map((element) => element.state).toList(),
+        children: toggleOptions.map((element) => element.view).toList(),
+      ),
     );
   }
 }

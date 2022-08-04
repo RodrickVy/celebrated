@@ -106,20 +106,23 @@ class BirthdayPageView extends AppPageView<BirthdaysController> {
                       ),
                     ),
                   ),
-                  AppButton(
-                    onPressed: () async {
-                      if (GetPlatform.isWeb) {
-                        Clipboard.setData(
-                            ClipboardData(text:AppRoutes.domainUrlBase+Get.currentRoute));
-                        FeedbackService.clearErrorNotification();
-                        FeedbackService.successAlertSnack('Link Copied!');
-                      } else {
-                        await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
-                        FeedbackService.clearErrorNotification();
-                      }
-                    },
-                    key: UniqueKey(),
-                    child: const Text("Share Reminder to others"),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: AppButton(
+                      onPressed: () async {
+                        if (GetPlatform.isWeb) {
+                          Clipboard.setData(
+                              ClipboardData(text:AppRoutes.domainUrlBase+Get.currentRoute));
+                          FeedbackService.clearErrorNotification();
+                          FeedbackService.successAlertSnack('Link Copied!');
+                        } else {
+                          await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
+                          FeedbackService.clearErrorNotification();
+                        }
+                      },
+                      key: UniqueKey(),
+                      child: const Text("Share Reminder to others"),
+                    ),
                   ),
 
                   Padding(

@@ -61,6 +61,7 @@ class FeedbackService extends GetxController
 
   /// called anytime one wants to send a message to user.
   static announce({required AppNotification notification}) {
+    Get.log(notification.message.toString());
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FeedbackService.appNotification.value = notification;
       if (notification.aliveFor != null) {

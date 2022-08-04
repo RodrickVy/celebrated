@@ -100,14 +100,17 @@ class AppDesktopDrawer extends StatelessWidget {
               //       // )
               //     ])),
               AvatarView(),
-              Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Text(
-                    authController.user.value.userName,
-                    style: GoogleFonts.mavenPro(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,),
-                  )),
+              Obx(
+                ()=> Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Text(
+                      authController.user.value.userName,
+                      style: GoogleFonts.mavenPro(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,),
+                      textAlign: TextAlign.center,
+                    )),
+              ),
               ...controller.items.map((e) {
                 return Padding(
                   padding:

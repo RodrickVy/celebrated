@@ -120,12 +120,12 @@ class AuthController extends GetxController
     try {
       return await getContent(user.uid).then((AccountUser value) async {
         int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
-        // found the user! meaning this is just a login in, and now updating their last login to match now
         await updateContent(user.uid, {'lastLogin': loginTimestamp})
             .then((value) {});
         // after return the AccountUser object
         return value.copyWith(
-            lastLogin: DateTime.fromMillisecondsSinceEpoch(loginTimestamp));
+            lastLogin: DateTime.fromMillisecondsSinceEpoch(loginTimestamp));      // found the user! meaning this is just a login in, and now updating their last login to match now
+
       });
     } catch (error) {
       /// if the document doesn't exist create a user object
@@ -195,15 +195,18 @@ class AuthController extends GetxController
         await auth
             .createUserWithEmailAndPassword(email: email, password: password)
             .then((value) async {
-          value.user?.updateDisplayName(name);
+          await value.user?.updateDisplayName(name);
 
-          await updateContent(user.value.uid, {"name": name,"birthdate":birthdate.millisecondsSinceEpoch});
+          await updateContent(user.value.uid, {"name": name});
         });
       } on FirebaseAuthException catch (error) {
+
         FeedbackService.announce(
             notification:
                 _appNotificationFromCode(error.code).copyWith(title: error.message));
+
       } catch (e) {
+        Get.log(e.toString());
         FeedbackService.announce(
             notification: AppNotification.unknownError()
                 .copyWith(title: e.toString(), stack: e.toString()));

@@ -53,9 +53,26 @@ class EditableTextView extends StatelessWidget {
     return Obx(
       () => AnimatedSwitcher(
         duration: const Duration(milliseconds: 800),
-        child: __editMode.value == true
+        child:
+
+
+        __editMode.value == true
             ? Row(
                 children: [
+                  Expanded(
+                  child: Center(
+                    child: IconButton(
+                        onPressed: () {
+                          __editMode(false);
+                          onSave(_textEditingController.value.text);
+                        },
+                        icon: const Icon(
+                          Icons.save,
+                          color: Colors.black,
+                          size: 18,
+                        )),
+                  ),
+                ),
                   Expanded(
                     flex: 3,
                     child: AppTextField(
@@ -68,40 +85,25 @@ class EditableTextView extends StatelessWidget {
                         autoFocus: true,
                         hint: textValue),
                   ),
-                  Expanded(
-                    child: IconButton(
-                        onPressed: () {
-                          __editMode(false);
-                          onSave(_textEditingController.value.text);
-                        },
-                        icon: const Icon(
-                          Icons.save,
-                          color: Colors.black,
-                        )),
-                  )
+
                 ],
               )
             :Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                if (__editMode.value == false) {
-                  __editMode(true);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Text(textValue),
-              ),
-            ),
             IconButton(
-                onPressed: () {
-                  __editMode(true);
-                },
-                icon: const Icon(
-                  Icons.edit,
-                  color: Colors.black,
-                ))
+              onPressed: () {
+                __editMode(true);
+              },
+                padding: const EdgeInsets.only(bottom: 12.0),
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.black,
+              )),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(textValue),
+            ),
+
           ],
         )
       ),

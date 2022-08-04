@@ -1,8 +1,13 @@
 import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/birthday/view/birthday.date.name.dart';
+import 'package:bremind/domain/model/drop.down.action.dart';
+import 'package:bremind/domain/model/toggle.option.dart';
+import 'package:bremind/domain/view/action.drop.down.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/domain/view/app.text.field.dart';
+import 'package:bremind/domain/view/drop.down.dart';
+import 'package:bremind/domain/view/toogle.button.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
 import 'package:bremind/support/view/feedback.spinner.dart';
@@ -12,6 +17,7 @@ import 'package:bremind/util/adaptive.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pricing_cards/pricing_cards.dart';
 
 import 'auth.button.dart';
 
@@ -26,6 +32,8 @@ class SignUpFormView extends AppStateView<AuthController> {
 
   SignUpFormView({Key? key}) : super(key: key);
 
+  final List<String> typeOfOrgs =  ["select","School","Class","Church","Business","Company","Other"];
+
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Center(
@@ -33,6 +41,52 @@ class SignUpFormView extends AppStateView<AuthController> {
         width: 320,
         child: ListView(
           children: [
+            SizedBox(height: 50,),
+            // Center(
+            //   child: Container(
+            //     margin: const EdgeInsets.all(10.0),
+            //     color: Colors.yellow,
+            //     height: 100,
+            //     child: ClipRect(
+            //       child: Banner(
+            //         message: "Offer",
+            //         location: BannerLocation.topEnd,
+            //         color: Colors.red,
+            //         child: Container(
+            //           color: Colors.yellow,
+            //           height: 100,
+            //           child: Center(
+            //             child: Text("Free Offer, for our pre-launch users!"),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // PricingCards(
+            //   pricingCards: [
+            //     PricingCard(
+            //       title: 'Monthly',
+            //       price: '\$ 6.99',
+            //       subPriceText: '\/mo',
+            //       billedText: 'Billed monthly',
+            //       onPress: () {
+            //         // make your business
+            //       },
+            //     ),
+            //     PricingCard(
+            //       title: 'Monthly',
+            //       price: '\$ 0',
+            //       subPriceText: '\/mo',
+            //       billedText: 'Free',
+            //       mainPricing: true,
+            //       mainPricingHighlightText: 'Pre-launch Offer',
+            //       onPress: () {
+            //         // make your business
+            //       },
+            //     )
+            //   ],
+            // ),
             const SizedBox(
               height: 10,
             ),
@@ -49,17 +103,9 @@ class SignUpFormView extends AppStateView<AuthController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // AppTextField(
-                        //   fieldIcon: Icons.email,
-                        //   label: "Name",
-                        //   hint: "eg. mpatso",
-                        //   controller: nameTextController,
-                        //   key: UniqueKey(),
-                        //   keyboardType: TextInputType.name,
-                        //   autoFillHints: const [AutofillHints.name],
-                        // ),
+
                         BirthdayDateForm(
-                            birthdateController: _birthdateController,
+                            showDate: false,
                             nameTextController: nameTextController),
                         const SizedBox(
                           height: 10,
@@ -86,6 +132,32 @@ class SignUpFormView extends AppStateView<AuthController> {
                           keyboardType: TextInputType.visiblePassword,
                           autoFillHints: const [AutofillHints.password],
                         ),
+                        const SizedBox(height: 10,),
+                        Wrap(
+                          children: [
+                            Text("Type of organization(optional): "),
+                            Container(constraints:BoxConstraints(maxWidth: 400),child: ButtonDropDown(actions: typeOfOrgs.map((e) => DropDownAction(e, Icons.access_time, () { })).toList(),)),
+                          ],
+                        ),
+                        // AppToggleButton(
+                        //   multiselect: true,
+                        //   options: [
+                        //     ToggleOption(view: Padding(
+                        //       padding: const EdgeInsets.all(8.0),
+                        //       child: const Text("Just Me"),
+                        //     ), state: true, onSelected: (){}),
+                        //     ToggleOption(view: Padding(
+                        //       padding: const EdgeInsets.all(8.0),
+                        //       child: const Text("Youth Group"),
+                        //     ), state: false, onSelected: (){}),
+                        //     ToggleOption(view: Padding(
+                        //       padding: const EdgeInsets.all(8.0),
+                        //       child: const Text("Organization"),
+                        //     ), state: false, onSelected: (){}),
+                        //   ],
+                        //
+                        // ),
+
                         const SizedBox(
                           height: 10 / 2,
                         ),

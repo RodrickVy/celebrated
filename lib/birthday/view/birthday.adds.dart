@@ -6,6 +6,7 @@ import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/birthday/model/adding.birthday.stages.dart';
 import 'package:bremind/birthday/model/birthday.dart';
 import 'package:bremind/birthday/model/birthday.list.dart';
+import 'package:bremind/birthday/view/birthday.date.name.dart';
 import 'package:bremind/birthday/view/birthday.editor.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
@@ -137,15 +138,14 @@ class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
   }
 
   Widget get onEmpty {
-    return Obx(
-      () => Column(
+    return  Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Padding(
             padding: EdgeInsets.all(20.0),
             child: Text(
-              "Can't load this birthday list, its not found , maybe the author has taken it down.",
+              "Can't load this birthday list, its not found ,invalid or expired link.",
               textAlign: TextAlign.center,
             ),
           ),
@@ -160,33 +160,31 @@ class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
               children: [
                 AppButton(
                     key: UniqueKey(),
-                    child: const Text("Go Back"),
-                    onPressed: () {
-                      NavController.instance.back();
-                    }),
+                    child: const Text("ask the owner to renew the link or"),
+                    isTextButton: true,
+                    onPressed: ()=>null),
                 const SizedBox(
                   width: 50,
                 ),
-                if (AuthController.instance.isAuthenticated.isFalse)
+                // if (AuthController.instance.isAuthenticated.isFalse)
                   AppButton(
                       key: UniqueKey(),
-                      child: const Text("Check Us Out"),
+                      child: const Text("Go home"),
                       onPressed: () {
-                        NavController.instance.to(AppRoutes.splash);
+                        NavController.instance.to(AppRoutes.home);
                       }),
-                if (AuthController.instance.isAuthenticated.isTrue)
-                  AppButton(
-                      key: UniqueKey(),
-                      child: const Text("retry"),
-                      onPressed: () {
-                        Get.toNamed(Get.currentRoute);
-                      }),
+                // if (AuthController.instance.isAuthenticated.isTrue)
+                //   AppButton(
+                //       key: UniqueKey(),
+                //       child: const Text("retry"),
+                //       onPressed: () {
+                //         Get.toNamed(Get.currentRoute);
+                //       }),
               ],
             ),
           )
         ],
-      ),
-    );
+      );
   }
 
   Widget get notificationHolder {
@@ -372,179 +370,156 @@ class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
   final ABirthday newBirthday =
       ABirthday.empty().copyWith(id: const Uuid().v4());
 
-  final TextEditingController _nameEditorController = TextEditingController(
-      text: AuthController.instance.accountUser.value.displayName);
-  final TextEditingController _birthdateController =
-      TextEditingController(text: DateTime.now().toString());
+
 
   Widget editView(BirthdayBoard board, Adaptive adapter) {
-    return ListView(
-      children: [
-        const SizedBox(
-          height: 10,
-        ),
-        if (board.authorName.isNotEmpty)
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(style: adapter.textTheme.headline6, children: [
-                TextSpan(
-                  text: "@${board.authorName} \n",
-                  style: adapter.textTheme.headline6
-                      ?.copyWith(fontWeight: FontWeight.w900),
-                ),
-                const TextSpan(
-                  text: " has invited you to their ",
-                ),
-                TextSpan(
-                  text: board.name,
-                  style: adapter.textTheme.headline6
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text: board.name.contains("list")
-                      ? (' birthdays')
-                      : " birthday-list",
-                )
-              ]),
-            ),
-          ),
-        if (board.authorName.isEmpty)
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(style: adapter.textTheme.headline6, children: [
-                const TextSpan(
-                  text: "you have been invited to  ",
-                ),
-                TextSpan(
-                  text: board.name,
-                  style: adapter.textTheme.headline6
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text: board.name.contains("list")
-                      ? (' birthdays')
-                      : " birthday-list",
-                )
-              ]),
-            ),
-          ),
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            "assets/intro/cake_time.png",
-            width: 200,
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "Add your birthday details below and submit!",
-            style: adapter.textTheme.bodyText2,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Container(
-          width:
-              adapter.adapt(phone: Get.width - 40, tablet: 400, desktop: 600),
-          alignment: Alignment.center,
-          child: Card(
-            elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 60,
-                    width: Get.width - 20,
-                    child: AppTextField(
-                      label: "Name",
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(0),
-                              borderSide: const BorderSide(width: 0.5))),
-                      controller: _nameEditorController,
-                      hint: 'full name',
-                      key: const Key("birthday_name"),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DateTimePicker(
-                    type: DateTimePickerType.date,
-                    dateMask: 'd MMM, yyyy',
-                    fieldLabelText: 'Birthdate',
-                    firstDate: DateTime(1200),
-                    controller: _birthdateController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: const BorderSide(width: 0.5))),
-                    lastDate: DateTime(9090),
-                    icon: const Icon(Icons.event),
-                    dateLabelText: 'Birthdate',
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  AppButton(
-                    key: UniqueKey(),
-                    child: const Text(
-                      "Submit",
-                    ),
-                    onPressed: () async {
-                      if (nameIsValid) {
-                        try {
-                          FeedbackService.spinnerUpdateState(
-                              key: FeedbackSpinKeys.appWide, isOn: true);
-                          await addBirthday(board);
+    return Obx(
+      () {
+        AuthController.instance.accountUser.value;
+        final TextEditingController _nameEditorController = TextEditingController(
+            text: AuthController.instance.accountUser.value.name);
 
-                          FeedbackService.spinnerUpdateState(
-                              key: FeedbackSpinKeys.appWide, isOn: false);
-                        } catch (_) {
-                          FeedbackService.spinnerUpdateState(
-                              key: FeedbackSpinKeys.appWide, isOn: false);
-                          _stage(BirthdayAddStage.failed);
-                        }
-                      } else {
-                        FeedbackService.announce(
-                            notification: AppNotification.empty().copyWith(
-                                title:
-                                    "The name given is empty or invalid,make sure its longer than 1 character"));
-                      }
-                    },
+        final TextEditingController _birthdateController =
+        TextEditingController(text:  AuthController.instance.accountUser.value.birthdate.toString());
+        return ListView(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          if (board.authorName.isNotEmpty)
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(style: adapter.textTheme.headline6, children: [
+                  TextSpan(
+                    text: "@${board.authorName} \n",
+                    style: adapter.textTheme.headline6
+                        ?.copyWith(fontWeight: FontWeight.w900),
+                  ),
+                  const TextSpan(
+                    text: " has invited you to their ",
+                  ),
+                  TextSpan(
+                    text: board.name,
+                    style: adapter.textTheme.headline6
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: board.name.contains("list")
+                        ? (' birthdays')
+                        : " birthday-list",
                   )
-                ],
+                ]),
+              ),
+            ),
+          if (board.authorName.isEmpty)
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(8.0),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(style: adapter.textTheme.headline6, children: [
+                  const TextSpan(
+                    text: "you have been invited to  ",
+                  ),
+                  TextSpan(
+                    text: board.name,
+                    style: adapter.textTheme.headline6
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: board.name.contains("list")
+                        ? (' birthdays')
+                        : " birthday-list",
+                  )
+                ]),
+              ),
+            ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              "assets/intro/cake_time.png",
+              width: 200,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Add your birthday details below and submit!",
+              style: adapter.textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            width:
+                adapter.adapt(phone: Get.width - 40, tablet: 400, desktop: 600),
+            alignment: Alignment.center,
+            child: Card(
+              elevation: 2,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BirthdayDateForm(birthdateController: _birthdateController,nameTextController: _nameEditorController,),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    AppButton(
+                      key: UniqueKey(),
+                      child: const Text(
+                        "Submit",
+                      ),
+                      onPressed: () async {
+                        if (nameIsValid(_nameEditorController.value.text)) {
+                          try {
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.appWide, isOn: true);
+                            await addBirthday(board,_nameEditorController.value.text,_birthdateController.value.text);
+
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.appWide, isOn: false);
+                          } catch (_) {
+                            FeedbackService.spinnerUpdateState(
+                                key: FeedbackSpinKeys.appWide, isOn: false);
+                            _stage(BirthdayAddStage.failed);
+                          }
+                        } else {
+                          FeedbackService.announce(
+                              notification: AppNotification.empty().copyWith(
+                                  title:
+                                      "The name given is empty or invalid,make sure its longer than 1 character"));
+                        }
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        notificationHolder,
-      ],
+          notificationHolder,
+        ],
+      );
+      },
     );
   }
 
-  bool get nameIsValid {
-    return _nameEditorController.value.text.length >= 2 &&
-        _nameEditorController.value.text != 'name';
+  bool  nameIsValid(String name) {
+    return name.length >= 2 &&
+        name != 'name';
   }
 
-  Future<void> addBirthday(BirthdayBoard board) async {
+  Future<void> addBirthday(BirthdayBoard board,String name,String date) async {
     final ABirthday birthday = ABirthday.empty().copyWith(
-        name: _nameEditorController.value.text,
+        name:name,
         id: const Uuid().v4(),
-        date: DateTime.parse(_birthdateController.value.text));
+        date: DateTime.parse(date));
 
     if (board.birthdayAlreadyExists(birthday)) {
       FeedbackService.blockPrompt(
@@ -593,7 +568,7 @@ class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
                 onChanged: (bool? state) async {
                   value.toggle();
                   try {
-                    await saveData(board, birthday);
+                    await saveData(board, birthday).then((value) =>  _stage(BirthdayAddStage.successful));
                     FeedbackService.clearErrorNotification();
                   } catch (_) {
                     _stage(BirthdayAddStage.failed);
@@ -604,9 +579,9 @@ class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
               ),
             ));
       } else {
-        await saveData(board, birthday);
+        await saveData(board, birthday).then((value) =>  _stage(BirthdayAddStage.successful));
       }
-      _stage(BirthdayAddStage.successful);
+
     }
   }
 

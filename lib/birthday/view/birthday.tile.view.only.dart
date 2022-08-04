@@ -5,6 +5,7 @@ import 'package:bremind/domain/model/drop.down.action.dart';
 import 'package:bremind/domain/view/action.drop.down.dart';
 import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/util/adaptive.dart';
+import 'package:bremind/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'birthday.editor.dart';
@@ -13,20 +14,15 @@ class BirthdayCard1ViewOnly extends AppStateView<BirthdaysController> {
   final ABirthday birthday;
   final double? width;
   final double? height;
-  final Function(ABirthday birthday) onEdit;
-  final Function(ABirthday birthday) onDelete;
-  final bool viewOnly;
   final VoidCallback? onSelect;
 
   BirthdayCard1ViewOnly(
       {Key? key,
-      this.viewOnly = false,
       this.width = 160,
       this.onSelect,
       this.height = 260,
-      required this.onDelete,
-      required this.birthday,
-      required this.onEdit})
+
+      required this.birthday,})
       : super(key: key);
 
   @override
@@ -37,9 +33,6 @@ class BirthdayCard1ViewOnly extends AppStateView<BirthdaysController> {
             phone: adapter.width, tablet: adapter.width, desktop: 600),
         child: Card(
             elevation: 1,
-            color: birthday.isPast
-                ? Colors.blueGrey.withAlpha(50)
-                : Get.theme.colorScheme.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),
@@ -63,8 +56,11 @@ class BirthdayCard1ViewOnly extends AppStateView<BirthdaysController> {
                 padding: const EdgeInsets.all(6),
                 child: Row(
                   children: [
-                    Text(
-                      "${StaticData.monthsShortForm[birthday.date.month - 1]} ${birthday.date.day.toString()}  ",
+                    Padding(
+                      padding: const EdgeInsets.only(right:8.0),
+                      child: Text(
+                       birthday.date.readable,
+                      ),
                     ),
                     Text(birthday.formattedBirthday(ctx)),
                   ],
