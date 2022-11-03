@@ -11,10 +11,10 @@ import 'package:get/get.dart';
 /// much like [AppStateView] but this time for a page, adds a scaffold using the appWide [AppDesktopDrawer],[AppBottomNavBar]
 /// to avoid the hustle of repeating calling them.
 /// The scaffold uses [NavControllers]'s scaffoldKey to enable anyone to close and open drawer using [NavController]
-abstract class AppPageView<T> extends StatelessWidget {
-  final T controller = Get.find<T>();
+abstract class AppPageView extends StatelessWidget {
 
-  AppPageView({Key? key}) : super(key: key);
+
+  const AppPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

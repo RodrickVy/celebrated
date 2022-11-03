@@ -14,8 +14,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// simple UI for showing user profile, needs any class that impliments of [IAuthController]
-class ProfileView extends AppPageView<AuthController> {
+class ProfileView extends AppPageView {
   late TextEditingController _birthdateController;
+  static final AuthController controller =Get.find<AuthController>();
 
   ProfileView({Key? key}) : super(key: key) {
     if (controller.isAuthenticated.isFalse) {

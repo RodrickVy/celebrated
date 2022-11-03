@@ -1,10 +1,7 @@
 import 'package:bremind/app.swatch.dart';
 import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/authenticate/view/signout.view.dart';
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/models/app.notification.dart';
 import 'package:bremind/util/adaptive.dart';
@@ -15,8 +12,10 @@ import 'package:image_fade/image_fade.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// the homepage for birthdays, has tips, current birthdays etc.
-class AboutDev extends AppPageView<IntroScreenController> {
-  AboutDev({Key? key}) : super(key: key);
+class AboutDev extends AppPageView {
+  const AboutDev({Key? key}) : super(key: key);
+
+  static final IntroScreenController controller =Get.find<IntroScreenController>();
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

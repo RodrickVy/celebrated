@@ -1,32 +1,26 @@
 import 'package:bremind/app.theme.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/authenticate/models/account.dart';
 import 'package:bremind/birthday/adapter/birthdays.factory.dart';
 import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/birthday/model/adding.birthday.stages.dart';
 import 'package:bremind/birthday/model/birthday.dart';
 import 'package:bremind/birthday/model/birthday.list.dart';
 import 'package:bremind/birthday/view/birthday.date.name.dart';
-import 'package:bremind/birthday/view/birthday.editor.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.dart';
 import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/domain/view/app.text.field.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
 import 'package:bremind/support/models/app.notification.dart';
 import 'package:bremind/support/models/notification.type.dart';
-import 'package:bremind/support/view/feedback.spinner.dart';
 import 'package:bremind/support/view/notification.view.dart';
 import 'package:bremind/util/adaptive.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 final Rx<BirthdayAddStage> _stage =
@@ -65,8 +59,9 @@ Future<BirthdayBoard> getBoard() {
 }
 
 /// page showing the users birthdays , and enables the user to update the lists.
-class BirthdaysOpenEditor extends AppPageView<BirthdaysController> {
+class BirthdaysOpenEditor extends AppPageView {
   BirthdaysOpenEditor({Key? key}) : super(key: key);
+  static final BirthdaysController controller =Get.find<BirthdaysController>();
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

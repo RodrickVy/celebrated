@@ -20,14 +20,14 @@ class AppRoutes {
   static const String birthday = '/birthday';
   static const String support = "/support";
   static const String auth = "/auth";
-  static String authSignIn = "/auth/${AnEnum.toJson(AuthPages.sign_in)}";
-  static String authSignUp = "/auth/${AnEnum.toJson(AuthPages.sign_up)}";
+  static String authSignIn = "/auth/${AuthPages.sign_in.name}";
+  static String authSignUp = "/auth/${AuthPages.sign_up.name}";
   static String authPasswordReset =
       "/auth/${AnEnum.toJson(AuthPages.password_rest)}";
   static const String bBoard = "/b-board";
   static const String avatarEditor = "/avatar-editor";
   static const String notFound = "/notfound";
-
+  static const String docs = '/docs/:id';
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),

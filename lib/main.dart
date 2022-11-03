@@ -8,11 +8,12 @@ import 'package:bremind/authenticate/view/authentication.view.dart';
 import 'package:bremind/birthday/view/birthday.adds.dart';
 import 'package:bremind/birthday/view/birthday.leader.board.dart';
 import 'package:bremind/birthday/view/birthday.page.dart';
-import 'package:bremind/birthday/view/birthdays.home.dart';
 import 'package:bremind/birthday/view/birthdays.list.dart';
 import 'package:bremind/birthday/view/board.view.only.dart';
+import 'package:bremind/document/view/document.viewer.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
 import 'package:bremind/firebase_options.dart';
+import 'package:bremind/home/view/home.page.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
@@ -20,7 +21,6 @@ import 'package:bremind/support/controller/spin.keys.dart';
 import 'package:bremind/support/view/feedback.spinner.dart';
 import 'package:bremind/support/view/not.found.dart';
 import 'package:bremind/support/view/notification.snackbar.dart';
-import 'package:bremind/support/view/privacy.policy.dart';
 import 'package:bremind/support/view/support.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -46,7 +46,7 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.splash, page: () => AppIntro<IntroScreenController>()),
         GetPage(
             name: AppRoutes.home,
-            page: () => BirthdaysExplorer(
+            page: () => HomePage(
                   key: const Key(AppRoutes.home),
                 )),
         GetPage(
@@ -74,11 +74,11 @@ class App extends StatelessWidget {
             name: AppRoutes.about,
             page: () =>
                 BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
-        // GetPage(
-        //     name: AppRoutes.profile,
-        //     page: () => ProfileView(
-        //           key: const Key(AppRoutes.profile),
-        //         )),
+        GetPage(
+            name: AppRoutes.docs,
+            page: () => DocumentViewer(
+                  key: const Key(AppRoutes.docs),
+                )),
         GetPage(
             name: AppRoutes.auth,
             page: () => AuthView(key: const Key(AppRoutes.auth))),
@@ -88,9 +88,7 @@ class App extends StatelessWidget {
         GetPage(
             name: AppRoutes.support,
             page: () => SupportView(key: const Key(AppRoutes.support))),
-    GetPage(
-        name: AppRoutes.privacy,
-        page: () => PrivacyPolicyView(key: const Key(AppRoutes.privacy))),
+
       ];
 
   @override

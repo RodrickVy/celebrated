@@ -7,8 +7,6 @@ import 'package:bremind/birthday/view/b.list.empty.dart';
 import 'package:bremind/birthday/view/b.list.view.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
 import 'package:bremind/domain/view/editable.text.field.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/navigation/views/app.bar.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/util/adaptive.dart';
@@ -17,8 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
-class BirthdayBoardsView extends AppPageView<BirthdaysController> {
-  BirthdayBoardsView({Key? key}) : super(key: key);
+class BirthdayBoardsView extends AppPageView {
+ const  BirthdayBoardsView({Key? key}) : super(key: key);
+
+ static final BirthdaysController controller =Get.find<BirthdaysController>();
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

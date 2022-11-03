@@ -16,8 +16,9 @@ import 'package:get/get.dart';
 
 /// Main auth page , contains the different forms (login,sing-up,recovery)  for successful user authentication.
 /// Uses a default tab bar.
-class AuthView extends AppPageView<AuthController> {
-  AuthView({Key? key}) : super(key: key);
+class AuthView extends AppPageView {
+  const AuthView({Key? key}) : super(key: key);
+  static final AuthController controller =Get.find<AuthController>();
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

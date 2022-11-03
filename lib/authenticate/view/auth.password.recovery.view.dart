@@ -1,4 +1,4 @@
-import 'package:bremind/authenticate/controller/auth.controller.dart';
+  import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/domain/view/app.text.field.dart';

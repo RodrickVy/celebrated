@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// view for showing current birthdays around the world.
-class BirthdaysLeaderBoard extends AppPageView<BirthdaysController> {
-  BirthdaysLeaderBoard({Key? key}) : super(key: key);
+class BirthdaysLeaderBoard extends AppPageView {
+  const BirthdaysLeaderBoard({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

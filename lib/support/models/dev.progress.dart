@@ -1,13 +1,13 @@
 import 'package:bremind/domain/model/content.dart';
-import 'package:bremind/support/models/dev.progress/dev.progress.category.dart';
+import 'package:bremind/home/model/feature.category.dart';
 // todo write a tests for this class
 class DevProgress extends Content {
   final String title;
   final String image;
   final String description;
-  final List<DevProgressCategory> categories;
+  final List<FeatureCategory> categories;
 
-  DevProgress({required this.title,required this.image, required this.description, required this.categories});
+  const DevProgress({required this.title,required this.image, required this.description, required this.categories});
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,7 +23,7 @@ class DevProgress extends Content {
       title: map['title'] as String,
       image:map['image'],
       description: map['description'] as String,
-      categories: List.from(map['categories']).map((e) => DevProgressCategory.fromMap(e)).toList(),
+      categories: List.from(map['categories']).map((e) => FeatureCategory.fromMap(e)).toList(),
     );
   }
 }

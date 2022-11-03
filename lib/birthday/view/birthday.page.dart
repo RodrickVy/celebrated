@@ -1,12 +1,8 @@
 import 'package:bremind/app.swatch.dart';
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/authenticate/view/signout.view.dart';
 import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/birthday/model/birthday.list.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
 import 'package:bremind/navigation/controller/route.names.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/util/adaptive.dart';
@@ -21,8 +17,10 @@ import 'package:share_plus/share_plus.dart';
 
 
 /// the homepage for birthdays, has tips, current birthdays etc.
-class BirthdayPageView extends AppPageView<BirthdaysController> {
-  BirthdayPageView({Key? key}) : super(key: key);
+class BirthdayPageView extends AppPageView {
+   BirthdayPageView({Key? key}) : super(key: key);
+  static final BirthdaysController controller =Get.find<BirthdaysController>();
+
   final Future<ABirthday> birthday =
   BirthdaysController.instance.birthdayFromBirthdayId();
   @override

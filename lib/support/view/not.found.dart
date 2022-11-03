@@ -1,17 +1,10 @@
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/models/app.notification.dart';
 import 'package:bremind/util/adaptive.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-class NotFoundView extends AppPageView<AuthController> {
+class NotFoundView extends AppPageView {
   NotFoundView({Key? key}) : super(key: key);
 
   @override

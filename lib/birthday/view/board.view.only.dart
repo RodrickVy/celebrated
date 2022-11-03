@@ -5,10 +5,7 @@ import 'package:bremind/birthday/model/birthday.list.dart';
 import 'package:bremind/birthday/model/birthday.view.mode.dart';
 import 'package:bremind/birthday/view/birthday.tile.view.only.dart';
 import 'package:bremind/domain/model/enum.dart';
-import 'package:bremind/domain/repository/amen.content/model/query.dart';
-import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
 import 'package:bremind/birthday/view/birthday.card.dart';
-import 'package:bremind/birthday/view/birthday.tile.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.page.view.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
@@ -24,9 +21,10 @@ import 'package:get/get.dart';
 
 final  Future<BirthdayBoard>  board = BirthdaysController().boardFromViewId();
 /// page showing the users birthdays , and enables the user to update the lists.
-class BoardViewOnly extends AppPageView<BirthdaysController> {
-  BoardViewOnly({Key? key}) : super(key: key);
+class BoardViewOnly extends AppPageView {
+  const BoardViewOnly({Key? key}) : super(key: key);
 
+  static final BirthdaysController controller =Get.find<BirthdaysController>();
 
 
   @override
