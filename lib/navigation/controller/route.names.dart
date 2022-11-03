@@ -38,6 +38,7 @@ class AppRoutes {
         //     route: bBoard,
         //     icon: Icons.developer_board_outlined),
         AppPage(name: "Account", route: auth, icon: Icons.account_circle),
+
       ];
 
   /// for one depth route only

@@ -49,7 +49,7 @@ class SupportView extends AppPageView<AuthController> {
                         child: Text(
                           "This is the first early version of the app, with the least features, and is currently under testing & development.",
                           style: adapter.textTheme.headline6
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                              ?.copyWith(fontWeight: FontWeight.w300),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -80,11 +80,11 @@ class SupportView extends AppPageView<AuthController> {
               ExpansionTile(
                 title: Text(
                   "Platforms",
-                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 initiallyExpanded: true,
                 subtitle: Text(
-                  "Planning ot launch on web,IOS & Android",
+                  "Planning to launch on web,IOS & Android",
                   style: adapter.textTheme.bodyText1,
                 ),
                 children: [
@@ -129,7 +129,7 @@ class SupportView extends AppPageView<AuthController> {
               ExpansionTile(
                 title: Text(
                   "App Features",
-                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+                  style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 initiallyExpanded: true,
                 // subtitle: Text(

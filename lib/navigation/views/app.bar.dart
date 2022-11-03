@@ -22,7 +22,7 @@ class AppTopBar extends PreferredSize {
     return AppBar(
       leading: GetPlatform.isMobile ? null : const SizedBox(),
       leadingWidth: !GetPlatform.isMobile ? 0 : null,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       actions: [
         Padding(
@@ -57,9 +57,9 @@ class AppTopBar extends PreferredSize {
     return AppBar(
       leading: GetPlatform.isMobile ? null : const SizedBox(),
       leadingWidth: !GetPlatform.isMobile ? 0 : null,
-      backgroundColor: Colors.transparent,
-      bottom: PreferredSize(child
-          : bottom,      preferredSize: Size.fromHeight(50),),
+      backgroundColor: Colors.white,
+      bottom: PreferredSize(preferredSize: const Size.fromHeight(50),child
+          : bottom,),
 
       toolbarHeight: 0,
       elevation: !GetPlatform.isMobile ? 0 : 0.4,

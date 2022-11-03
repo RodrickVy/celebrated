@@ -35,9 +35,9 @@ class LoginFormView extends AppStateView<AuthController> {
             const SizedBox(
               height: 10,
             ),
-            ProviderButtons(
-              key: UniqueKey(),
-            ),
+            // ProviderButtons(
+            //   key: UniqueKey(),
+            // ),
             FeedbackSpinner(
               spinnerKey: FeedbackSpinKeys.signInForm,
               child: Padding(

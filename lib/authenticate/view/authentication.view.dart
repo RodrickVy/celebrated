@@ -45,6 +45,7 @@ class AuthView extends AppPageView<AuthController> {
             Get.log("Tab tapped");
             FeedbackService.clearErrorNotification();
           },
+
           indicatorColor: Theme.of(ctx).colorScheme.secondaryContainer,
           isScrollable: true,
           tabs: const <Tab>[

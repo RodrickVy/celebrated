@@ -1,8 +1,6 @@
 import 'package:bremind/appIntro/controller/intro.controller.dart';
 import 'package:bremind/appIntro/view/intro.view.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/authenticate/view/avatar.selector.dart';
-import 'package:bremind/authenticate/view/profile.view.dart';
 import 'package:bremind/app.bindings.dart';
 import 'package:bremind/app.swatch.dart';
 import 'package:bremind/app.theme.dart';

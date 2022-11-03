@@ -1,49 +1,35 @@
 {
   "project_info": {
-    "project_number": "651776985530",
-    "project_id": "breminderapp",
-    "storage_bucket": "breminderapp.appspot.com"
+    "project_number": "144465290198",
+    "firebase_url": "https://letstalk-1.firebaseio.com",
+    "project_id": "letstalk-1",
+    "storage_bucket": "letstalk-1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:651776985530:android:c85c47ae97e8ba92173583",
+        "mobilesdk_app_id": "1:144465290198:android:d0909a597c41962ad57a77",
         "android_client_info": {
           "package_name": "com.rudo.bereminder"
         }
       },
       "oauth_client": [
         {
-          "client_id": "651776985530-hos18gbgmta2ebh959evdtjibdhk4u0j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.rudo.bereminder",
-            "certificate_hash": "919fda9b61cdbc000042b68d14ad264cc57150ea"
-          }
-        },
-        {
-          "client_id": "651776985530-g9e93f9lel1cn11687jibqpe9l3ai6jr.apps.googleusercontent.com",
+          "client_id": "144465290198-nm9nltpf1800pbjdj6hiq2md90u1eglp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAfSdMJsDl8zJONkwGqQlbC7XRgitBpa4E"
+          "current_key": "AIzaSyCssvmvwEHOKQa70pMEubaeU4vQ12G-QlY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "651776985530-g9e93f9lel1cn11687jibqpe9l3ai6jr.apps.googleusercontent.com",
+              "client_id": "144465290198-nm9nltpf1800pbjdj6hiq2md90u1eglp.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "651776985530-vf9h68tretevaim8cjs4u0ir40dv4cqr.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.rudo.bereminder"
-              }
             }
           ]
         }

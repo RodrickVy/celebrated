@@ -1,23 +1,17 @@
 import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/birthday/view/birthday.date.name.dart';
 import 'package:bremind/domain/model/drop.down.action.dart';
-import 'package:bremind/domain/model/toggle.option.dart';
-import 'package:bremind/domain/view/action.drop.down.dart';
 import 'package:bremind/domain/view/app.button.dart';
 import 'package:bremind/domain/view/app.state.view.dart';
 import 'package:bremind/domain/view/app.text.field.dart';
 import 'package:bremind/domain/view/drop.down.dart';
-import 'package:bremind/domain/view/toogle.button.dart';
 import 'package:bremind/support/controller/feedback.controller.dart';
 import 'package:bremind/support/controller/spin.keys.dart';
 import 'package:bremind/support/view/feedback.spinner.dart';
-
 import 'package:bremind/support/view/notification.view.dart';
 import 'package:bremind/util/adaptive.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pricing_cards/pricing_cards.dart';
 
 import 'auth.button.dart';
 
@@ -90,10 +84,10 @@ class SignUpFormView extends AppStateView<AuthController> {
             const SizedBox(
               height: 10,
             ),
-            ProviderButtons(
-              key: UniqueKey(),
-
-            ),
+            // ProviderButtons(
+            //   key: UniqueKey(),
+            //
+            // ),
             FeedbackSpinner(
               spinnerKey: FeedbackSpinKeys.signUpForm,
               child: Padding(
