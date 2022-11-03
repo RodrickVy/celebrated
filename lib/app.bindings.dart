@@ -2,6 +2,7 @@ import 'package:bremind/appIntro/controller/intro.controller.dart';
 import 'package:bremind/authenticate/controller/auth.controller.dart';
 import 'package:bremind/birthday/controller/birthdays.controller.dart';
 import 'package:bremind/navigation/controller/nav.controller.dart';
+import 'package:bremind/support/controller/dev.progress.controller.dart';
 import 'package:get/get.dart';
 
 
@@ -14,5 +15,6 @@ class AppBindings extends  Bindings {
     Get.put(NavController());
     Get.put(AuthController());
     Get.put(BirthdaysController());
+    Get.put(DevProgressController());
   }
 }
