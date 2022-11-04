@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "144465290198",
-    "firebase_url": "https://letstalk-1.firebaseio.com",
-    "project_id": "letstalk-1",
-    "storage_bucket": "letstalk-1.appspot.com"
+    "project_number": "690288905141",
+    "project_id": "celebrated-app",
+    "storage_bucket": "celebrated-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:144465290198:android:d0909a597c41962ad57a77",
+        "mobilesdk_app_id": "1:690288905141:android:d0cff77c4fee70fa0be7fc",
         "android_client_info": {
-          "package_name": "com.rudo.bereminder"
+          "package_name": "com.rodrickvy.celebrated"
         }
       },
       "oauth_client": [
         {
-          "client_id": "144465290198-nm9nltpf1800pbjdj6hiq2md90u1eglp.apps.googleusercontent.com",
+          "client_id": "690288905141-89fnm63g3q9r2df0s2883oktkb5jp3gb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCssvmvwEHOKQa70pMEubaeU4vQ12G-QlY"
+          "current_key": "AIzaSyDP5f8YyfmEew5Ls_2d0g5_pMNPhtPrPL8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "144465290198-nm9nltpf1800pbjdj6hiq2md90u1eglp.apps.googleusercontent.com",
+              "client_id": "690288905141-89fnm63g3q9r2df0s2883oktkb5jp3gb.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

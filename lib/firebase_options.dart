@@ -44,43 +44,40 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDqgBcYmi5SFNUNDxm88IqtcFrKUdqM1bc',
-    appId: '1:144465290198:web:8fd36c7799c4ded6d57a77',
-    messagingSenderId: '144465290198',
-    projectId: 'letstalk-1',
-    authDomain: 'letstalk-1.firebaseapp.com',
-    databaseURL: 'https://letstalk-1.firebaseio.com',
-    storageBucket: 'letstalk-1.appspot.com',
+    apiKey: 'AIzaSyBV1qdDH3YEFoI2IUw1IyUr9S9gD3uLJIc',
+    appId: '1:690288905141:web:09d60e34268561d50be7fc',
+    messagingSenderId: '690288905141',
+    projectId: 'celebrated-app',
+    authDomain: 'celebrated-app.firebaseapp.com',
+    storageBucket: 'celebrated-app.appspot.com',
+    measurementId: 'G-QCL58Y84K4',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCssvmvwEHOKQa70pMEubaeU4vQ12G-QlY',
-    appId: '1:144465290198:android:d0909a597c41962ad57a77',
-    messagingSenderId: '144465290198',
-    projectId: 'letstalk-1',
-    databaseURL: 'https://letstalk-1.firebaseio.com',
-    storageBucket: 'letstalk-1.appspot.com',
+    apiKey: 'AIzaSyDP5f8YyfmEew5Ls_2d0g5_pMNPhtPrPL8',
+    appId: '1:690288905141:android:d0cff77c4fee70fa0be7fc',
+    messagingSenderId: '690288905141',
+    projectId: 'celebrated-app',
+    storageBucket: 'celebrated-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBE38MC2HyUpgYpLMQ2SH7YFOfd5pEyMZ8',
-    appId: '1:144465290198:ios:ed359266ad0e6b8cd57a77',
-    messagingSenderId: '144465290198',
-    projectId: 'letstalk-1',
-    databaseURL: 'https://letstalk-1.firebaseio.com',
-    storageBucket: 'letstalk-1.appspot.com',
-    iosClientId: '144465290198-9rptca93k44cm9umnthj0m4pi73jj6ub.apps.googleusercontent.com',
-    iosBundleId: 'com.rudo.bereminder',
+    apiKey: 'AIzaSyCPuWkw9Dlig7yBZAkqkELaXue2FQmQaag',
+    appId: '1:690288905141:ios:206ef527105576c50be7fc',
+    messagingSenderId: '690288905141',
+    projectId: 'celebrated-app',
+    storageBucket: 'celebrated-app.appspot.com',
+    iosClientId: '690288905141-21qb4stvboau0oe29l59anne9u50rv41.apps.googleusercontent.com',
+    iosBundleId: 'com.rodrickvy.celebrated',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBE38MC2HyUpgYpLMQ2SH7YFOfd5pEyMZ8',
-    appId: '1:144465290198:ios:ed359266ad0e6b8cd57a77',
-    messagingSenderId: '144465290198',
-    projectId: 'letstalk-1',
-    databaseURL: 'https://letstalk-1.firebaseio.com',
-    storageBucket: 'letstalk-1.appspot.com',
-    iosClientId: '144465290198-9rptca93k44cm9umnthj0m4pi73jj6ub.apps.googleusercontent.com',
-    iosBundleId: 'com.rudo.bereminder',
+    apiKey: 'AIzaSyCPuWkw9Dlig7yBZAkqkELaXue2FQmQaag',
+    appId: '1:690288905141:ios:233e10f01a6c46ee0be7fc',
+    messagingSenderId: '690288905141',
+    projectId: 'celebrated-app',
+    storageBucket: 'celebrated-app.appspot.com',
+    iosClientId: '690288905141-4e2rfca8pqo9dt18hlb5bb130nbn8nsr.apps.googleusercontent.com',
+    iosBundleId: 'com.example.celebrated',
   );
 }
