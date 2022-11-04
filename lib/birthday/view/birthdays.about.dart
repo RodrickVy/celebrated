@@ -1,10 +1,10 @@
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/domain/view/app.button.dart';
-import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/models/app.notification.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/models/app.notification.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

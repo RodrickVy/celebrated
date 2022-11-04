@@ -1,7 +1,7 @@
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
-import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

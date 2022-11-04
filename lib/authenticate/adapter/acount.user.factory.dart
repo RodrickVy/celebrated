@@ -1,8 +1,8 @@
-import 'package:bremind/authenticate/models/account.dart';
-import 'package:bremind/authenticate/models/content_interaction.dart';
-import 'package:bremind/authenticate/models/auth.with.dart';
-import 'package:bremind/domain/model/imodel.factory.dart';
-import 'package:bremind/util/enum.dart';
+import 'package:celebrated/authenticate/models/account.dart';
+import 'package:celebrated/authenticate/models/content_interaction.dart';
+import 'package:celebrated/authenticate/models/auth.with.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
+import 'package:celebrated/util/enum.dart';
 
 class AccountUserFactory extends IModelFactory<AccountUser> {
   @override

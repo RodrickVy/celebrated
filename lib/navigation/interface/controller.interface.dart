@@ -1,4 +1,4 @@
-import 'package:bremind/navigation/model/route.dart';
+import 'package:celebrated/navigation/model/route.dart';
 import 'package:flutter/material.dart';
 
 abstract class INavController {

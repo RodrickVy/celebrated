@@ -1,6 +1,6 @@
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/navigation/model/route.dart';
-import 'package:bremind/navigation/interface/controller.interface.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/navigation/model/route.dart';
+import 'package:celebrated/navigation/interface/controller.interface.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

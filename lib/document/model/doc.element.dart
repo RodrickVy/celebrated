@@ -1,5 +1,5 @@
-import 'package:bremind/domain/model/content.dart';
-import 'package:bremind/document/model/doc.element.type.dart';
+import 'package:celebrated/domain/model/content.dart';
+import 'package:celebrated/document/model/doc.element.type.dart';
 
 class DocElement extends Content {
   final DocElType type;

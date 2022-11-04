@@ -1,9 +1,9 @@
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
-import 'package:bremind/birthday/data/static.data.dart';
-import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/util/adaptive.dart';
-import 'package:bremind/util/date.dart';
+import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/birthday/data/static.data.dart';
+import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/util/adaptive.dart';
+import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

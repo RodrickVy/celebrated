@@ -1,6 +1,6 @@
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/domain/model/toggle.option.dart';
-import 'package:bremind/util/list.extention.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/domain/model/toggle.option.dart';
+import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,15 +1,15 @@
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/birthday/view/birthday.date.name.dart';
-import 'package:bremind/domain/model/drop.down.action.dart';
-import 'package:bremind/domain/view/app.button.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/domain/view/app.text.field.dart';
-import 'package:bremind/domain/view/drop.down.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/feedback.spinner.dart';
-import 'package:bremind/support/view/notification.view.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/birthday/view/birthday.date.name.dart';
+import 'package:celebrated/domain/model/drop.down.action.dart';
+import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/domain/view/drop.down.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/controller/spin.keys.dart';
+import 'package:celebrated/support/view/feedback.spinner.dart';
+import 'package:celebrated/support/view/notification.view.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

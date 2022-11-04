@@ -1,5 +1,5 @@
-import 'package:bremind/authenticate/models/user.content.interaction.type.dart';
-import 'package:bremind/util/enum.dart';
+import 'package:celebrated/authenticate/models/user.content.interaction.type.dart';
+import 'package:celebrated/util/enum.dart';
 import 'package:flutter/foundation.dart';
 
 class UserContentInteraction {

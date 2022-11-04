@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:bremind/domain/view/app.text.field.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

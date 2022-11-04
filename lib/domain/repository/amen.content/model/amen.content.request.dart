@@ -1,6 +1,6 @@
-import 'package:bremind/domain/model/imodel.factory.dart';
-import 'package:bremind/domain/repository/amen.content/model/amen.content.actions.dart';
-import 'package:bremind/domain/repository/amen.content/model/content.model.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
+import 'package:celebrated/domain/repository/amen.content/model/amen.content.actions.dart';
+import 'package:celebrated/domain/repository/amen.content/model/content.model.dart';
 
 
 class  AmenContentRequest<T extends AfroContent,F extends IModelFactory> {

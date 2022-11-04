@@ -1,6 +1,6 @@
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 final Rx<int?> _value = Rx<int?>(null);

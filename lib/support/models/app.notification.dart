@@ -1,6 +1,6 @@
-import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/support/models/app.error.code.dart';
-import 'package:bremind/support/models/notification.type.dart';
+import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/support/models/app.error.code.dart';
+import 'package:celebrated/support/models/notification.type.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

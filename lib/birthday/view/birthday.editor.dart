@@ -1,13 +1,13 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:bremind/birthday/view/birthday.date.name.dart';
-import 'package:bremind/domain/view/app.button.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/domain/view/app.text.field.dart';
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
-import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/birthday/view/birthday.notify.when.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/birthday/view/birthday.date.name.dart';
+import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/birthday/view/birthday.notify.when.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';

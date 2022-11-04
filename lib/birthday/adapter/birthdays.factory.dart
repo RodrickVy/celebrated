@@ -1,5 +1,5 @@
-import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/domain/model/imodel.factory.dart';
+import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
 
 class BirthdayFactory extends IModelFactory<ABirthday> {
   @override

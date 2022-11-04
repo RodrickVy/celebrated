@@ -1,4 +1,4 @@
-import 'package:bremind/home/model/feature.dart';
+import 'package:celebrated/home/model/feature.dart';
 
 class FeatureCategory {
   final String name;

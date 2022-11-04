@@ -1,8 +1,8 @@
-import 'package:bremind/appIntro/interface/intro.controller.interface.dart';
-import 'package:bremind/appIntro/models/intro.item.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
+import 'package:celebrated/appIntro/interface/intro.controller.interface.dart';
+import 'package:celebrated/appIntro/models/intro.item.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:get/get.dart';
 
 /// manages the app intro slideshow adhering to the view's interface [IAppIntroController]

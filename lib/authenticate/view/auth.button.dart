@@ -1,10 +1,10 @@
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/feedback.spinner.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/controller/spin.keys.dart';
+import 'package:celebrated/support/view/feedback.spinner.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
 
-import 'package:bremind/authenticate/models/auth.with.dart';
-import 'package:bremind/util/list.extention.dart';
+import 'package:celebrated/authenticate/models/auth.with.dart';
+import 'package:celebrated/util/list.extention.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

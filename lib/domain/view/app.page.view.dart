@@ -1,10 +1,10 @@
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/navigation/views/app.bar.dart';
-import 'package:bremind/navigation/views/app.bottom.nav.bar.dart';
-import 'package:bremind/navigation/views/app.drawer.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/navigation/views/app.bar.dart';
+import 'package:celebrated/navigation/views/app.bottom.nav.bar.dart';
+import 'package:celebrated/navigation/views/app.drawer.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

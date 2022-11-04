@@ -1,4 +1,4 @@
-import 'package:bremind/document/model/doc.element.dart';
+import 'package:celebrated/document/model/doc.element.dart';
 
 class ADoc {
   final String name;

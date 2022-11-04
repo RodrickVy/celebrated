@@ -1,8 +1,8 @@
-import 'package:bremind/domain/view/app.button.dart';
-import 'package:bremind/home/controller/home.controller.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/models/app.notification.dart';
-import 'package:bremind/support/models/dev.progress.dart';
+import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/home/controller/home.controller.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/models/app.notification.dart';
+import 'package:celebrated/support/models/dev.progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

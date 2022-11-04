@@ -1,4 +1,4 @@
-import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
+import 'package:celebrated/domain/repository/amen.content/model/query.methods.dart';
 import 'package:flutter/foundation.dart';
 
 class ContentQuery {

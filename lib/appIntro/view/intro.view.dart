@@ -1,6 +1,6 @@
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/appIntro/interface/intro.controller.interface.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/appIntro/interface/intro.controller.interface.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';

@@ -1,14 +1,14 @@
-import 'package:bremind/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
 
-import 'package:bremind/authenticate/view/avatar.view.dart';
-import 'package:bremind/authenticate/view/signout.view.dart';
-import 'package:bremind/birthday/view/birthday.date.name.dart';
-import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/domain/view/editable.text.field.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/util/adaptive.dart';
-import 'package:bremind/util/date.dart';
+import 'package:celebrated/authenticate/view/avatar.view.dart';
+import 'package:celebrated/authenticate/view/signout.view.dart';
+import 'package:celebrated/birthday/view/birthday.date.name.dart';
+import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/editable.text.field.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/util/adaptive.dart';
+import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

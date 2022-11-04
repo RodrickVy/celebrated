@@ -1,28 +1,28 @@
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/appIntro/view/intro.view.dart';
-import 'package:bremind/authenticate/view/avatar.selector.dart';
-import 'package:bremind/app.bindings.dart';
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/app.theme.dart';
-import 'package:bremind/authenticate/view/authentication.view.dart';
-import 'package:bremind/birthday/view/birthday.adds.dart';
-import 'package:bremind/birthday/view/birthday.leader.board.dart';
-import 'package:bremind/birthday/view/birthday.page.dart';
-import 'package:bremind/birthday/view/birthdays.list.dart';
-import 'package:bremind/birthday/view/board.view.only.dart';
-import 'package:bremind/document/view/document.viewer.dart';
-import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/firebase_options.dart';
-import 'package:bremind/home/view/home.page.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/controller/spin.keys.dart';
-import 'package:bremind/support/view/feedback.spinner.dart';
-import 'package:bremind/support/view/not.found.dart';
-import 'package:bremind/support/view/notification.snackbar.dart';
-import 'package:bremind/support/view/support.dart';
-import 'package:bremind/util/list.extention.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/appIntro/view/intro.view.dart';
+import 'package:celebrated/authenticate/view/avatar.selector.dart';
+import 'package:celebrated/app.bindings.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/app.theme.dart';
+import 'package:celebrated/authenticate/view/authentication.view.dart';
+import 'package:celebrated/birthday/view/birthday.adds.dart';
+import 'package:celebrated/birthday/view/birthday.leader.board.dart';
+import 'package:celebrated/birthday/view/birthday.page.dart';
+import 'package:celebrated/birthday/view/birthdays.list.dart';
+import 'package:celebrated/birthday/view/board.view.only.dart';
+import 'package:celebrated/document/view/document.viewer.dart';
+import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/firebase_options.dart';
+import 'package:celebrated/home/view/home.page.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/controller/spin.keys.dart';
+import 'package:celebrated/support/view/feedback.spinner.dart';
+import 'package:celebrated/support/view/not.found.dart';
+import 'package:celebrated/support/view/notification.snackbar.dart';
+import 'package:celebrated/support/view/support.dart';
+import 'package:celebrated/util/list.extention.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,10 +49,10 @@ class App extends StatelessWidget {
             page: () => HomePage(
                   key: const Key(AppRoutes.home),
                 )),
-        GetPage(
-            name: AppRoutes.avatarEditor,
-            page: () =>
-                AvatarEditorView(key: const Key(AppRoutes.avatarEditor))),
+        // GetPage(
+        //     name: AppRoutes.avatarEditor,
+        //     page: () =>
+        //         AvatarEditorView(key: const Key(AppRoutes.avatarEditor))),
         GetPage(
             name: AppRoutes.birthday,
             page: () => BirthdayPageView(key: const Key(AppRoutes.birthday))),

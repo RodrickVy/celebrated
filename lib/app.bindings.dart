@@ -1,9 +1,9 @@
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/birthday/controller/birthdays.controller.dart';
-import 'package:bremind/document/controller/document.view.controller.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/support/controller/support.controller.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/document/controller/document.view.controller.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/support/controller/support.controller.dart';
 import 'package:get/get.dart';
 
 

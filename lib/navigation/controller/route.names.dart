@@ -1,7 +1,7 @@
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/authenticate/models/auth.pages.dart';
-import 'package:bremind/domain/model/enum.dart';
-import 'package:bremind/navigation/model/route.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/models/auth.pages.dart';
+import 'package:celebrated/domain/model/enum.dart';
+import 'package:celebrated/navigation/model/route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

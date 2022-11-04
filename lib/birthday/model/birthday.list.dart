@@ -1,7 +1,7 @@
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 

@@ -1,5 +1,5 @@
-import 'package:bremind/support/models/app.error.code.dart';
-import 'package:bremind/support/models/app.notification.dart';
+import 'package:celebrated/support/models/app.error.code.dart';
+import 'package:celebrated/support/models/app.notification.dart';
 import 'package:get/get.dart';
 
 class Validator {

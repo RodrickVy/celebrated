@@ -1,6 +1,6 @@
-import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/domain/repository/amen.content/model/content.permision.dart';
-import 'package:bremind/domain/repository/amen.content/model/publication.dart';
+import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/domain/repository/amen.content/model/content.permision.dart';
+import 'package:celebrated/domain/repository/amen.content/model/publication.dart';
 import 'content.type.dart';
 
 abstract class AfroContent implements IModel{

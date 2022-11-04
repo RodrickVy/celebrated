@@ -1,5 +1,5 @@
-import 'package:bremind/domain/model/content.dart';
-import 'package:bremind/home/model/feature.category.dart';
+import 'package:celebrated/domain/model/content.dart';
+import 'package:celebrated/home/model/feature.category.dart';
 // todo write a tests for this class
 class DevProgress extends Content {
   final String title;

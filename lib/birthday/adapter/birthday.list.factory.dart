@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_for_elements_to_map_from iterable
 
-import 'package:bremind/birthday/adapter/birthdays.factory.dart';
-import 'package:bremind/birthday/model/birthday.dart';
-import 'package:bremind/birthday/model/birthday.list.dart';
-import 'package:bremind/domain/model/imodel.factory.dart';
+import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
+import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/birthday/model/birthday.list.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
 import 'package:get/get.dart';
 
 class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {

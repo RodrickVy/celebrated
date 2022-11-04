@@ -1,4 +1,4 @@
-import 'package:bremind/birthday/model/birthday.list.dart';
+import 'package:celebrated/birthday/model/birthday.list.dart';
 import 'package:get/get.dart';
 
 mixin BoardsViewController   {

@@ -1,12 +1,12 @@
 
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/document/controller/document.view.controller.dart';
-import 'package:bremind/domain/view/app.button.dart';
-import 'package:bremind/domain/view/app.page.view.dart';
-import 'package:bremind/support/controller/support.controller.dart';
-import 'package:bremind/home/model/feature.dart';
-import 'package:bremind/home/model/feature.progress.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/document/controller/document.view.controller.dart';
+import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/support/controller/support.controller.dart';
+import 'package:celebrated/home/model/feature.dart';
+import 'package:celebrated/home/model/feature.progress.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 class SupportView extends AppPageView {
   SupportView({Key? key}) : super(key: key);

@@ -1,10 +1,10 @@
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/appIntro/controller/intro.controller.dart';
-import 'package:bremind/authenticate/controller/auth.controller.dart';
-import 'package:bremind/domain/view/app.state.view.dart';
-import 'package:bremind/navigation/controller/nav.controller.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

@@ -1,5 +1,5 @@
-import 'package:bremind/domain/model/enum.dart';
-import 'package:bremind/domain/repository/amen.content/model/permission.dart';
+import 'package:celebrated/domain/model/enum.dart';
+import 'package:celebrated/domain/repository/amen.content/model/permission.dart';
 
 class ContentPermissions {
   final PermissionType freeUsers;

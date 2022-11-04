@@ -1,5 +1,5 @@
 
-import 'package:bremind/home/model/feature.progress.dart';
+import 'package:celebrated/home/model/feature.progress.dart';
 import 'package:flutter/material.dart';
 class AppFeature {
   final String name;

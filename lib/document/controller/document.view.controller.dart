@@ -1,7 +1,7 @@
-import 'package:bremind/document/model/doc.element.dart';
-import 'package:bremind/document/model/doc.element.type.dart';
-import 'package:bremind/document/model/document.dart';
-import 'package:bremind/navigation/controller/route.names.dart';
+import 'package:celebrated/document/model/doc.element.dart';
+import 'package:celebrated/document/model/doc.element.type.dart';
+import 'package:celebrated/document/model/document.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:get/get.dart';
 
 class DocumentsController extends GetxController {

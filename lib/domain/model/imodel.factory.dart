@@ -1,6 +1,6 @@
 
 
-import 'package:bremind/domain/model/imodel.dart';
+import 'package:celebrated/domain/model/imodel.dart';
 
 abstract class IModelFactory<M extends IModel> {
   M fromJson(Map<String, dynamic> json);

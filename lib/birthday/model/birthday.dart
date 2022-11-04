@@ -1,6 +1,6 @@
-import 'package:bremind/birthday/adapter/birthdays.factory.dart';
-import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/util/date.dart';
+import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
+import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/util/date.dart';
 
 class ABirthday extends IModel {
   final String name;

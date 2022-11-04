@@ -1,8 +1,8 @@
-import 'package:bremind/home/model/feature.category.dart';
-import 'package:bremind/home/model/feature.dart';
-import 'package:bremind/home/model/feature.progress.dart';
-import 'package:bremind/home/model/target.group.dart';
-import 'package:bremind/home/model/value.dart';
+import 'package:celebrated/home/model/feature.category.dart';
+import 'package:celebrated/home/model/feature.dart';
+import 'package:celebrated/home/model/feature.progress.dart';
+import 'package:celebrated/home/model/target.group.dart';
+import 'package:celebrated/home/model/value.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

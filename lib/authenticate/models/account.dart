@@ -1,8 +1,8 @@
-import 'package:bremind/authenticate/models/auth.user.dart';
-import 'package:bremind/authenticate/models/content_interaction.dart';
-import 'package:bremind/authenticate/models/user.content.interaction.type.dart';
-import 'package:bremind/authenticate/models/auth.with.dart';
-import 'package:bremind/domain/model/imodel.dart';
+import 'package:celebrated/authenticate/models/auth.user.dart';
+import 'package:celebrated/authenticate/models/content_interaction.dart';
+import 'package:celebrated/authenticate/models/user.content.interaction.type.dart';
+import 'package:celebrated/authenticate/models/auth.with.dart';
+import 'package:celebrated/domain/model/imodel.dart';
 
 class AccountUser implements IModel {
   final String photoUrl;

@@ -1,4 +1,4 @@
-import 'package:bremind/support/models/app.error.code.dart';
+import 'package:celebrated/support/models/app.error.code.dart';
 
 class ErrorReport {
   final ResponseCode code;

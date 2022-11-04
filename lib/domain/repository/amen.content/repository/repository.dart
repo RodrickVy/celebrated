@@ -1,8 +1,8 @@
-import 'package:bremind/domain/model/imodel.dart';
-import 'package:bremind/domain/model/imodel.factory.dart';
-import 'package:bremind/domain/repository/amen.content/interface/content.repository.interface.dart';
-import 'package:bremind/domain/repository/amen.content/model/query.dart';
-import 'package:bremind/domain/repository/amen.content/model/query.methods.dart';
+import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
+import 'package:celebrated/domain/repository/amen.content/interface/content.repository.interface.dart';
+import 'package:celebrated/domain/repository/amen.content/model/query.dart';
+import 'package:celebrated/domain/repository/amen.content/model/query.methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';

@@ -1,7 +1,7 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:bremind/app.swatch.dart';
-import 'package:bremind/navigation/interface/controller.interface.dart';
-import 'package:bremind/util/list.extention.dart';
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/navigation/interface/controller.interface.dart';
+import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,4 +1,4 @@
-import 'package:bremind/domain/repository/amen.content/model/query.dart';
+import 'package:celebrated/domain/repository/amen.content/model/query.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class IContentRepositoryInterface<T> {

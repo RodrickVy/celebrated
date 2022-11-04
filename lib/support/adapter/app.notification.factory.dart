@@ -1,7 +1,7 @@
-import 'package:bremind/domain/model/imodel.factory.dart';
-import 'package:bremind/support/models/app.error.code.dart';
-import 'package:bremind/support/models/app.notification.dart';
-import 'package:bremind/support/models/notification.type.dart';
+import 'package:celebrated/domain/model/imodel.factory.dart';
+import 'package:celebrated/support/models/app.error.code.dart';
+import 'package:celebrated/support/models/app.notification.dart';
+import 'package:celebrated/support/models/notification.type.dart';
 
 class AppNotificationFactory extends IModelFactory<AppNotification> {
 

@@ -1,7 +1,7 @@
-import 'package:bremind/app.theme.dart';
-import 'package:bremind/support/controller/feedback.controller.dart';
-import 'package:bremind/support/models/notification.type.dart';
-import 'package:bremind/util/adaptive.dart';
+import 'package:celebrated/app.theme.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/models/notification.type.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
