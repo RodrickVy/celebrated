@@ -45,7 +45,7 @@ class NotificationService {
     AndroidNotificationDetails(
       'channel ID',
       'channel name',
-      'channel description',
+      // 'channel description',
       playSound: true,
       priority: Priority.high,
       importance: Importance.high,
