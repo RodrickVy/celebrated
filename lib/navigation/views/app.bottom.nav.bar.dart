@@ -1,18 +1,19 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:bremind/app.swatch.dart';
 import 'package:bremind/navigation/interface/controller.interface.dart';
+import 'package:bremind/util/adaptive.dart';
 import 'package:bremind/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AppBottomNavBar<T extends INavController> extends StatelessWidget {
+class AppBottomNavBar<T extends INavController> extends StatelessWidget with AdaptView {
   final T controller = Get.find<T>();
 
   AppBottomNavBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavyBar(
+    final BottomNavyBar bar = BottomNavyBar(
       selectedIndex: controller.currentItemIndex,
       showElevation: true,
       itemCornerRadius: 24,
@@ -36,6 +37,12 @@ class AppBottomNavBar<T extends INavController> extends StatelessWidget {
         }).toList()
       ],
     );
+    return adapt(
+      phone: bar,
+      tablet:tablet(small: bar,large: const SizedBox()) ,
+      desktop: const SizedBox()
+    );
+  
     // return BottomNavigationBar(
     //     currentIndex: controller.currentItemIndex,
     //     onTap: (int? index) {
