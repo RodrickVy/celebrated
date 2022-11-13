@@ -7,11 +7,15 @@ import 'package:celebrated/domain/view/app.text.field.dart';
 import 'package:celebrated/domain/view/drop.down.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
+import 'package:celebrated/support/models/app.notification.dart';
+import 'package:celebrated/support/models/notification.type.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 
 import 'auth.button.dart';
 
@@ -21,12 +25,14 @@ class SignUpFormView extends AppStateView<AuthController> {
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
-  final TextEditingController _birthdateController = TextEditingController(
-      text: DateTime.now().toString());
+  final TextEditingController _birthdateController = TextEditingController(text: DateTime.now().toString());
+  final PhoneController phoneController = PhoneController(null);
+  final Rx<String> phoneNumber = "".obs;
+  final Rx<String> orgSelected = typeOfOrgs.last.obs;
 
   SignUpFormView({Key? key}) : super(key: key);
 
-  final List<String> typeOfOrgs =  ["select","School","Class","Church","Business","Company","Other"];
+  static final List<String> typeOfOrgs = ["Individual", "School", "Class", "Church", "Business", "Company", "Other"];
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -35,59 +41,12 @@ class SignUpFormView extends AppStateView<AuthController> {
         width: 320,
         child: ListView(
           children: [
-            SizedBox(height: 50,),
-            // Center(
-            //   child: Container(
-            //     margin: const EdgeInsets.all(10.0),
-            //     color: Colors.yellow,
-            //     height: 100,
-            //     child: ClipRect(
-            //       child: Banner(
-            //         message: "Offer",
-            //         location: BannerLocation.topEnd,
-            //         color: Colors.red,
-            //         child: Container(
-            //           color: Colors.yellow,
-            //           height: 100,
-            //           child: Center(
-            //             child: Text("Free Offer, for our pre-launch users!"),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // PricingCards(
-            //   pricingCards: [
-            //     PricingCard(
-            //       title: 'Monthly',
-            //       price: '\$ 6.99',
-            //       subPriceText: '\/mo',
-            //       billedText: 'Billed monthly',
-            //       onPress: () {
-            //         // make your business
-            //       },
-            //     ),
-            //     PricingCard(
-            //       title: 'Monthly',
-            //       price: '\$ 0',
-            //       subPriceText: '\/mo',
-            //       billedText: 'Free',
-            //       mainPricing: true,
-            //       mainPricingHighlightText: 'Pre-launch Offer',
-            //       onPress: () {
-            //         // make your business
-            //       },
-            //     )
-            //   ],
-            // ),
+            const SizedBox(
+              height: 50,
+            ),
             const SizedBox(
               height: 10,
             ),
-            // ProviderButtons(
-            //   key: UniqueKey(),
-            //
-            // ),
             FeedbackSpinner(
               spinnerKey: FeedbackSpinKeys.signUpForm,
               child: Padding(
@@ -97,10 +56,53 @@ class SignUpFormView extends AppStateView<AuthController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-
                         BirthdayDateForm(
-                            showDate: false,
+                            showDate: true,
+                            birthdateController: _birthdateController,
                             nameTextController: nameTextController),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        PhoneFormField(
+                          key: const Key('phone-field'),
+                          controller: null,
+                          // controller & initialValue value
+                          initialValue: null,
+                          // can't be supplied simultaneously
+                          shouldFormat: true,
+                          // default
+                          defaultCountry: IsoCode.CA,
+                          // default
+                          decoration:AppTextField.defaultDecoration.copyWith(
+                            hintText: "Phone number",
+                            labelText: "Phone number"
+                          ),
+                          validator: PhoneValidator.validMobile(),
+                          // default PhoneValidator.valid()
+                          isCountryChipPersistent: false,
+                          // default
+                          isCountrySelectionEnabled: true,
+                          // default
+                          countrySelectorNavigator: const CountrySelectorNavigator.bottomSheet(),
+                          showFlagInInput: true,
+                          // default
+                          flagSize: 16,
+                          // default
+                          autofillHints: const [AutofillHints.telephoneNumber],
+                          // default to null
+                          enabled: true,
+                          // default
+                          autofocus: false,
+                          // default
+                          onSaved: (PhoneNumber? p) {
+                            phoneNumber(p?.international);
+                          },
+                          // default null
+                          onChanged: (PhoneNumber? p) {
+                            phoneNumber(p?.international);
+                          }, // default null
+                        ),
+
                         const SizedBox(
                           height: 10,
                         ),
@@ -126,12 +128,33 @@ class SignUpFormView extends AppStateView<AuthController> {
                           keyboardType: TextInputType.visiblePassword,
                           autoFillHints: const [AutofillHints.password],
                         ),
-                        const SizedBox(height: 10,),
-                        Wrap(
-                          children: [
-                            Text("Type of organization(optional): "),
-                            Container(constraints:BoxConstraints(maxWidth: 400),child: ButtonDropDown(actions: typeOfOrgs.map((e) => DropDownAction(e, Icons.access_time, () { })).toList(),)),
-                          ],
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Obx(
+                          () => Wrap(
+                            spacing: 5,
+                            runSpacing: 5,
+                            children: [
+                              const  Padding(
+                                padding:  EdgeInsets.only(bottom: 8.0),
+                                child:  Text("How are you using , Celebrated? "),
+                              ),
+                              ...typeOfOrgs.map((e) => ChoiceChip(
+                                    label: Text(e),
+                                    selectedColor: Theme.of(ctx).colorScheme.primary.withAlpha(34),
+                                    backgroundColor: Colors.white,
+                                    elevation: 0,
+                                    avatar: orgSelected.value == e ? const Icon(Icons.check) : const SizedBox(),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                                    side: BorderSide(color: Colors.black12, width: 0.6),
+                                    onSelected: (bool? selected) {
+                                      orgSelected(selected ?? false ? e : typeOfOrgs.first);
+                                    },
+                                    selected: orgSelected.value == e,
+                                  ))
+                            ],
+                          ),
                         ),
                         // AppToggleButton(
                         //   multiselect: true,
@@ -158,7 +181,7 @@ class SignUpFormView extends AppStateView<AuthController> {
 
                         const NotificatonsView(),
                         const SizedBox(
-                          height: 10 / 2,
+                          height: 10,
                         ),
                         AppButton(
                           key: UniqueKey(),
@@ -166,16 +189,23 @@ class SignUpFormView extends AppStateView<AuthController> {
                             "Sign Up",
                             style: GoogleFonts.poppins(fontSize: 16),
                           ),
+
                           onPressed: () async {
-                            FeedbackService.spinnerUpdateState(
-                                key: FeedbackSpinKeys.signUpForm, isOn: true);
+                            FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: true);
+                            if (phoneNumber.isEmpty) {
+                              FeedbackService.announce(
+                                  notification: AppNotification(
+                                      title: 'Sorry phone number must be provided',
+                                      appWide: false,
+                                      type: NotificationType.error));
+                            }
                             await controller.signUpWithEmail(
                                 name: nameTextController.value.text,
                                 email: emailTextController.value.text,
-                                birthdate:  DateTime.parse(_birthdateController.value.text),
-                                password: passwordTextController.value.text);
-                            FeedbackService.spinnerUpdateState(
-                                key: FeedbackSpinKeys.signUpForm, isOn: false);
+                                phone: phoneNumber.value,
+                                birthdate: DateTime.parse(_birthdateController.value.text),
+                                password: passwordTextController.value.text, accountType: orgSelected.value);
+                            FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: false);
                           },
                         ),
                       ]),

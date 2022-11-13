@@ -48,7 +48,7 @@ class AccountUserFactory extends IModelFactory<AccountUser> {
       interactions: List.from(json['interactions'])
           .map((e) => UserContentInteraction.fromMap(e))
           .toList(),
-      settings: json["settings"]??{},
+      settings: Map.from(json["settings"])??{},
       birthdate: DateTime.fromMillisecondsSinceEpoch(json['birthdate'] ??json['timeCreated']),
     );
   }

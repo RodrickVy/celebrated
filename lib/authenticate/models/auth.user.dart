@@ -26,13 +26,15 @@ class AuthUser {
       required this.password,
       required this.avatar});
 
+ bool get hasPhoneNumber => phoneNumber != null;
+
   static empty() {
     return AuthUser(
         userName: "",
         email: "",
         authWith: "",
         password: "",
-        avatar: "",
+        avatar: "assets/defualt_icons/avatar_outline.png",
         uid: '');
   }
 
@@ -44,6 +46,9 @@ class AuthUser {
   bool hasAvatar(){
     return  !isEmpty() && avatar.length > 4;
   }
+
+
+  String get userInitials => userName.split(" ").map((e) => e.isNotEmpty?e[0].toUpperCase():e).join('');
 
   Map<String, dynamic> toMap() {
     return {

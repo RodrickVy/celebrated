@@ -417,7 +417,7 @@ class BirthdaysOpenEditor extends AppPageView {
                 textAlign: TextAlign.center,
                 text: TextSpan(style: adapter.textTheme.headline6, children: [
                   const TextSpan(
-                    text: "you have been invited to  ",
+                    text: "You have been invited to  ",
                   ),
                   TextSpan(
                     text: board.name,

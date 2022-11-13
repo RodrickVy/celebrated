@@ -91,7 +91,7 @@ class ABirthday extends IModel {
   }
 
   DateTime get dateWithThisYear {
-    return DateTime(DateTime.now().year, date.month, date.day, 12, 59);
+    return DateTime(DateTime.now().year, date.month, date.day, 0, 0);
   }
 
   int age() {

@@ -38,7 +38,8 @@ class BirthdayDateForm extends StatelessWidget {
                         borderRadius: BorderRadius.circular(0),
                         borderSide: const BorderSide(width: 0.5))),
                 controller: nameTextController,
-                hint: 'organization name',
+                hint: 'name',
+                autoFillHints: [AutofillHints.name],
                 key: UniqueKey(),
               ),
             ),
@@ -66,6 +67,8 @@ class BirthdayDateForm extends StatelessWidget {
               style: const TextStyle(fontSize: 12),
               controller: birthdateController,
               decoration: InputDecoration(
+                labelText: "Birthddate",
+                  hintText: 'click to change',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
                       borderSide: const BorderSide(width: 0.5))),

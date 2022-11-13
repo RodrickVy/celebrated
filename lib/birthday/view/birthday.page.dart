@@ -12,7 +12,6 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
-import 'package:share_plus/share_plus.dart';
 
 
 
@@ -114,7 +113,7 @@ class BirthdayPageView extends AppPageView {
                           FeedbackService.clearErrorNotification();
                           FeedbackService.successAlertSnack('Link Copied!');
                         } else {
-                          await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
+                          //await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
                           FeedbackService.clearErrorNotification();
                         }
                       },

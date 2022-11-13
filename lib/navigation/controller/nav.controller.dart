@@ -17,6 +17,8 @@ class NavController extends GetxController implements INavController {
 
   final RxInt currentBottomBarIndex = RxInt(0);
 
+  final RxBool _drawerExpanded = false.obs;
+
   @override
   List<AppPage> get items => AppRoutes.items;
 
@@ -74,16 +76,11 @@ class NavController extends GetxController implements INavController {
   }
 
   String paramsRouteSectionFromParams(Map<String, String?> parameters) {
-    List<String> params = parameters.keys
-        .where((key) =>
-    parameters[key] != null && parameters[key]!.isNotEmpty)
-        .map((key) {
+    List<String> params =
+        parameters.keys.where((key) => parameters[key] != null && parameters[key]!.isNotEmpty).map((key) {
       return "$key=${parameters[key]}";
     }).toList();
     if (params.isNotEmpty) {
-
-
-
       if (params.length == 1) {
         return "?${params.first}";
       } else {
@@ -101,4 +98,12 @@ class NavController extends GetxController implements INavController {
   void back() {
     Get.back();
   }
+
+  @override
+  void toggleDrawerExpansion() {
+    _drawerExpanded.toggle();
+  }
+
+  @override
+  bool get drawerExpanded => _drawerExpanded.value;
 }

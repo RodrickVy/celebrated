@@ -142,6 +142,7 @@ class HomeController extends GetxController {
   ];
   static const String homeBanner = "assets/logos/banner.png";
   static const List<TargetGroup> targets = [
+    TargetGroup(name: 'individuals', color: Colors.lightGreen, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(name: 'families', color: Colors.green, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(name: 'schools', color: Colors.orange, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(
@@ -150,7 +151,7 @@ class HomeController extends GetxController {
     // TargetGroup(name: 'organizations', color: Colors.purple, description: '', painPoints: [], icon:Icons.checklist_rtl)
   ];
 
-  static const String googlePlayStoreCTA = 'Keep track & remember birthdays across your organization.';
+  static const String googlePlayStoreCTA = 'Keep track & remember birthdays of those that matter';
   static const String playStoreUrl = "https://play.google.com/apps/test/com.rudo.bereminder/1";
   static const String playStoreBtnImage = "assets/logos/play_button.png";
 

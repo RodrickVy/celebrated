@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// used to filer birthdays
 class ActionDropDown extends StatelessWidget {
-   final DropDownAction _empty =DropDownAction("    ",Icons.edit, (){});
+   final DropDownAction _empty =DropDownAction("    ",Icons.circle, (){});
   late List<DropDownAction> _actions;
 
 
@@ -23,7 +23,7 @@ class ActionDropDown extends StatelessWidget {
       width: 100,
       child: DropdownButton<DropDownAction>(
         value: _empty,
-        icon: Row(mainAxisAlignment: MainAxisAlignment.end,children: [const Icon(Icons.more_vert)],),
+        icon: Row(mainAxisAlignment: MainAxisAlignment.end,children: const [Icon(Icons.more_vert)],),
         elevation: 16,
         borderRadius: BorderRadius.circular(0),
 

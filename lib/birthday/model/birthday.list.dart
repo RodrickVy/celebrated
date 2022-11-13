@@ -50,28 +50,33 @@ class BirthdayBoard extends IModel {
   }
 
   List<ABirthday> get bds {
-    birthdays.values.toList().sort((a, b) {
-      int aDifferenceToCurrentDate = DateTime.now()
-          .difference(DateTime(DateTime.now().year, a.date.month, a.date.day))
-          .inMicroseconds
-          .abs();
-      int bDifferenceToCurrentDate = DateTime.now()
-          .difference(DateTime(DateTime.now().year, b.date.month, b.date.day))
-          .inMicroseconds
-          .abs();
-      if (b.isPast) {
-        return -1;
-      }
-      if (a.isPast) {
-        return 1;
-      }
-      if (aDifferenceToCurrentDate < bDifferenceToCurrentDate) {
-        return -1;
-      } else {
-        return 1;
-      }
+    List<ABirthday> _birthdays = birthdaysList;
+    _birthdays.sort((a, b) {
+
+      print("${a.dateWithThisYear.toIso8601String()} : ${b.dateWithThisYear.toIso8601String()}");
+     return (DateTime.now().millisecondsSinceEpoch - a.dateWithThisYear.millisecondsSinceEpoch).compareTo(DateTime.now().millisecondsSinceEpoch - b.dateWithThisYear.millisecondsSinceEpoch);
+
+      // int aDifferenceToCurrentDate = DateTime.now()
+      //     .difference(DateTime(DateTime.now().year, a.date.month, a.date.day))
+      //     .inMicroseconds
+      //     .abs();
+      // int bDifferenceToCurrentDate = DateTime.now()
+      //     .difference(DateTime(DateTime.now().year, b.date.month, b.date.day))
+      //     .inMicroseconds
+      //     .abs();
+      // if (b.isPast) {
+      //   return -1;
+      // }
+      // if (a.isPast) {
+      //   return 1;
+      // }
+      // if (aDifferenceToCurrentDate < bDifferenceToCurrentDate) {
+      //   return -1;
+      // } else {
+      //   return 1;
+      // }
     });
-    return birthdays.values.toList();
+    return _birthdays;
   }
 
   static BirthdayBoard empty() {
@@ -120,7 +125,7 @@ class BirthdayBoard extends IModel {
   String generateViewId() =>
       "${AuthController.instance.user.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
 
-  String generateAddingId() =>
+  String generateInviteId() =>
       "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";
 
   String  viewUrl ([String? viewingId])=>

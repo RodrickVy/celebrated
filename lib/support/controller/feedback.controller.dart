@@ -177,11 +177,12 @@ class FeedbackService extends GetxController
             )));
   }
 
-  static void successAlertSnack(String title,[time = 800]) {
+  static void successAlertSnack(String title,[time = 1000]) {
     FeedbackService.announce(
         notification: AppNotification.empty().copyWith(
             type: NotificationType.success,
             title: title,
+            appWide: true,
             aliveFor:  Duration(milliseconds: time)));
   }
 

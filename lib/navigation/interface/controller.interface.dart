@@ -7,7 +7,8 @@ abstract class INavController {
   List<AppPage> get items;
 
   int get currentItemIndex;
-  
+  void toggleDrawerExpansion();
+  bool get drawerExpanded;
   to(String route);
 
   toAppPageIndex(int index);

@@ -43,33 +43,24 @@ class NotificationSnackBar extends StatelessWidget {
                 color: bgColor,
               ),
               padding: const EdgeInsets.all(12),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                direction: Axis.horizontal,
-                alignment: WrapAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+               mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FeedbackService.appNotification.value!.icon??icon,
-                        if (FeedbackService
-                            .appNotification.value!.canDismiss)
-                          IconButton(
-                              onPressed: () {
-                                FeedbackService.clearErrorNotification();
-                              },
-                              icon: const Icon(Icons.clear))
-                      ],
-                    ),
-                  ),
-                  Padding(
+                  if (FeedbackService
+                      .appNotification.value!.canDismiss)
+                    IconButton(
+                        onPressed: () {
+                          FeedbackService.clearErrorNotification();
+                        },
+                        icon: const Icon(Icons.clear)),
+                  FeedbackService.appNotification.value!.icon??icon,  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child:  Text(
                       FeedbackService.appNotification.value!.title,
                     ),
                   ),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FeedbackService.appNotification.value!.child ??

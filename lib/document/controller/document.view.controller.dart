@@ -36,7 +36,7 @@ class DocumentsController extends GetxController {
       DocElement(DocElType.bulletPoint,
           '''Third-party service: refers to advertisers, contest sponsors, promotional and marketing partners, and others who provide our content or whose products or services we think may interest you.'''),
       DocElement(DocElType.bulletPoint,
-          '''Website: Celebrated\’s site, which can be accessed via this URL: https://breminderapp.web.app'''),
+          '''Website: Celebrated\’s site, which can be accessed via this URL: https://celebrated-app.web.app/auth'''),
       DocElement(
           DocElType.bulletPoint, '''You: a person or entity that is registered with Celebrated to use the Services.'''),
       DocElement(DocElType.title, '''What Information Do We Collect?'''),

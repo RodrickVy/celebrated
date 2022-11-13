@@ -3,5 +3,5 @@
 enum AuthPages{
   sign_in,
   sign_up,
-  password_rest
+  password_reset
 }

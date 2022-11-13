@@ -35,9 +35,11 @@ class AuthView extends AppPageView {
 
       child: Scaffold(
         key: UniqueKey(),
+        backgroundColor: Colors.white,
         appBar:  AppTopBar.buildWithBottom(ctx, TabBar(
           unselectedLabelColor:
           Theme.of(ctx).tabBarTheme.unselectedLabelColor,
+
           labelStyle: Theme.of(ctx).tabBarTheme.labelStyle,
           unselectedLabelStyle:
           Theme.of(ctx).tabBarTheme.unselectedLabelStyle,

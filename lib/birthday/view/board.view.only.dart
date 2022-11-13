@@ -19,6 +19,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import 'b.list.view.dart';
+
 final  Future<BirthdayBoard>  board = BirthdaysController().boardFromViewId();
 /// page showing the users birthdays , and enables the user to update the lists.
 class BoardViewOnly extends AppPageView {
@@ -136,6 +138,7 @@ class BoardViewOnly extends AppPageView {
                     contentPadding: EdgeInsets.zero,
                     title: Text(board.name),
                     tileColor: Color(board.hex).withAlpha(80),
+                    trailing: CopyShareLinkButton(board: board, viewId: board.viewingId,),
                   ),
                   const SizedBox(
                     height: 10,
@@ -167,52 +170,45 @@ class BoardViewOnly extends AppPageView {
                         textAlign: TextAlign.center,
                         text: TextSpan(style: adapter.textTheme.headline6, children:const [
                           TextSpan(
-                            text: "you have been invited to view this list  ",
+                            text: "You have been invited to view this list  ",
                           ),
                         ]),
                       ),
                     ),
-                  SizedBox(
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      children: [
-                        if (board.birthdays.isEmpty)
-                          Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(8.0),
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(style: adapter.textTheme.headline6, children: [
-                                TextSpan(
-                                  text: "Birthday list is empty",
-                                  style: adapter.textTheme.subtitle1
-                                      ?.copyWith(),
-                                ),
-                              ]),
-                            ),
+                  if (board.birthdays.isEmpty)
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(style: adapter.textTheme.headline6, children: [
+                          TextSpan(
+                            text: "Birthday list is empty",
+                            style: adapter.textTheme.subtitle1
+                                ?.copyWith(),
                           ),
-                        Container(
-
-                          margin: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(0),
-                            color: Colors.white,
-                          ),
-                          padding: const EdgeInsets.all(2),
-                          child: NotificatonsView(key: UniqueKey(),),
-                        ),
-                        SizedBox(width: adapter.width,),
-                        ...board.birthdaysList.map((ABirthday birthday) {
-                          switch (viewMode) {
-                            case BirthdayViewMode.tiles:
-                              return BirthdayCard1ViewOnly( birthday: birthday, );
-                            case BirthdayViewMode.cards:
-                              return BirthdayCard2ViewOnly( birthday: birthday, );
-                          }
-                        }),
-                      ],
+                        ]),
+                      ),
                     ),
+                  Container(
+
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(0),
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.all(2),
+                    child: NotificatonsView(key: UniqueKey(),),
                   ),
+                  SizedBox(width: adapter.width,),
+                  ...board.birthdaysList.map((ABirthday birthday) {
+                    switch (viewMode) {
+                      case BirthdayViewMode.tiles:
+                        return BirthdayCard1ViewOnly( birthday: birthday, );
+                      case BirthdayViewMode.cards:
+                        return BirthdayCard2ViewOnly( birthday: birthday, );
+                    }
+                  }),
                 ]),
               ),
             );

@@ -70,27 +70,27 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
               BirthdayDateForm(
                   birthdateController: _birthdateController,
                   nameTextController: _nameEditorController),
-              if (configureRemindTime)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      const Text("Remind me      "),
-                      Flexible(
-                        child: NotifyWhen(
-                            values: [
-                              ...List.generate(
-                                  15, (index) => (index + 1).toString())
-                            ],
-                            defaultValue: _remindDaysBefore.toString(),
-                            onSelect: (String day) {
-                              _remindDaysBefore = int.parse(day);
-                            }),
-                      ),
-                      const Text("   Before"),
-                    ],
-                  ),
-                ),
+              // if (configureRemindTime)
+              //   Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Row(
+              //       children: [
+              //         const Text("Remind me      "),
+              //         Flexible(
+              //           child: NotifyWhen(
+              //               values: [
+              //                 ...List.generate(
+              //                     15, (index) => (index + 1).toString())
+              //               ],
+              //               defaultValue: _remindDaysBefore.toString(),
+              //               onSelect: (String day) {
+              //                 _remindDaysBefore = int.parse(day);
+              //               }),
+              //         ),
+              //         const Text("   Before"),
+              //       ],
+              //     ),
+              //   ),
               Row(
                 children: [
                   AppButton(

@@ -1,18 +1,20 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/domain/view/app.state.view.dart';
 import 'package:celebrated/navigation/interface/controller.interface.dart';
+import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class AppBottomNavBar<T extends INavController> extends StatelessWidget {
-  final T controller = Get.find<T>();
+class AppBottomNavBar<T extends INavController> extends AppStateView<T> {
 
   AppBottomNavBar({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return BottomNavyBar(
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
+
+
+    final BottomNavyBar bar =  BottomNavyBar(
       selectedIndex: controller.currentItemIndex,
       showElevation: true,
       itemCornerRadius: 24,
@@ -36,20 +38,7 @@ class AppBottomNavBar<T extends INavController> extends StatelessWidget {
         }).toList()
       ],
     );
-    // return BottomNavigationBar(
-    //     currentIndex: controller.currentItemIndex,
-    //     onTap: (int? index) {
-    //       controller.toAppPageIndex(index ?? 0);
-    //     },
-    //     selectedItemColor: AppSwatch.primary.shade500,
-    //     items: controller.items.map2((item, index) {
-    //       return BottomNavigationBarItem(
-    //         icon: Icon(
-    //           item.icon,
-    //           color: Colors.black87,
-    //         ),
-    //         label: item.name,
-    //       );
-    //     }).toList());
+
+    return bar;
   }
 }

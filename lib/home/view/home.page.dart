@@ -20,7 +20,7 @@ class HomePage extends AppPageView{
       padding: EdgeInsets.zero,
       alignment: Alignment.center,
       child: Container(
-        width: adapter.adapt(phone: adapter.width, tablet: adapter.width, desktop: 800),
+        width: adapter.adaptScreens(small: adapter.width-10, big: 800),
         margin: EdgeInsets.zero,
         child: ListView(
           padding: const EdgeInsets.all(20),

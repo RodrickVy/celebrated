@@ -46,8 +46,8 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.splash, page: () => AppIntro<IntroScreenController>()),
         GetPage(
             name: AppRoutes.home,
-            page: () => HomePage(
-                  key: const Key(AppRoutes.home),
+            page: () => const HomePage(
+                  key: Key(AppRoutes.home),
                 )),
         // GetPage(
         //     name: AppRoutes.avatarEditor,
@@ -58,7 +58,7 @@ class App extends StatelessWidget {
             page: () => BirthdayPageView(key: const Key(AppRoutes.birthday))),
         GetPage(
             name: AppRoutes.shareBoard,
-            page: () => BoardViewOnly(key: const Key(AppRoutes.shareBoard))),
+            page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
         GetPage(
             name: AppRoutes.bBoard,
             page: () =>

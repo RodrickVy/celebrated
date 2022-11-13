@@ -1,4 +1,3 @@
-
 import 'package:celebrated/appIntro/controller/intro.controller.dart';
 import 'package:celebrated/document/controller/document.view.controller.dart';
 import 'package:celebrated/domain/view/app.button.dart';
@@ -8,8 +7,10 @@ import 'package:celebrated/home/model/feature.dart';
 import 'package:celebrated/home/model/feature.progress.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class SupportView extends AppPageView {
-  SupportView({Key? key}) : super(key: key);
+  const SupportView({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -41,7 +42,6 @@ class SupportView extends AppPageView {
                   textAlign: TextAlign.left,
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
@@ -50,9 +50,6 @@ class SupportView extends AppPageView {
                   textAlign: TextAlign.left,
                 ),
               ),
-
-
-
               ...SupportController.devProgress.categories.map((e) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -69,13 +66,12 @@ class SupportView extends AppPageView {
                     children: [
                       ...e.features.map((AppFeature task) {
                         return ListTile(
-
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                           title: Text(
                             task.description,
                             style: adapter.textTheme.bodyMedium,
                           ),
-                          trailing:  Icon(
+                          trailing: Icon(
                             taskProgressIcon(task.progress),
                             size: 25,
                           ),
@@ -90,19 +86,35 @@ class SupportView extends AppPageView {
                 child: AppButton(
                     key: UniqueKey(),
                     isTextButton: true,
+                    label: "Suggest A Feature",
+                    onPressed: () async {
+                      if (await launchUrl(Uri.parse('https://forms.gle/PcRBorBV2MJuKfjT9'))) {}
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AppButton(
+                    key: UniqueKey(),
+                    isTextButton: true,
+                    label: "Report an Issue",
+                    onPressed: () async {
+                      if (await launchUrl(Uri.parse('https://forms.gle/AfoGuMz65HvP5Lvg7'))) {}
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AppButton(
+                    key: UniqueKey(),
+                    isTextButton: true,
                     label: "Privacy Policy",
-                    onPressed: ()  {
-
+                    onPressed: () {
                       DocumentsController.goToDocument('privacy');
                     }),
               )
-
             ],
           )),
     );
   }
-
-
 
   IconData taskProgressIcon(TaskProgress progress) {
     switch (progress) {

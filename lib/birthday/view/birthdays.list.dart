@@ -106,27 +106,27 @@ class BirthdayBoardsView extends AppPageView {
                       null) {
                 return const SizedBox();
               }
-              if (controller.birthdayBoards.value.isNotEmpty) {
-                return FloatingActionButton.extended(
-                  tooltip: "add a new list",
-                  onPressed: () async {
-                    final String id = const Uuid().v4();
-                    controller.currentBirthdayInEdit(id);
-                    await controller
-                        .updateContent(controller.currentListId.value, {
-                      "birthdays": controller
-                          .birthdayBoards[controller.currentListId.value]!
-                          .withAddedBirthday(ABirthday.empty().copyWith(id: id))
-                          .birthdays
-                          .values
-                          .map((value) => BirthdayFactory().toJson(value))
-                          .toList()
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Add Birthday"),
-                );
-              }
+              // if (controller.birthdayBoards.value.isNotEmpty) {
+              //   return FloatingActionButton.extended(
+              //     tooltip: "add a new list",
+              //     onPressed: () async {
+              //       final String id = const Uuid().v4();
+              //       controller.currentBirthdayInEdit(id);
+              //       await controller
+              //           .updateContent(controller.currentListId.value, {
+              //         "birthdays": controller
+              //             .birthdayBoards[controller.currentListId.value]!
+              //             .withAddedBirthday(ABirthday.empty().copyWith(id: id))
+              //             .birthdays
+              //             .values
+              //             .map((value) => BirthdayFactory().toJson(value))
+              //             .toList()
+              //       });
+              //     },
+              //     icon: const Icon(Icons.add),
+              //     label: const Text("Add Birthday"),
+              //   );
+              // }
 
               return const SizedBox();
             },

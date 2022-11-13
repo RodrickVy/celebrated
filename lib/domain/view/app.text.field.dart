@@ -119,24 +119,27 @@ class AppTextField extends StatelessWidget {
     );
   }
 
-  InputDecoration get _decoration {
-    InputDecoration defaultDecoration = InputDecoration(
-      labelText: label,
-      // prefixIcon: Icon(
-      //   fieldIcon,
-      // ),
-      focusColor: Colors.black,
-      border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
-          borderSide: const BorderSide(color: Colors.black38)),
-      focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
-          borderSide: const BorderSide(color: Colors.black38)),
 
+  static InputDecoration get defaultDecoration => InputDecoration(
+    focusColor: Colors.black,
+    border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(0),
+        borderSide: const BorderSide(color: Colors.black38)),
+    focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(0),
+        borderSide: const BorderSide(color: Colors.black38)),
+
+    labelStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
+    contentPadding: const EdgeInsets.all(8).copyWith(left: 15),
+    hintStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
+    //fillColor: Colors.green
+  );
+
+  InputDecoration get _decoration {
+    InputDecoration defaultDecoration = AppTextField.defaultDecoration.copyWith(
+      labelText: label,
       hintText: hint,
-      labelStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
-      contentPadding: const EdgeInsets.all(8).copyWith(left: 15),
-      hintStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
+
       //fillColor: Colors.green
     );
 

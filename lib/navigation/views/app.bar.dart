@@ -1,8 +1,6 @@
 import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,24 +18,34 @@ class AppTopBar extends PreferredSize {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: GetPlatform.isMobile ? null : const SizedBox(),
-      leadingWidth: !GetPlatform.isMobile ? 0 : null,
+      leading:  AppRoutes.noBackOptionRoute.contains(Get.currentRoute) ? const SizedBox():null,
+      leadingWidth: AppRoutes.noBackOptionRoute.contains(Get.currentRoute)? 0:null,
       backgroundColor: Colors.white,
       elevation: 0,
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: ElevatedButton(
-            key: UniqueKey(),
-            onPressed: () {
-              runOnMVP(context);
-            },
-            style: ElevatedButton.styleFrom(
-              primary: AppSwatch.primaryAccent,
+        // if(AppRoutes.showMVPBannerRoutes.contains(Get.currentRoute))
+        //    Padding(
+        //   padding: const EdgeInsets.all(12.0),
+        //   child: ElevatedButton(
+        //     key: UniqueKey(),
+        //     onPressed: () {
+        //
+        //     },
+        //     style: ElevatedButton.styleFrom(
+        //       primary: AppSwatch.primaryAccent,
+        //     ),
+        //     child: const Text("MVP Alpha v.0.0"),
+        //   ),
+        // ),
+        if(AppRoutes.showMVPBannerRoutes.contains(Get.currentRoute.replaceFirst('/', '').split('/').first))
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ChoiceChip(
+              elevation: 1,
+             label: const Text("Alpha"), onSelected: (bool value) {   gotToInfo(context);  },
+              backgroundColor: Colors.white10, selected: false,
             ),
-            child: Text("MVP Alpha v.0.0"),
-          ),
-        )
+          )
       ],
       title: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -57,7 +65,7 @@ class AppTopBar extends PreferredSize {
     return AppBar(
       leading: GetPlatform.isMobile ? null : const SizedBox(),
       leadingWidth: !GetPlatform.isMobile ? 0 : null,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
       bottom: PreferredSize(preferredSize: const Size.fromHeight(50),child
           : bottom,),
 
@@ -84,7 +92,7 @@ class AppTopBar extends PreferredSize {
     );
   }
 
-  runOnMVP(BuildContext context) {
+  gotToInfo(BuildContext context) {
     NavController.instance.to(AppRoutes.support);
   }
 }

@@ -35,7 +35,7 @@ class AccountUser implements IModel {
 
   final DateTime birthdate;
 
-  final Map<String, bool> settings;
+  final Map<String, String> settings;
 
   AccountUser({
     required this.claims,
@@ -174,7 +174,7 @@ class AccountUser implements IModel {
     List<UserContentInteraction>? interactions,
     String? bio,
     DateTime? birthdate,
-    Map<String, bool>? settings,
+    Map<String, String>? settings,
   }) {
     return AccountUser(
       photoUrl: photoUrl ?? this.photoUrl,

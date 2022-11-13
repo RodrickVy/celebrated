@@ -11,42 +11,40 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// view that shows the users avatar and gracefully handles a generic avatar for unauthenticated users
 class AvatarView extends AppStateView<AuthController> {
-  AvatarView({Key? key}) : super(key: key);
+  AvatarView( {this.radius=120,Key? key}) : super(key: key);
+  final double radius;
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     // return Obx(
     //       () {
     // if (controller.isAuthenticated.isFalse) {
-    return InkWell(
-        onTap: () {
-          NavController.instance.to(AppRoutes.auth);
-        },
-        child: Center(
-          child: Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: AppSwatch.primaryAccent,
-                borderRadius: BorderRadius.circular(120),
-                // border: Border.fromBorderSide(BorderSide(color: Colors.black,width: 2)),
-                // image: DecorationImage(
-                //   image: AssetImage(
-                //     Get.find<IntroScreenController>().homeItem.image,
-                //
-                //   ),
-                //   fit: BoxFit.scaleDown,
-                // )
-              ),
-              width: 120,
-              height: 120,
-              margin: EdgeInsets.all(4),
-              alignment: Alignment.center,
-              child: Image.asset(
-                Get.find<IntroScreenController>().homeItem.image,
-                width: 100,
-              )
-          ),
-        ));
+    return SizedBox(
+      width: radius+10,
+      height: radius+10,
+      child: InkWell(
+          onTap: () {
+            NavController.instance.to(AppRoutes.auth);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+               // clipBehavior: Clip.hardEdge,        width: radius,
+                radius: radius,
+                // decoration: BoxDecoration(
+                //   color: AppSwatch.primaryAccent,
+                //   borderRadius: BorderRadius.circular(radius),
+                // ),
+                backgroundColor: Colors.transparent,
+
+                backgroundImage: AssetImage(
+                  // Get.find<IntroScreenController>().homeItem.image,
+                  'assets/defualt_icons/1.png',
+
+                )
+            ),
+          )),
+    );
 
     // child: () {
     //   // if(controller.accountUser.value.avatar ==  "assets/defualt_icons/avatar_outline.png"){

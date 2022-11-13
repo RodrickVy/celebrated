@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:celebrated/authenticate/adapter/acount.user.factory.dart';
 import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/models/content_interaction.dart';
@@ -76,8 +78,12 @@ class AuthController extends GetxController
   void onInit() {
     super.onInit();
     FirebaseAuth.instance.authStateChanges().listen((User? fireUser) async {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+
+
       /// Auth-user object is created from firebase authentication
       if (fireUser != null) {
+
         user(AuthUser.fromFireAuth(fireUser));
         accountUser(await _syncWithFirestore(user.value));
         isAuthenticated(true);
@@ -86,6 +92,9 @@ class AuthController extends GetxController
         if (Get.parameters["nextTo"] != null) {
           NavController.instance
               .to(NavController.instance.decodeNextToFromRoute());
+        }else{
+          // NavController.instance
+          //     .to(AppRoutes.lists);
         }
       } else {
         user(AuthUser.empty());
@@ -105,6 +114,7 @@ class AuthController extends GetxController
         FeedbackService.spinnerUpdateState(
             key: FeedbackSpinKeys.passResetForm, isOn: false);
       }
+    });
     });
   }
 
@@ -187,7 +197,8 @@ class AuthController extends GetxController
       {required String name,
         required DateTime birthdate,
       required String email,
-      required String password}) async {
+        required String accountType,
+      required String password, required String phone}) async {
     if (validateField(userNameValidator, name) &&
         validateField(emailFormValidator, email) &&
         validateField(passwordValidator, password)) {
@@ -197,7 +208,7 @@ class AuthController extends GetxController
             .then((value) async {
           await value.user?.updateDisplayName(name);
 
-          await updateContent(user.value.uid, {"name": name});
+          await updateContent(user.value.uid, {"name": name,"phone":phone,"settings":{"account":accountType},"birthdate":birthdate.millisecondsSinceEpoch});
         });
       } on FirebaseAuthException catch (error) {
 

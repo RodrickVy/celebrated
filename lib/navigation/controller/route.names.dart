@@ -4,9 +4,9 @@ import 'package:celebrated/domain/model/enum.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+// 'https://celebrated-app.web.app'
 class AppRoutes {
-  static const String domainUrlBase = 'https://breminderapp.firebaseapp.com';
+  static const String domainUrlBase ='http://localhost:38421' ;
   static const String home = "/home";
   static const String about = "/about";
   static const String lists = "/lists";
@@ -23,11 +23,14 @@ class AppRoutes {
   static String authSignIn = "/auth/${AuthPages.sign_in.name}";
   static String authSignUp = "/auth/${AuthPages.sign_up.name}";
   static String authPasswordReset =
-      "/auth/${AnEnum.toJson(AuthPages.password_rest)}";
+      "/auth/${AnEnum.toJson(AuthPages.password_reset)}";
   static const String bBoard = "/b-board";
   static const String avatarEditor = "/avatar-editor";
   static const String notFound = "/notfound";
   static const String docs = '/docs/:id';
+
+  static List<String> showMVPBannerRoutes = [home,auth].map((e) => e.replaceFirst('/','').split("/").first).toList();
+
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),
@@ -49,4 +52,8 @@ class AppRoutes {
     Get.log("$current  == $matcher");
     return current == matcher;
   }
+
+
+  // routes that dont have any  back option
+  static List<String> noBackOptionRoute = [home];
 }

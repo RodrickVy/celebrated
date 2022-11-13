@@ -43,7 +43,8 @@ class AppToggleButton extends StatelessWidget {
 
         },
         selectedColor: Colors.black,
-          selectedBorderColor: AppSwatch.primaryAccent,
+          selectedBorderColor: Colors.transparent,
+          borderColor: Colors.transparent,
         isSelected: toggleOptions.map((element) => element.state).toList(),
         children: toggleOptions.map((element) => element.view).toList(),
       ),

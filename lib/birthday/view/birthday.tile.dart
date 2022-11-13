@@ -7,6 +7,7 @@ import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'birthday.editor.dart';
 
 class BirthdayTile extends AppStateView<BirthdaysController> {
@@ -31,8 +32,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
       () => SizedBox(
-        width: adapter.adapt(
-            phone: adapter.width, tablet: adapter.width, desktop: 600),
+        width: adapter.adapt(phone: adapter.width, tablet: adapter.width, desktop: 600),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           transitionBuilder: (Widget child, Animation<double> animation) {
@@ -53,7 +53,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                   },
                 )
               : Card(
-                  elevation: 1,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
                   ),
@@ -71,20 +71,20 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                             style: Adaptive(ctx)
                                 .textTheme
                                 .headline6
-                                ?.copyWith(fontWeight: FontWeight.w500),
+                                ?.copyWith(fontWeight: FontWeight.w400, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
                           ),
                         ],
                       ),
                     ),
                     trailing: ActionDropDown(actions: [
-                      DropDownAction("Delete",Icons.delete, () {
+                      DropDownAction("Delete", Icons.delete, () {
                         onDelete(birthday);
                       }),
-                      DropDownAction("Edit",Icons.edit, () {
+                      DropDownAction("Edit", Icons.edit, () {
                         onEdit(birthday);
                         controller.editBirthday(birthday.id);
                       }),
-                      DropDownAction("Share",Icons.share, () {
+                      DropDownAction("Share", Icons.share, () {
                         onSelect != null ? onSelect!() : () {};
                       })
                     ]),
@@ -97,12 +97,15 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                       child: Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(right:8.0),
+                            padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
                               birthday.date.readable,
+                              style: Adaptive(ctx)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.w400,),
                             ),
                           ),
-
                           Text(birthday.formattedBirthday(ctx)),
                         ],
                       ),

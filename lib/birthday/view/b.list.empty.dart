@@ -1,23 +1,12 @@
 import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
-import 'package:celebrated/birthday/model/birthday.dart';
-import 'package:celebrated/birthday/model/birthday.list.dart';
-import 'package:celebrated/birthday/view/birthday.card.dart';
-import 'package:celebrated/birthday/view/colordrop.down.dart';
 import 'package:celebrated/domain/view/app.button.dart';
 import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/domain/view/editable.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/controller/spin.keys.dart';
-import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_fade/image_fade.dart';
-import 'package:uuid/uuid.dart';
 
 /// page showing the users birthdays , and enables the user to update the lists.
 class BListInfo extends AppStateView<BirthdaysController> {
@@ -38,7 +27,7 @@ class BListInfo extends AppStateView<BirthdaysController> {
         child: SizedBox(
           width: adapter.adapt(phone: adapter.width, tablet: 600, desktop: 600),
           child: ListView(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
 
               children: [
             SizedBox(

@@ -6,37 +6,20 @@ import 'package:celebrated/navigation/views/app.bottom.nav.bar.dart';
 import 'package:celebrated/navigation/views/app.drawer.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 /// much like [AppStateView] but this time for a page, adds a scaffold using the appWide [AppDesktopDrawer],[AppBottomNavBar]
 /// to avoid the hustle of repeating calling them.
 /// The scaffold uses [NavControllers]'s scaffoldKey to enable anyone to close and open drawer using [NavController]
 abstract class AppPageView extends StatelessWidget {
-
-
   const AppPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // if(!GetPlatform.isMobile &&  Adaptive(context).width > 800){
-    //   return SafeArea(
-    //     child: Row(
-    //       children: [
-    //         AppDesktopDrawer(),
-    //         Expanded(child: page(context))
-    //       ],
-    //     ),
-    //   );
-    // }
-    // return SafeArea(
-    //   child: page(context),
-    // );
-
     return page(context);
   }
 
-  Widget  page(BuildContext context) {
-    return  view(ctx: context, adapter: Adaptive(context));
+  Widget page(BuildContext context) {
+    return view(ctx: context, adapter: Adaptive(context));
 
     //   Scaffold(
     //   // key: NavController.instance.currentItem == AppRoutes.auth
@@ -52,40 +35,43 @@ abstract class AppPageView extends StatelessWidget {
   Widget view({required BuildContext ctx, required Adaptive adapter});
 }
 
-
- class AppPageViewWrapper extends StatelessWidget {
-
+class AppPageViewWrapper extends StatelessWidget {
   final Widget body;
-  const AppPageViewWrapper({required this.body,Key? key}) : super(key: key);
+
+  const AppPageViewWrapper({required this.body, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(!GetPlatform.isMobile &&  Adaptive(context).width > 800){
-      return SafeArea(
-        child: Row(
-          children: [
-            AppDesktopDrawer(),
-            Expanded(child: page(context))
-          ],
-        ),
-      );
-    }
-    return SafeArea(
-      child: page(context),
+    return Adaptive(context).adaptScreens(
+      small: smallScreen(context),
+      big:  bigScreen(context)
     );
   }
 
-  Scaffold  page(BuildContext context) {
+
+
+  Scaffold smallScreen(BuildContext context) {
     return Scaffold(
       // key: NavController.instance.currentItem == AppRoutes.auth
       //     ? NavController.instance.scaffoldKey
       //     : null,
-      appBar:NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
+      appBar: NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
       drawer: null,
       body: body,
-      bottomNavigationBar: Adaptive(context).adapt(phone: AppBottomNavBar<NavController>(), tablet: AppBottomNavBar<NavController>(), desktop: null) ,
+      bottomNavigationBar: AppBottomNavBar<NavController>(),
     );
   }
 
-
+  Widget bigScreen(BuildContext context) {
+    return SafeArea(
+      child: Row(
+        children: [AppDesktopDrawer<NavController>(), Expanded(child:  Scaffold(
+          appBar: NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
+          drawer: null,
+          body: body,
+          bottomNavigationBar: null,
+        ))],
+      ),
+    );
+  }
 }
