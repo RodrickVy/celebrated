@@ -179,10 +179,15 @@ class FeedbackService extends GetxController
 
   static void successAlertSnack(String title,[time = 1000]) {
     FeedbackService.announce(
+
         notification: AppNotification.empty().copyWith(
             type: NotificationType.success,
             title: title,
             appWide: true,
+            canDismiss: false,
+            child: AppButton(key: UniqueKey(),isTextButton:true,label: "Ok", onPressed: (){
+              clearErrorNotification();
+            }),
             aliveFor:  Duration(milliseconds: time)));
   }
 

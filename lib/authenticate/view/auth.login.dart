@@ -19,17 +19,19 @@ import 'auth.button.dart';
 /// a login form , for authentication
 /// Uses the feedback spinner for actions as well as local [NotificatonsView] for errors,warning.
 // ignore: must_be_immutable
-class LoginFormView extends AppStateView<AuthController> {
+class SignInPage extends AppStateView<AuthController> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
 
-  LoginFormView({Key? key}) : super(key: key);
+  SignInPage({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return Center(
+    return Container(
+      alignment: Alignment.center,
       child: SizedBox(
         width: 320,
+        height: Get.height,
         child: ListView(
           children: [
             const SizedBox(
@@ -44,7 +46,7 @@ class LoginFormView extends AppStateView<AuthController> {
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         AppTextField(
@@ -54,7 +56,7 @@ class LoginFormView extends AppStateView<AuthController> {
                           controller: emailTextController,
                           key: UniqueKey(),
                           keyboardType: TextInputType.emailAddress,
-                          autoFillHints: const [AutofillHints.email],
+                          autoFillHints: const [AutofillHints.email,AutofillHints.username],
                         ),
                         const SizedBox(
                           height: 10,
@@ -89,6 +91,9 @@ class LoginFormView extends AppStateView<AuthController> {
                                 }),
                           ],
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         AppButton(
                           key: UniqueKey(),
                           child: Text(
@@ -104,6 +109,20 @@ class LoginFormView extends AppStateView<AuthController> {
                             FeedbackService.spinnerUpdateState(
                                 key: FeedbackSpinKeys.signInForm, isOn: false);
                           },
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        AppButton(
+                          key: UniqueKey(),
+                          isTextButton: true,
+                          onPressed: () async {
+                            Get.toNamed(AppRoutes.authSignUp);
+                          },
+                          child: Text(
+                            "create account",
+                            style: GoogleFonts.poppins(fontSize: 16),
+                          ),
                         ),
                       ]),
                 ),

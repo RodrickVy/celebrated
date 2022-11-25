@@ -1,10 +1,14 @@
 import 'package:celebrated/appIntro/controller/intro.controller.dart';
 import 'package:celebrated/appIntro/view/intro.view.dart';
+import 'package:celebrated/authenticate/view/auth.login.dart';
+import 'package:celebrated/authenticate/view/auth.password.recovery.view.dart';
+import 'package:celebrated/authenticate/view/auth.signup.dart';
 import 'package:celebrated/authenticate/view/avatar.selector.dart';
 import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/view/authentication.view.dart';
+import 'package:celebrated/authenticate/view/profile.view.dart';
 import 'package:celebrated/birthday/view/birthday.adds.dart';
 import 'package:celebrated/birthday/view/birthday.leader.board.dart';
 import 'package:celebrated/birthday/view/birthday.page.dart';
@@ -12,6 +16,7 @@ import 'package:celebrated/birthday/view/birthdays.list.dart';
 import 'package:celebrated/birthday/view/board.view.only.dart';
 import 'package:celebrated/document/view/document.viewer.dart';
 import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/coming.soon.view.dart';
 import 'package:celebrated/firebase_options.dart';
 import 'package:celebrated/home/view/home.page.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
@@ -53,42 +58,44 @@ class App extends StatelessWidget {
         //     name: AppRoutes.avatarEditor,
         //     page: () =>
         //         AvatarEditorView(key: const Key(AppRoutes.avatarEditor))),
-        GetPage(
-            name: AppRoutes.birthday,
-            page: () => BirthdayPageView(key: const Key(AppRoutes.birthday))),
-        GetPage(
-            name: AppRoutes.shareBoard,
-            page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
-        GetPage(
-            name: AppRoutes.bBoard,
-            page: () =>
-                BirthdaysLeaderBoard(key: const Key(AppRoutes.shareBoard))),
-        GetPage(
-            name: AppRoutes.lists,
-            page: () => BirthdayBoardsView(key: const Key(AppRoutes.lists))),
-        GetPage(
-            name: AppRoutes.openListEdit,
-            page: () =>
-                BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
-        GetPage(
-            name: AppRoutes.about,
-            page: () =>
-                BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
+        GetPage(name: AppRoutes.birthday, page: () => BirthdayPageView(key: const Key(AppRoutes.birthday))),
+        GetPage(name: AppRoutes.shareBoard, page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
+        GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareBoard))),
+        GetPage(name: AppRoutes.lists, page: () => const BirthdayBoardsView(key: Key(AppRoutes.lists))),
+        GetPage(name: AppRoutes.openListEdit, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
+        GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
         GetPage(
             name: AppRoutes.docs,
             page: () => DocumentViewer(
                   key: const Key(AppRoutes.docs),
                 )),
-        GetPage(
-            name: AppRoutes.auth,
-            page: () => AuthView(key: const Key(AppRoutes.auth))),
-        GetPage(
-            name: "${AppRoutes.auth}/:page",
-            page: () => AuthView(key: const Key(AppRoutes.auth))),
-        GetPage(
-            name: AppRoutes.support,
-            page: () => SupportView(key: const Key(AppRoutes.support))),
+        GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
+        GetPage(name: AppRoutes.authSignUp, page: () => SignUpPage()),
+        GetPage(name: AppRoutes.authSignIn, page: () => SignInPage()),
 
+    GetPage(
+        name: AppRoutes.cards,
+        page: () => ComingSoon(
+          image: 'assets/intro/card.png',
+          title: 'Cards',
+          description: 'Create unique birthday cards that you can invite others to sign.  Ad image/video etc on card and easily share via link.',
+        )),
+    GetPage(
+        name: AppRoutes.parties,
+        page: () => ComingSoon(
+          image: 'assets/intro/party.png',
+          title: 'Parties',
+          description: 'Organize parties, with easy forms for invites, and  lists for planning. Fun birthday games from deep meaningful to funny and trivial.',
+        )),
+    GetPage(
+        name: AppRoutes.gifts,
+        page: () => ComingSoon(
+          image: 'assets/intro/gift_happy.png',
+          title: 'Gifts',
+          description: 'Organize parties, with easy forms for invites, and  lists for planning. Fun birthday games from deep meaningful to funny and trivial.',
+        )),
+        GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
+        GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
       ];
 
   @override
@@ -96,44 +103,23 @@ class App extends StatelessWidget {
     /// setting up system status bar
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-          systemNavigationBarColor: AppSwatch.primary.shade700,
-          statusBarColor: AppSwatch.primary.shade700),
+          systemNavigationBarColor: AppSwatch.primary.shade700, statusBarColor: AppSwatch.primary.shade700),
     );
 
     return GetMaterialApp(
       title: 'celebrated',
       theme: AppTheme.themeData,
-      unknownRoute:   GetPage(
-          name: AppRoutes.notFound,
-          page: () => NotFoundView(key: const Key(AppRoutes.notFound))) ,
+      unknownRoute: GetPage(name: AppRoutes.notFound, page: () => NotFoundView(key: const Key(AppRoutes.notFound))),
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
-      initialRoute: AppRoutes.home,
+      initialRoute: AppRoutes.splash,
       initialBinding: AppBindings(),
-      // todo asses if this is necessary
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
-          String itemName =
-              "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
-          NavController.instance.items.forEach2((item, index) {
-            if (item.route == itemName) {
-              NavController.instance.currentBottomBarIndex(index);
-            }
-          });
-          switch (itemName) {
-            case AppRoutes.openListEdit:
-            case AppRoutes.birthday:
-            case AppRoutes.shareBoard:
-              NavController.instance.currentBottomBarIndex(1);
-              break;
-            case AppRoutes.support:
-              NavController.instance.currentBottomBarIndex(0);
-          }
-          Get.log(itemName);
+          NavController.instance.callOnRoute(routing.current, Get.parameters);
         }
       },
-
       debugShowCheckedModeBanner: false,
       getPages: getPages.map((e) {
         return e.copy(

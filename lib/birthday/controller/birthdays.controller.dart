@@ -83,7 +83,7 @@ class BirthdaysController extends GetxController
   Future<List<BirthdayBoard>> getCollectionAsList(ContentQuery? query) async {
     return await queryCollection(query ??
         ContentQuery("authorId", QueryMethods.isEqualTo,
-            AuthController.instance.user.value.uid));
+            AuthController.instance.accountUser.value.uid));
   }
 
   @override
@@ -140,9 +140,9 @@ class BirthdaysController extends GetxController
       await setContent(BirthdayBoard.empty().copyWith(
           id: id,
           name: "New List",
-          authorName: AuthController.instance.accountUser.value.displayName,
+          authorName: AuthController.instance.accountUser.value.name,
           hex: __listsUsableColors().first,
-          authorId: AuthController.instance.user.value.uid));
+          authorId: AuthController.instance.accountUser.value.uid));
 
       /// route to list/id immediately,so the view shows this newly created list
       currentListId(id);

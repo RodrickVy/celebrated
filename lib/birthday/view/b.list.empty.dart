@@ -69,6 +69,7 @@ class BListInfo extends AppStateView<BirthdaysController> {
                       NavController.instance
                           .to(AppRoutes.authSignIn);
                     },
+                    isTextButton: true,
                     key: UniqueKey(),
                     child: const Text(
                       "SignIn",
@@ -87,6 +88,7 @@ class BListInfo extends AppStateView<BirthdaysController> {
                       NavController.instance
                           .to(AppRoutes.authSignUp);
                     },
+                    isTextButton: true,
                     key: UniqueKey(),
                     child: const Text(
                       "SignUp",
@@ -95,8 +97,10 @@ class BListInfo extends AppStateView<BirthdaysController> {
             if(authController.isAuthenticated.isFalse)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+
                     child: Text(
                       "to create a list",
+
                       style: adapter.textTheme.subtitle1,
                       textAlign: TextAlign.center,
                     ),

@@ -1,3 +1,4 @@
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/data/static.data.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
@@ -33,9 +34,7 @@ class BirthdayCard1ViewOnly extends AppStateView<BirthdaysController> {
             phone: adapter.width, tablet: adapter.width, desktop: 600),
         child: Card(
             elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
-            ),
+            shape: AppTheme.shape,
             child: ListTile(
               leading: const Icon(Icons.calendar_today),
               title: Padding(

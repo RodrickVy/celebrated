@@ -1,5 +1,6 @@
 import 'package:celebrated/authenticate/controller/auth.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
+import 'package:celebrated/birthday/model/watcher.dart';
 import 'package:celebrated/domain/model/imodel.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class BirthdayBoard extends IModel {
   final String addingId;
   final String authorId;
   final String authorName;
+  final List<BirthdaysWatcher> watchers;
 
   BirthdayBoard(
       {required this.name,
@@ -24,6 +26,7 @@ class BirthdayBoard extends IModel {
       required this.authorId,
       required final String id,
       required this.sharedTo,
+        this.watchers = const [],
       required this.viewingId})
       : super(id);
 
@@ -123,7 +126,7 @@ class BirthdayBoard extends IModel {
   }
 
   String generateViewId() =>
-      "${AuthController.instance.user.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
+      "${AuthController.instance.accountUser.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
 
   String generateInviteId() =>
       "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";

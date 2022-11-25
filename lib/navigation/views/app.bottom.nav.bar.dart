@@ -1,6 +1,7 @@
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/bottom.navybar.dart';
 import 'package:celebrated/navigation/interface/controller.interface.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
@@ -18,7 +19,7 @@ class AppBottomNavBar<T extends INavController> extends AppStateView<T> {
       selectedIndex: controller.currentItemIndex,
       showElevation: true,
       itemCornerRadius: 24,
-      backgroundColor: AppSwatch.primaryAccent,
+      backgroundColor: Colors.white,
       curve: Curves.easeIn,
       onItemSelected: (index) {
         controller.toAppPageIndex(index );
@@ -29,11 +30,9 @@ class AppBottomNavBar<T extends INavController> extends AppStateView<T> {
           return BottomNavyBarItem(
             icon: Icon(
               item.icon,
-              color: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54,
             ),
-            activeColor: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54,
 
-            title: Text(item.name,style: TextStyle(color: controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54),),
+            title: Text(item.name,),
           );
         }).toList()
       ],

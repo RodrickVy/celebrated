@@ -9,6 +9,7 @@ class BirthdayFactory extends IModelFactory<ABirthday> {
       date: DateTime.fromMillisecondsSinceEpoch(json['date']),
       remindMeWhen: DateTime.fromMillisecondsSinceEpoch(json['remindMeWhen']),
       id: json['id'] as String,
+
     );
   }
 

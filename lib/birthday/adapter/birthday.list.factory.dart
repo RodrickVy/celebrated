@@ -3,6 +3,7 @@
 import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/birthday/model/birthday.list.dart';
+import 'package:celebrated/birthday/model/watcher.dart';
 import 'package:celebrated/domain/model/imodel.factory.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +24,8 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
           id: json['id'] as String,
           addingId:json["addingId"] ?? json["birthdayAddLink"] ?? '',
           authorId: json['authorId'] ?? '',
-          authorName: (json["authorName"]??'').toString().trim()
+          authorName: (json["authorName"]??'').toString().trim(),
+          watchers: List.from(json['watchers']??[]).map((e) => BirthdaysWatcher.fromMap(e)).toList()
       );
     }catch(_){
       Get.log("Error in serializing BirthdayBoard from json");
@@ -46,6 +48,7 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
       'id': model.id,
       'authorId': model.authorId,
       'authorName':model.authorName,
+      'watchers':model.watchers.map((e) => e.toMap()).toList()
     };
   }
 }

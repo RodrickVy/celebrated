@@ -1,7 +1,6 @@
+import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
-import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/birthday/model/birthday.list.dart';
 import 'package:celebrated/birthday/view/b.list.empty.dart';
 import 'package:celebrated/birthday/view/b.list.view.dart';
@@ -13,12 +12,11 @@ import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
 class BirthdayBoardsView extends AppPageView {
- const  BirthdayBoardsView({Key? key}) : super(key: key);
+  const BirthdayBoardsView({Key? key}) : super(key: key);
 
- static final BirthdaysController controller =Get.find<BirthdaysController>();
+  static final BirthdaysController controller = Get.find<BirthdaysController>();
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -42,17 +40,14 @@ class BirthdayBoardsView extends AppPageView {
                             child: EditableTextView(
                               icon: Icons.delete,
                               onIconPressed: () {},
-                              key:  Key(list.name),
+                              key: Key(list.name),
                               textValue: list.name,
                               label: 'list name',
                               background: Colors.transparent,
                               onSave: (String value) async {
-                                FeedbackService.spinnerUpdateState(
-                                    key: Key(list.name), isOn: true);
-                                await controller
-                                    .updateContent(list.id, {"name": value});
-                                FeedbackService.spinnerUpdateState(
-                                    key: Key(list.name), isOn: false);
+                                FeedbackService.spinnerUpdateState(key: Key(list.name), isOn: true);
+                                await controller.updateContent(list.id, {"name": value});
+                                FeedbackService.spinnerUpdateState(key: Key(list.name), isOn: false);
                               },
                             ),
                           ),
@@ -102,8 +97,7 @@ class BirthdayBoardsView extends AppPageView {
             () {
               if (AuthController.instance.isAuthenticated.isFalse ||
                   controller.currentListId.value.isEmpty ||
-                  controller.birthdayBoards[controller.currentListId.value] ==
-                      null) {
+                  controller.birthdayBoards[controller.currentListId.value] == null) {
                 return const SizedBox();
               }
               // if (controller.birthdayBoards.value.isNotEmpty) {
@@ -161,6 +155,7 @@ class BListTabView extends StatelessWidget {
       length: pagesLength,
       initialIndex: initialPage,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppTopBar.buildWithBottom(
             context,
             Container(
@@ -178,24 +173,22 @@ class BListTabView extends StatelessWidget {
               //     .color
               //     : Colors.transparent,
               child: TabBar(
-                  unselectedLabelColor:
-                      Theme.of(context).tabBarTheme.unselectedLabelColor,
+                  unselectedLabelColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
                   labelStyle: Theme.of(context).tabBarTheme.labelStyle,
-                  unselectedLabelStyle:
-                      Theme.of(context).tabBarTheme.unselectedLabelStyle,
+                  unselectedLabelStyle: Theme.of(context).tabBarTheme.unselectedLabelStyle,
                   labelColor: Colors.black87,
                   onTap: (int index) {
                     // FeedbackService.clearErrorNotification();
                     // NavController.instance.withParam("listId",);
                     //   BirthdaysController.instance.currentListId( boards[index].id);
                     //   BirthdaysController.instance.currentListId.refresh();
-                    if(index == boards.length){
+                    if (index == boards.length) {
                       BirthdaysController.instance.createNewList();
                     }
                   },
                   isScrollable: true,
                   padding: EdgeInsets.zero,
-                  indicatorColor: Theme.of(context).colorScheme.secondaryContainer,
+                  indicatorColor:  AppSwatch.primary.shade400,
                   tabs: tabs),
             )),
         body: TabBarView(

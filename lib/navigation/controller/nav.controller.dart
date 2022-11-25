@@ -1,10 +1,13 @@
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/navigation/interface/controller.interface.dart';
+import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NavController extends GetxController implements INavController {
+  static List<OnRouteObserver> onRouteListeners = [];
+
   @override
   String get currentItem {
     return "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
@@ -106,4 +109,62 @@ class NavController extends GetxController implements INavController {
 
   @override
   bool get drawerExpanded => _drawerExpanded.value;
+
+  static  OnRouteObserver routeCategoryListener = OnRouteObserver(
+      run: (String route, Map<String, String?> parameters, Function cancel) {
+
+        String itemName = "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
+        Get.log("Gourd working $itemName ");
+        switch (itemName) {
+          case AppRoutes.authPasswordReset:
+          case AppRoutes.authSignIn:
+          case AppRoutes.authSignUp:
+          case AppRoutes.verifyEmail:
+          case AppRoutes.profile:
+          case AppRoutes.home:
+          case AppRoutes.splash:
+            case AppRoutes.support:
+           NavController.instance.currentBottomBarIndex(0);
+           break;
+          case AppRoutes.lists:
+          case AppRoutes.openListEdit:
+          case AppRoutes.birthday:
+          case AppRoutes.shareBoard:
+            NavController.instance.currentBottomBarIndex(1);
+            break;
+          case AppRoutes.gifts:
+            NavController.instance.currentBottomBarIndex(2);
+            break;
+          case AppRoutes.cards:
+            NavController.instance.currentBottomBarIndex(3);
+            break;
+          case AppRoutes.parties:
+            NavController.instance.currentBottomBarIndex(4);
+            break;
+        }
+
+      },
+      when: (_,__)=>true);
+
+  @override
+  onInit() {
+    super.onInit();
+    registerRouteObserver(routeCategoryListener);
+  }
+
+  registerRouteObserver(OnRouteObserver guard) {
+      onRouteListeners.add(guard);
+  }
+
+  removeOnRoute(String key) {
+    onRouteListeners.remove(key);
+  }
+
+  callOnRoute(String route, Map<String, String?> parameters) {
+    for (var guard in onRouteListeners) {
+      if (guard.when(route, parameters)) {
+        guard.run(route, parameters, removeOnRoute);
+      }
+    }
+  }
 }

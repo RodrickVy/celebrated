@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// view that shows the users avatar and gracefully handles a generic avatar for unauthenticated users
 class AvatarView extends AppStateView<AuthController> {
-  AvatarView( {this.radius=120,Key? key}) : super(key: key);
+  AvatarView({this.radius = 120, Key? key}) : super(key: key);
   final double radius;
 
   @override
@@ -20,28 +20,31 @@ class AvatarView extends AppStateView<AuthController> {
     //       () {
     // if (controller.isAuthenticated.isFalse) {
     return SizedBox(
-      width: radius+10,
-      height: radius+10,
+      width: radius + 10,
+      height: radius + 10,
       child: InkWell(
           onTap: () {
-            NavController.instance.to(AppRoutes.auth);
+            NavController.instance.to(AppRoutes.profile);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
-               // clipBehavior: Clip.hardEdge,        width: radius,
-                radius: radius,
-                // decoration: BoxDecoration(
-                //   color: AppSwatch.primaryAccent,
-                //   borderRadius: BorderRadius.circular(radius),
-                // ),
-                backgroundColor: Colors.transparent,
-
-                backgroundImage: AssetImage(
-                  // Get.find<IntroScreenController>().homeItem.image,
-                  'assets/defualt_icons/1.png',
-
-                )
+              backgroundColor: AppSwatch.primary.shade600,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: CircleAvatar(
+                  // clipBehavior: Clip.hardEdge,        width: radius,
+                  // decoration: BoxDecoration(
+                  //   color: AppSwatch.primaryAccent,
+                  //                 //   borderRadius: BorderRadius.circular(radius),
+                  //                 // ),
+                  radius: radius,
+                  backgroundColor: Colors.white,
+                  child: Image.asset(
+                    'assets/defualt_icons/avatar_outline.png',
+                  ),
+                ),
+              ),
             ),
           )),
     );

@@ -1,12 +1,11 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/birthday/view/birthday.date.name.dart';
 import 'package:celebrated/domain/view/app.button.dart';
 import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/domain/view/app.text.field.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
-import 'package:celebrated/birthday/view/birthday.notify.when.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,11 +57,11 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Container(
-      width: adapter.adapt(phone: Get.width - 40, tablet: 400, desktop: 600),
+      width: adapter.adapt(phone: Get.width - 10, tablet: 400, desktop: 600),
       alignment: Alignment.center,
       child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        elevation: 0,
+        shape: AppTheme.shape,
         child: Container(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -94,6 +93,7 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
               Row(
                 children: [
                   AppButton(
+                    isTextButton: true,
                     key: UniqueKey(),
                     child: const Text(
                       "Cancel",
@@ -106,6 +106,7 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
                     width: 10,
                   ),
                   AppButton(
+                    isTextButton: true,
                     key: UniqueKey(),
                     child: const Text(
                       "Delete",
@@ -118,6 +119,7 @@ class BirthdayEditor extends AppStateView<BirthdaysController> {
                     width: 10,
                   ),
                   AppButton(
+                    isTextButton: true,
                     key: UniqueKey(),
                     child: const Text(
                       "Save",

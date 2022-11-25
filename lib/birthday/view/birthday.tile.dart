@@ -1,3 +1,4 @@
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/domain/model/drop.down.action.dart';
@@ -54,9 +55,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                 )
               : Card(
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
-                  ),
+                  shape: AppTheme.shape,
                   child: ListTile(
                     onTap: () {
                       onEdit(birthday);

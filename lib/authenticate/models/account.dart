@@ -1,11 +1,14 @@
-import 'package:celebrated/authenticate/models/auth.user.dart';
 import 'package:celebrated/authenticate/models/content_interaction.dart';
+import 'package:celebrated/authenticate/models/user.claims.dart';
 import 'package:celebrated/authenticate/models/user.content.interaction.type.dart';
 import 'package:celebrated/authenticate/models/auth.with.dart';
+import 'package:celebrated/authenticate/requests/sign_up_request.dart';
 import 'package:celebrated/domain/model/imodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class AccountUser implements IModel {
-  final String photoUrl;
+
 
   final String phone;
 
@@ -15,7 +18,7 @@ class AccountUser implements IModel {
 
   final String providerId;
 
-  final String displayName;
+  // final String displayName;
 
   final String uid;
 
@@ -25,7 +28,8 @@ class AccountUser implements IModel {
   final String name;
 
   final bool emailVerified;
-  final Map<String, dynamic> claims;
+  
+  final List<UserClaim> claims;
 
   final String avatar;
 
@@ -38,7 +42,7 @@ class AccountUser implements IModel {
   final Map<String, String> settings;
 
   AccountUser({
-    required this.claims,
+     this.claims = const[UserClaim.starter],
     required this.bio,
     required this.birthdate,
     required this.settings,
@@ -50,10 +54,9 @@ class AccountUser implements IModel {
     required this.lastLogin,
     required this.authMethod,
     required this.avatar,
-    required this.displayName,
+    // required this.displayName,
     required this.providerId,
     required this.email,
-    required this.photoUrl,
     required this.phone,
   });
 
@@ -119,9 +122,17 @@ class AccountUser implements IModel {
   //   );
   // }
   //
+
+
+  String get initials{
+    if(name.trim().isEmpty){
+      return "";
+    }
+    return name.split(" ").map((e) => e.split("").first.capitalize).join(".");
+  }
   static AccountUser empty() {
     return AccountUser(
-        claims: {},
+        claims: [UserClaim.starter],
         timeCreated: DateTime.now(),
         interactions: [],
         name: "",
@@ -131,10 +142,9 @@ class AccountUser implements IModel {
         lastLogin: DateTime.now(),
         authMethod: AuthWith.EmailLink,
         avatar: "",
-        displayName: "",
+        // displayName: "",
         providerId: "",
         email: "",
-        photoUrl: "",
         phone: "",
         birthdate: DateTime.now(),
         settings: {});
@@ -158,18 +168,17 @@ class AccountUser implements IModel {
   }
 
   AccountUser copyWith({
-    String? photoUrl,
     String? phone,
     String? email,
     AuthWith? authMethod,
     String? providerId,
-    String? displayName,
+    // String? displayName,
     String? uid,
     DateTime? lastLogin,
     DateTime? timeCreated,
     String? name,
     bool? emailVerified,
-    Map<String, dynamic>? claims,
+    List<UserClaim>? claims,
     String? avatar,
     List<UserContentInteraction>? interactions,
     String? bio,
@@ -177,12 +186,11 @@ class AccountUser implements IModel {
     Map<String, String>? settings,
   }) {
     return AccountUser(
-      photoUrl: photoUrl ?? this.photoUrl,
       phone: phone ?? this.phone,
       email: email ?? this.email,
       authMethod: authMethod ?? this.authMethod,
       providerId: providerId ?? this.providerId,
-      displayName: displayName ?? this.displayName,
+      // displayName: displayName ?? this.displayName,
       uid: uid ?? this.uid,
       lastLogin: lastLogin ?? this.lastLogin,
       timeCreated: timeCreated ?? this.timeCreated,
@@ -197,24 +205,44 @@ class AccountUser implements IModel {
     );
   }
 
-  static AccountUser fromAuthUser(AuthUser user) {
+  static AccountUser fromUser(User user) {
+    final DateTime timestamp = DateTime.now();
     return AccountUser(
-        claims: {},
-        timeCreated: DateTime.now(),
+        claims: [UserClaim.starter],
+        timeCreated: timestamp,
         interactions: [],
         bio: "",
-        name: user.userName,
+        name: user.displayName??"",
         emailVerified: user.emailVerified,
         uid: user.uid,
-        lastLogin: DateTime.now(),
+        lastLogin:  timestamp,
         authMethod: AuthWith.Password,
-        avatar: user.avatar,
-        displayName: user.userName,
-        providerId: "",
-        email: user.email,
-        photoUrl: user.avatar,
+        avatar: user.photoURL??"",
+        providerId: user.providerData[0].providerId,
+        email: user.email??"",
         phone: user.phoneNumber ?? "",
-        birthdate: DateTime.now(),
+        birthdate: timestamp,
         settings: {});
   }
+
+  static AccountUser mergeAuthWithRequest(User user,SignUpEmailRequest request) {
+    final DateTime timestamp = DateTime.now();
+    return AccountUser(
+        claims: [UserClaim.starter],
+        timeCreated: timestamp,
+        interactions: [],
+        bio: "",
+        name: request.name,
+        emailVerified: user.emailVerified,
+        uid: user.uid,
+        lastLogin:  timestamp,
+        authMethod: AuthWith.Password,
+        avatar: user.photoURL??"",
+        providerId: user.providerData[0].providerId,
+        email: request.email,
+        phone: request.phoneNumber,
+        birthdate: request.birthdate,
+        settings: {});
+  }
+  
 }

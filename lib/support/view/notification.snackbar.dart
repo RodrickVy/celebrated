@@ -26,7 +26,7 @@ class NotificationSnackBar extends StatelessWidget {
         return Container(
           width: Adaptive(context).width,
           height: Adaptive(context).height,
-          color: Colors.black38,
+          color: Colors.black12,
           alignment: Alignment.topCenter,
           padding: EdgeInsets.only(top: Adaptive(context).height/5),
           child: Container(
@@ -39,7 +39,7 @@ class NotificationSnackBar extends StatelessWidget {
               // height: Get.height / 3,
               margin: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0),
+                borderRadius: AppTheme.shape.borderRadius,
                 color: bgColor,
               ),
               padding: const EdgeInsets.all(12),
@@ -54,7 +54,8 @@ class NotificationSnackBar extends StatelessWidget {
                           FeedbackService.clearErrorNotification();
                         },
                         icon: const Icon(Icons.clear)),
-                  FeedbackService.appNotification.value!.icon??icon,  Padding(
+                  FeedbackService.appNotification.value!.icon??icon,
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child:  Text(
                       FeedbackService.appNotification.value!.title,
@@ -146,11 +147,11 @@ class NotificationSnackBar extends StatelessWidget {
   Color get bgColor {
     switch (FeedbackService.appNotification.value!.type) {
       case NotificationType.error:
-        return Colors.red;
+        return Color(0xFFFFA598);
       case NotificationType.success:
-        return Colors.green;
+        return Color(0xFFDDFFB4);
       case NotificationType.warning:
-        return Colors.orange;
+        return Color(0xFFFFE6A5);
       case NotificationType.neutral:
         return Colors.white;
     }

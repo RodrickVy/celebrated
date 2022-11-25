@@ -1,8 +1,10 @@
 import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/controller/auth.controller.dart';
 import 'package:celebrated/authenticate/view/avatar.view.dart';
 import 'package:celebrated/domain/view/app.state.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/interface/controller.interface.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -17,82 +19,113 @@ class AppDesktopDrawer<NAV extends INavController> extends AppStateView<NAV> {
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return Obx(
-          () =>
-          AnimatedContainer(
-            width: controller.drawerExpanded ? 280 : 70,
-            height: adapter.height,
-            duration: const Duration(milliseconds: 400),
-            child: Drawer(
-                elevation: 0,
-                backgroundColor: AppSwatch.primaryAccent,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+    return Obx(() {
+      controller.currentItemIndex;
+
+      return AnimatedContainer(
+        width: controller.drawerExpanded ? 280 : 70,
+        height: adapter.height,
+        duration: const Duration(milliseconds: 400),
+        decoration: BoxDecoration(border: Border(right: AppTheme.shape.side)),
+        child: Drawer(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    alignment: Alignment.topCenter,
+                    child: AvatarView(
+                      radius: controller.drawerExpanded ? 90 : 80,
+                    )),
+                // Obx(
+                //   () => Padding(
+                //       padding: const EdgeInsets.all(6),
+                //       child: Text(
+                //         controller.drawerExpanded
+                //             ? authController.accountUser.value.name
+                //             : authController.accountUser.value.initials,
+                //         style: GoogleFonts.mavenPro(
+                //           fontSize: 17,
+                //           fontWeight: FontWeight.w600,
+                //         ),
+                //         textAlign: TextAlign.center,
+                //       )),
+                // ),
+                // controller.drawerExpanded
+                //     ? OpenDrawerItem(
+                //         controller: controller,
+                //         item: AppRoutes.homePage,
+                //       )
+                //     : ClosedDrawerItem(item: AppRoutes.homePage, controller: controller),
+                ...controller.items.map((AppPage item) {
+                  return controller.drawerExpanded
+                      ? OpenDrawerItem(
+                          controller: controller,
+                          item: item,
+                        )
+                      : ClosedDrawerItem(item: item, controller: controller);
+                }).toList(),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(alignment:Alignment.topCenter,child: AvatarView(radius:controller.drawerExpanded ?90:80 ,)),
-                    Obx(
-                          () =>
-                          Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Text(
-                               controller.drawerExpanded ? authController.user.value.userName: authController.user.value.userInitials,
-                                style: GoogleFonts.mavenPro(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.center,
-                              )),
-                    ),
-                    ...controller.items.map((AppPage item) {
-                      return  controller.drawerExpanded
-                          ? OpenDrawerItem(controller: controller, item: item,)
-                          : ClosedDrawerItem(item: item, controller: controller);
-                    }).toList(),
-                    const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [IconButton(onPressed: () {
-                        controller.toggleDrawerExpansion();
-                      }, icon: Icon(controller.drawerExpanded ? Icons.arrow_back_ios : Icons.arrow_forward_ios))
-                      ],
-                    ),
+                    IconButton(
+                        onPressed: () {
+                          controller.toggleDrawerExpansion();
+                        },
+                        icon: Icon(controller.drawerExpanded ? Icons.arrow_back_ios : Icons.arrow_forward_ios))
                   ],
-                )),
-          ),
-    );
+                ),
+              ],
+            )),
+      );
+    });
   }
 }
 
 class OpenDrawerItem extends StatelessWidget {
-  const OpenDrawerItem({
+  OpenDrawerItem({
     Key? key,
     required this.item,
     required this.controller,
-  }) : super(key: key);
+  }) : super(key: key) {
+    Future.delayed(const Duration(seconds: 1), () {
+      show(true);
+    });
+  }
 
   final AppPage item;
   final INavController controller;
+  final RxBool show = false.obs;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0).copyWith(bottom: 0, top: 5),
-      child: ListTile(
-        leading: Icon(item.icon),
-        visualDensity: VisualDensity.compact,
-        // selectedColor:controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54
-        selectedTileColor: AppSwatch.primary.shade500.withAlpha(34),
-        title: Text(
-          item.name,
-          style: GoogleFonts.poppins(fontSize: 18),
+    return Obx(
+      () => AnimatedOpacity(
+        opacity: show.value ? 1 : 0.4,
+        duration: const Duration(seconds: 1),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0).copyWith(bottom: 0, top: 5),
+          child: ListTile(
+            leading: Icon(item.icon),
+            visualDensity: VisualDensity.compact,
+            // selectedColor:controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54
+            selectedTileColor: Colors.transparent,
+            title: Text(
+              item.name,
+              style: GoogleFonts.poppins(fontSize: 18),
+            ),
+            tileColor: Colors.transparent,
+            selected: controller.items[controller.currentItemIndex] == item,
+            shape: AppTheme.shape.copyWith(side: BorderSide.none),
+            onTap: () {
+              NavController.instance.to(item.route);
+            },
+            contentPadding: const EdgeInsets.all(12),
+          ),
         ),
-        tileColor: Colors.transparent,
-        selected: controller.currentItem.toLowerCase() == item.route,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-        onTap: () {
-          NavController.instance.to(item.route);
-        },
-        contentPadding: const EdgeInsets.all(12),
       ),
     );
   }
@@ -115,11 +148,12 @@ class ClosedDrawerItem extends StatelessWidget {
       child: ListTile(
         visualDensity: VisualDensity.compact,
         // selectedColor:controller.currentItemIndex == index ? AppSwatch.primary.shade500:Colors.black54
-        selectedTileColor: AppSwatch.primary.shade500.withAlpha(34),
+        selectedTileColor: Colors.transparent,
+        // AppSwatch.primary.shade500.withAlpha(34),
         title: Icon(item.icon),
         tileColor: Colors.transparent,
-        selected: controller.currentItem.toLowerCase() == item.route,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        selected: controller.items[controller.currentItemIndex] == item,
+        shape: AppTheme.shape.copyWith(side: BorderSide.none),
         onTap: () {
           NavController.instance.to(item.route);
         },

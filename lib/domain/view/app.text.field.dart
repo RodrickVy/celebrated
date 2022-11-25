@@ -1,3 +1,4 @@
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,26 +121,12 @@ class AppTextField extends StatelessWidget {
   }
 
 
-  static InputDecoration get defaultDecoration => InputDecoration(
-    focusColor: Colors.black,
-    border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(0),
-        borderSide: const BorderSide(color: Colors.black38)),
-    focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(0),
-        borderSide: const BorderSide(color: Colors.black38)),
-
-    labelStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
-    contentPadding: const EdgeInsets.all(8).copyWith(left: 15),
-    hintStyle: Get.theme.textTheme.bodyText2!.copyWith(color: Colors.black),
-    //fillColor: Colors.green
-  );
 
   InputDecoration get _decoration {
-    InputDecoration defaultDecoration = AppTextField.defaultDecoration.copyWith(
+    InputDecoration defaultDecoration = AppTheme.inputDecoration.copyWith(
       labelText: label,
       hintText: hint,
-
+      prefixIcon: Icon(fieldIcon)
       //fillColor: Colors.green
     );
 

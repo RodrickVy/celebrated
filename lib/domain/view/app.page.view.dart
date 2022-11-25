@@ -6,6 +6,7 @@ import 'package:celebrated/navigation/views/app.bottom.nav.bar.dart';
 import 'package:celebrated/navigation/views/app.drawer.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// much like [AppStateView] but this time for a page, adds a scaffold using the appWide [AppDesktopDrawer],[AppBottomNavBar]
 /// to avoid the hustle of repeating calling them.
@@ -15,22 +16,9 @@ abstract class AppPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return page(context);
-  }
-
-  Widget page(BuildContext context) {
     return view(ctx: context, adapter: Adaptive(context));
-
-    //   Scaffold(
-    //   // key: NavController.instance.currentItem == AppRoutes.auth
-    //   //     ? NavController.instance.scaffoldKey
-    //   //     : null,
-    //   appBar:NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
-    //   drawer: null,
-    //   body:,
-    //   bottomNavigationBar: GetPlatform.isMobile ? AppBottomNavBar<NavController>() : null,
-    // );
   }
+
 
   Widget view({required BuildContext ctx, required Adaptive adapter});
 }
@@ -43,11 +31,10 @@ class AppPageViewWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Adaptive(context).adaptScreens(
-      small: smallScreen(context),
-      big:  bigScreen(context)
+        small: smallScreen(context),
+        big: bigScreen(context)
     );
   }
-
 
 
   Scaffold smallScreen(BuildContext context) {
@@ -55,8 +42,9 @@ class AppPageViewWrapper extends StatelessWidget {
       // key: NavController.instance.currentItem == AppRoutes.auth
       //     ? NavController.instance.scaffoldKey
       //     : null,
-      appBar: NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
+      appBar: AppRoutes.noAppBarRoutes.contains(Get.currentRoute)? null : const AppTopBar(),
       drawer: null,
+      backgroundColor: Colors.white,
       body: body,
       bottomNavigationBar: AppBottomNavBar<NavController>(),
     );
@@ -64,14 +52,19 @@ class AppPageViewWrapper extends StatelessWidget {
 
   Widget bigScreen(BuildContext context) {
     return SafeArea(
-      child: Row(
-        children: [AppDesktopDrawer<NavController>(), Expanded(child:  Scaffold(
-          appBar: NavController.instance.currentItem == AppRoutes.lists ? null : const AppTopBar(),
-          drawer: null,
-          body: body,
-          bottomNavigationBar: null,
-        ))],
-      ),
+
+      child: Container(
+          color: Colors.white,
+          child: Row(
+          children: [AppDesktopDrawer<NavController>(), Expanded(child: Scaffold(
+            appBar: AppRoutes.noAppBarRoutes.contains(Get.currentRoute)? null : const AppTopBar(),
+      drawer: null,
+      body: body,
+            backgroundColor: Colors.white,
+      bottomNavigationBar: null,
+    ))],
+    ),)
+    ,
     );
   }
 }

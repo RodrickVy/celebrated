@@ -41,7 +41,7 @@ class NotFoundView extends AppPageView {
                   padding: const EdgeInsets.all(8.0),
                   child: AppButton(
                       key: UniqueKey(),
-                      // isTextButton: true,
+                      isTextButton: true,
                       label: item.name,
                       onPressed: () async {
                         NavController.instance.to(item.route);

@@ -419,6 +419,7 @@ class DeleteListView extends StatelessWidget {
 
                 FeedbackService.clearErrorNotification();
               },
+              isTextButton: true,
               key: UniqueKey(),
               child: const Text("Delete"),
             ),
@@ -429,6 +430,7 @@ class DeleteListView extends StatelessWidget {
               onPressed: () {
                 FeedbackService.clearErrorNotification();
               },
+              isTextButton: true,
               key: UniqueKey(),
               child: const Text("Cancel"),
             ),

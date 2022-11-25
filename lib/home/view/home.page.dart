@@ -1,10 +1,12 @@
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/domain/view/app.page.view.dart';
 import 'package:celebrated/home/controller/home.controller.dart';
 import 'package:celebrated/home/model/target.group.dart';
 import 'package:celebrated/home/model/value.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// the homepage for birthdays, has tips, current birthdays etc.
@@ -25,42 +27,85 @@ class HomePage extends AppPageView{
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Image.asset(
-              HomeController.homeBanner,
-              width: Get.width,
-              fit: BoxFit.fitWidth,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RichText(
-                textAlign: TextAlign.left,
-                text: TextSpan(
-                    text: "For  ",
-                    style: adapter.textTheme.headlineSmall,
-                    children: [
-                      ...HomeController.targets
-                          .map(
-                            (TargetGroup group) => TextSpan(
-                              text: '${group.name} , ',
-                              style: adapter.textTheme.headlineSmall
-                                  ?.copyWith( color: group.color),
-                            ),
-                          )
-                          .toList(),
-                       TextSpan(
-                        text: " or any ", style: adapter.textTheme.headlineSmall
+
+            Container(
+              decoration: BoxDecoration(
+                 border: Border.fromBorderSide( AppTheme.shape.side),
+                borderRadius: AppTheme.shape.borderRadius
+              ),
+              clipBehavior: Clip.hardEdge,
+              padding: EdgeInsets.zero,
+              child: Card(
+                elevation: 0,
+                color: Colors.transparent,
+                margin: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment:MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ChoiceChip(
+                            elevation: 0,
+                            label: const Text("Alpha"),
+                            onSelected: (bool value) {
+                              NavController.instance.to(AppRoutes.support);
+                            },
+                            shape: AppTheme.shape,
+                            backgroundColor: Colors.white,
+                            selected: false,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                            text: "For  ",
+                            style: adapter.textTheme.headlineSmall,
+                            children: [
+                              ...HomeController.targets
+                                  .map(
+                                    (TargetGroup group) => TextSpan(
+                                    children: [
+                                      const TextSpan(text: ""),
+                                      TextSpan(   text: ' ${group.name} ',
+
+                                        style: adapter.textTheme.headlineSmall
+                                            ?.copyWith( color: group.color), ),
+                                      const TextSpan(text: "•",style: TextStyle(color: Colors.black12)),
+                                    ]
+                                ),
+                              )
+                                  .toList(),
+                              TextSpan(
+                                  text: " or any ", style: adapter.textTheme.headlineSmall
+                              ),
+                              TextSpan(
+                                text: 'organizations',
+                                style: adapter.textTheme.headlineSmall?.copyWith( color: Colors.blue),
+                              ),
+                              TextSpan(
+                                text: " that want to express appreciation when it matters.",
+                                style: adapter.textTheme.headlineSmall?.copyWith( color: Colors.black),
+                              ),
+                            ]),
                       ),
-                      TextSpan(
-                        text: 'organizations',
-                        style: adapter.textTheme.headlineSmall?.copyWith( color: Colors.blue),
-                      ),
-                      TextSpan(
-                        text: " that want to express appreciation when it matters.",
-                        style: adapter.textTheme.headlineSmall?.copyWith( color: Colors.black),
-                      ),
-                    ]),
+                    ),
+                    // Image.asset(
+                    //   HomeController.homeBanner,
+                    //   width: Get.width,
+                    //   fit: BoxFit.cover,
+                    // ),
+
+                  ],
+                ),
               ),
             ),
+
             const SizedBox(height: 50,),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -118,6 +163,7 @@ class HomePage extends AppPageView{
             Text(
               "Transforming Organizations!",
               style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 25,),
             Wrap(
@@ -126,28 +172,44 @@ class HomePage extends AppPageView{
 
                 ...HomeController.values.map((CoreValue value){
                   return SizedBox(
-                    width: 200,
-                    child: Card(
-                      elevation: 1,
+                    width: Adaptive(ctx).adapt(phone: 200, tablet: 250, desktop: 300),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.fromBorderSide( AppTheme.shape.side),
+                          borderRadius: AppTheme.shape.borderRadius,
+                        gradient: AppTheme.lightGradient,
 
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),side: BorderSide(   color: value.color)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 25,),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              value.name,
-                              style: adapter.textTheme.headline6,
-                              textAlign: TextAlign.center,
+                      ),
+                      margin: const EdgeInsets.all(10),
+                      clipBehavior: Clip.hardEdge,
+                      padding: EdgeInsets.zero,
+                      child: Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: AppTheme.shape,
+                        margin: EdgeInsets.all(1),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 25,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:FadeInImage( placeholder: AssetImage(value.image), image: AssetImage(value.image),),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(value.description,textAlign: TextAlign.center,),
-                          )
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                value.name,
+                                style: adapter.textTheme.headline6,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(value.description,textAlign: TextAlign.center,),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   );

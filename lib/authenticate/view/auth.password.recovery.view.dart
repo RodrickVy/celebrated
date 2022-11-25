@@ -2,6 +2,7 @@
 import 'package:celebrated/domain/view/app.button.dart';
 import 'package:celebrated/domain/view/app.state.view.dart';
 import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
@@ -9,14 +10,15 @@ import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// view for recovering password,
 // ignore: must_be_immutable
-class RecoverPasswordView extends AppStateView<AuthController> {
+class PasswordResetPage extends AppStateView<AuthController> {
   final TextEditingController emailTextController = TextEditingController();
 
-  RecoverPasswordView({Key? key}) : super(key: key);
+  PasswordResetPage({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -65,6 +67,18 @@ class RecoverPasswordView extends AppStateView<AuthController> {
                           FeedbackService.spinnerUpdateState(
                               key: FeedbackSpinKeys.passResetForm, isOn: false);
                         },
+                      ),
+                      const SizedBox(height: 10),
+                      AppButton(
+                        key: UniqueKey(),
+                        isTextButton: true,
+                        onPressed: ()  {
+                          Get.toNamed(AppRoutes.authSignIn);
+                        },
+                        child: Text(
+                          "sign in",
+                          style: GoogleFonts.mavenPro(),
+                        ),
                       ),
                     ]),
               ),

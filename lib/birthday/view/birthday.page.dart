@@ -12,6 +12,7 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 
@@ -61,7 +62,7 @@ class BirthdayPageView extends AppPageView {
                       child: ImageFade(
                         width: 300,
                         image: AssetImage(
-                          "assets/intro/cake.png",
+                          "assets/intro/announcement.png",
                         ),
                       ),
                     ),
@@ -75,24 +76,22 @@ class BirthdayPageView extends AppPageView {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "birthday is in",
-                      style: adapter.textTheme.headline4,
-                      textAlign: TextAlign.center,
-                    ),
+                  Text(
+                    "birthday is in",
+                    style: adapter.textTheme.headline5,
+                    textAlign: TextAlign.center,
                   ),
                   Card(
-                    elevation: 2,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)),
-                    color: AppSwatch.primary.shade500,
+                    color: AppSwatch.primary.shade500.withAlpha(1),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: CountdownTimer(
-                        textStyle: adapter.textTheme.headline5
+                        textStyle: Adaptive(ctx).adapt(phone: adapter.textTheme.headline5, tablet: adapter.textTheme.headline5, desktop: adapter.textTheme.headline3)
                             ?.copyWith(fontWeight: FontWeight.bold),
+
                         endTime: birthday.isPast
                             ? DateTime(
                                     DateTime.now().year + 1,
@@ -106,6 +105,7 @@ class BirthdayPageView extends AppPageView {
                   Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: AppButton(
+                      isTextButton:true,
                       onPressed: () async {
                         if (GetPlatform.isWeb) {
                           Clipboard.setData(
@@ -113,7 +113,7 @@ class BirthdayPageView extends AppPageView {
                           FeedbackService.clearErrorNotification();
                           FeedbackService.successAlertSnack('Link Copied!');
                         } else {
-                          //await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
+                          await Share.share(AppRoutes.domainUrlBase+Get.currentRoute);
                           FeedbackService.clearErrorNotification();
                         }
                       },

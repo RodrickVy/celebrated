@@ -159,15 +159,18 @@ class HomeController extends GetxController {
     CoreValue(
         name: "Breaking Barriers",
         color: Colors.pinkAccent,
+        image: "assets/intro/broken_barriers.png",
         description: "Celebrated is a great way for schools, churches and any organizations to break barriers."),
     CoreValue(
         name: "Expression",
         color: Colors.yellowAccent,
+        image: "assets/intro/thank_you.png",
         description:
             "We believe love, care and appreciation that find no authentic expression is useless, we help you express it when it matters."),
     CoreValue(
         name: "Growing connection",
         color: Colors.redAccent,
+        image: "assets/intro/party_many.png",
         description:
             "We help organizations connect more, not as employees,students or members but humans celebrating each other."),
   ];

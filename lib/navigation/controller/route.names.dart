@@ -6,44 +6,52 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // 'https://celebrated-app.web.app'
 class AppRoutes {
-  static const String domainUrlBase ='http://localhost:38421' ;
+  static const String domainUrlBase ='https://celebrated-app.web.app' ;
   static const String home = "/home";
-  static const String about = "/about";
   static const String lists = "/lists";
+  static const String gifts = "/gifts";
+  static const String cards = "/cards";
+  static const String parties = "/parties";
+
+
+  static const String about = "/about";
   static const String plan = "/plan";
   static const String celebrate = "/celebrate";
-  static const String splash = "/splash";
+  static const String splash = "/";
   // static const String profile = "/profile";
   static const String privacy = "/privacy";
   static const String shareBoard = '/shared';
   static const String openListEdit = '/open_edit';
   static const String birthday = '/birthday';
   static const String support = "/support";
-  static const String auth = "/auth";
-  static String authSignIn = "/auth/${AuthPages.sign_in.name}";
-  static String authSignUp = "/auth/${AuthPages.sign_up.name}";
-  static String authPasswordReset =
-      "/auth/${AnEnum.toJson(AuthPages.password_reset)}";
+
+  static const String profile = "/profile";
+  static const String authSignIn = "/sign_in";
+  static const String authSignUp = "/sign_up";
+  static const String subscriptions = "/subscriptions";
+  static const String verifyEmail = "/verify_email";
+  static const String authPasswordReset =
+      "/auth/password_reset";
   static const String bBoard = "/b-board";
   static const String avatarEditor = "/avatar-editor";
   static const String notFound = "/notfound";
   static const String docs = '/docs/:id';
 
-  static List<String> showMVPBannerRoutes = [home,auth].map((e) => e.replaceFirst('/','').split("/").first).toList();
+
+  static List<String> noAppBarRoutes = [home,lists,splash,privacy ];
+
+  static List<String> authRoutes = [profile,authSignIn,authSignIn,authPasswordReset];
 
   static List<AppPage> get items => [
-        AppPage(name: "Home", route: home, icon: Icons.home),
+    AppPage(name: "Home", route: home, icon: Icons.home),
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),
-    // AppPage(name: "Plan", route: plan, icon: Icons.checklist),
-    // AppPage(name: "Celebrate", route: celebrate, icon: Icons.cake),
-        // AppPage(
-        //     name: "boards",
-        //     route: bBoard,
-        //     icon: Icons.developer_board_outlined),
-        AppPage(name: "Account", route: auth, icon: Icons.account_circle),
+        AppPage(name: "Gifts", route: gifts, icon: Icons.card_giftcard),
+        AppPage(name: "Cards", route: cards, icon: Icons.email_sharp),
+        AppPage(name: "Parties", route: parties, icon: Icons.cake),
+        // AppPage(name: "Account", route: profile, icon: Icons.account_circle),
 
       ];
-
+static AppPage homePage =     AppPage(name: "Home", route: home, icon: Icons.home);
   /// for one depth route only
   static bool isCurrentRoute(String pageName) {
     String current = Get.currentRoute.split("?").first.replaceAll("/", "");
@@ -56,4 +64,6 @@ class AppRoutes {
 
   // routes that dont have any  back option
   static List<String> noBackOptionRoute = [home];
+
+
 }
