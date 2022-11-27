@@ -1,11 +1,14 @@
+import 'package:celebrated/birthday/model/birthday.list.dart';
+
 class BirthdaysWatcher {
   final String name;
   final bool isUser;
   final String phoneNumber;
-  final BirthdayNotificationType notificationType;
+  final String email;
+  final BirthdayReminderType notificationType;
 
   const BirthdaysWatcher(
-      {required this.name, required this.isUser, required this.phoneNumber, required this.notificationType});
+      {required this.name, required this.isUser,required this.email,  required this.phoneNumber, required this.notificationType});
 
   Map<String, dynamic> toMap() {
     return {
@@ -21,16 +24,9 @@ class BirthdaysWatcher {
       name: map['name'] as String,
       isUser: map['isUser'] as bool,
       phoneNumber: map['phoneNumber'] as String,
-      notificationType: map['notificationType'] as BirthdayNotificationType,
+      notificationType: map['notificationType'] as BirthdayReminderType, email: map["email"],
     );
   }
 }
 
 
-enum BirthdayNotificationType{
-  sms,
-  whatsapp,
-  email,
-  inPhoneNotifications,
-  inApp
-}

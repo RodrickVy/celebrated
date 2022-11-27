@@ -2,7 +2,7 @@
 class OnRouteObserver{
   final bool Function(String route,Map<String,String?> parameters) when;
 
-  final void Function(String route,Map<String,String?> parameters,Function cancel) run;
+  final void Function(String route,Map<String,String?> parameters,Function quitListening,Function(String route) rerouteTo) run;
 
  const  OnRouteObserver( {required this.when, required this.run});
 

@@ -1,5 +1,5 @@
 import 'package:celebrated/domain/repository/amen.content/repository/repository.dart';
-import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/adapter/app.notification.factory.dart';
@@ -164,13 +164,13 @@ class FeedbackService extends GetxController
                       key: UniqueKey(),
                       child: const Text("Signup"),
                       onPressed: () {
-                        NavController.instance.to(AppRoutes.authSignUp);
+                       navService.to(AppRoutes.authSignUp);
                       }),
                   AppButton(
                       key: UniqueKey(),
                       child: const Text("more-info"),
                       onPressed: () {
-                        NavController.instance.to(AppRoutes.splash);
+                       navService.to(AppRoutes.splash);
                       }),
                 ],
               ),

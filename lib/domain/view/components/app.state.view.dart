@@ -15,3 +15,17 @@ abstract class AppStateView<T> extends StatelessWidget {
 
   Widget view({required BuildContext ctx, required Adaptive adapter});
 }
+
+
+abstract class AdaptiveUI extends StatelessWidget {
+
+
+  const AdaptiveUI({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return view(ctx: context, adapter: Adaptive(context));
+  }
+
+  Widget view({required BuildContext ctx, required Adaptive adapter});
+}

@@ -2,8 +2,8 @@ import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/domain/model/drop.down.action.dart';
-import 'package:celebrated/domain/view/action.drop.down.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/action.drop.down.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'birthday.editor.dart';
 
-class BirthdayTile extends AppStateView<BirthdaysController> {
+class BirthdayTile extends AdaptiveUI {
   final ABirthday birthday;
   final double? width;
   final double? height;
@@ -19,7 +19,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
   final Function(ABirthday birthday) onDelete;
   final VoidCallback? onSelect;
 
-  BirthdayTile(
+  const BirthdayTile(
       {Key? key,
       this.width = 160,
       this.onSelect,
@@ -39,10 +39,10 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
           transitionBuilder: (Widget child, Animation<double> animation) {
             return FadeTransition(opacity: animation, child: child);
           },
-          child: controller.currentBirthdayInEdit.value == birthday.id
+          child: birthdaysController.currentBirthdayInEdit.value == birthday.id
               ? BirthdayEditor(
                   onSave: (ABirthday birthday) {
-                    controller.closeBirthdayEditor();
+                    birthdaysController.closeBirthdayEditor();
                     onEdit(birthday);
                   },
                   onDelete: () {
@@ -50,7 +50,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                   },
                   birthdayValue: birthday,
                   onCancel: () {
-                    controller.closeBirthdayEditor();
+                    birthdaysController.closeBirthdayEditor();
                   },
                 )
               : Card(
@@ -59,7 +59,7 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                   child: ListTile(
                     onTap: () {
                       onEdit(birthday);
-                      controller.editBirthday(birthday.id);
+                      birthdaysController.editBirthday(birthday.id);
                     },
                     title: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -81,9 +81,9 @@ class BirthdayTile extends AppStateView<BirthdaysController> {
                       }),
                       DropDownAction("Edit", Icons.edit, () {
                         onEdit(birthday);
-                        controller.editBirthday(birthday.id);
+                        birthdaysController.editBirthday(birthday.id);
                       }),
-                      DropDownAction("Share", Icons.share, () {
+                      DropDownAction("Countdown", Icons.share, () {
                         onSelect != null ? onSelect!() : () {};
                       })
                     ]),

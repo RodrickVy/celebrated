@@ -1,5 +1,5 @@
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/home/controller/home.controller.dart';
 import 'package:celebrated/home/model/target.group.dart';
 import 'package:celebrated/home/model/value.dart';
@@ -7,6 +7,7 @@ import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// the homepage for birthdays, has tips, current birthdays etc.
@@ -50,7 +51,7 @@ class HomePage extends AppPageView{
                             elevation: 0,
                             label: const Text("Alpha"),
                             onSelected: (bool value) {
-                              NavController.instance.to(AppRoutes.support);
+                             navService.to(AppRoutes.support);
                             },
                             shape: AppTheme.shape,
                             backgroundColor: Colors.white,
@@ -172,7 +173,7 @@ class HomePage extends AppPageView{
 
                 ...HomeController.values.map((CoreValue value){
                   return SizedBox(
-                    width: Adaptive(ctx).adapt(phone: 200, tablet: 250, desktop: 300),
+                    width: Adaptive(ctx).adapt(phone: Get.width-50, tablet: 250, desktop: 300),
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border.fromBorderSide( AppTheme.shape.side),
@@ -187,14 +188,14 @@ class HomePage extends AppPageView{
                         elevation: 0,
                         color: Colors.white,
                         shape: AppTheme.shape,
-                        margin: EdgeInsets.all(1),
+                        margin: const EdgeInsets.all(1),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(height: 25,),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child:FadeInImage( placeholder: AssetImage(value.image), image: AssetImage(value.image),),
+                              child:FadeInImage( placeholder: AssetImage(value.image), width:200,image: AssetImage(value.image),),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),

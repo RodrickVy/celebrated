@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:pricing_cards/pricing_cards.dart';
 
 class SubscriptionView extends StatelessWidget {
+  const SubscriptionView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return PricingCards(

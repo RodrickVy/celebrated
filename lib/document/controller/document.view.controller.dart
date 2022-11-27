@@ -1,6 +1,7 @@
 import 'package:celebrated/document/model/doc.element.dart';
 import 'package:celebrated/document/model/doc.element.type.dart';
 import 'package:celebrated/document/model/document.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:get/get.dart';
 
@@ -248,7 +249,7 @@ class DocumentsController extends GetxController {
   /// set the given [document] as the current one
   static void goToDocument(String docId) {
     if (availableDocuments.containsKey(docId)) {
-      Get.toNamed('/docs/$docId');
+      navService.to('/docs/$docId');
     }
   }
 

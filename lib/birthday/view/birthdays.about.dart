@@ -1,13 +1,11 @@
 import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/appIntro/controller/intro.controller.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutDev extends AppPageView {
   const AboutDev({Key? key}) : super(key: key);
 
-  static final IntroScreenController controller =Get.find<IntroScreenController>();
+
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -34,11 +32,11 @@ class AboutDev extends AppPageView {
           // crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const  Padding(
+              padding:  EdgeInsets.all(8.0),
               child: ImageFade(
                 image: AssetImage(
-                  controller.homeItem.image,
+                  "assets/logos/Icon-192.png",
                 ),
               ),
             ),

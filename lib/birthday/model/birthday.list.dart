@@ -1,4 +1,4 @@
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/birthday/model/watcher.dart';
 import 'package:celebrated/domain/model/imodel.dart';
@@ -6,27 +6,33 @@ import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+enum BirthdayReminderType { email, phoneNotification, sms, whatsapp, whatsappGroup }
+
 class BirthdayBoard extends IModel {
   final String name;
   final Map<String, ABirthday> birthdays;
   final int hex;
   final List<String> sharedTo;
+  final int startReminding;
   final String viewingId;
   final String addingId;
   final String authorId;
   final String authorName;
+  final BirthdayReminderType notificationType;
   final List<BirthdaysWatcher> watchers;
 
   BirthdayBoard(
       {required this.name,
       required this.birthdays,
       required this.addingId,
+      this.notificationType = BirthdayReminderType.phoneNotification,
       required this.hex,
       required this.authorName,
       required this.authorId,
+       this.startReminding = 2,
       required final String id,
       required this.sharedTo,
-        this.watchers = const [],
+      this.watchers = const [],
       required this.viewingId})
       : super(id);
 
@@ -55,9 +61,9 @@ class BirthdayBoard extends IModel {
   List<ABirthday> get bds {
     List<ABirthday> _birthdays = birthdaysList;
     _birthdays.sort((a, b) {
-
-      print("${a.dateWithThisYear.toIso8601String()} : ${b.dateWithThisYear.toIso8601String()}");
-     return (DateTime.now().millisecondsSinceEpoch - a.dateWithThisYear.millisecondsSinceEpoch).compareTo(DateTime.now().millisecondsSinceEpoch - b.dateWithThisYear.millisecondsSinceEpoch);
+      // print("${a.dateWithThisYear.toIso8601String()} : ${b.dateWithThisYear.toIso8601String()}");
+      return (DateTime.now().millisecondsSinceEpoch - a.dateWithThisYear.millisecondsSinceEpoch)
+          .compareTo(DateTime.now().millisecondsSinceEpoch - b.dateWithThisYear.millisecondsSinceEpoch);
 
       // int aDifferenceToCurrentDate = DateTime.now()
       //     .difference(DateTime(DateTime.now().year, a.date.month, a.date.day))
@@ -126,16 +132,13 @@ class BirthdayBoard extends IModel {
   }
 
   String generateViewId() =>
-      "${AuthController.instance.accountUser.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
+      "${authService.accountUser.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
 
-  String generateInviteId() =>
-      "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";
+  String generateInviteId() => "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";
 
-  String  viewUrl ([String? viewingId])=>
-      "${AppRoutes.domainUrlBase}/shared?link=${viewingId??this.viewingId}";
+  String viewUrl([String? viewingId]) => "${AppRoutes.domainUrlBase}/shared?link=${viewingId ?? this.viewingId}";
 
-  String  addInviteUrl ([String? addingId]) =>
-      "${AppRoutes.domainUrlBase}/open_edit?link=${addingId??this.addingId}";
+  String addInviteUrl([String? addingId]) => "${AppRoutes.domainUrlBase}/open_edit?link=${addingId ?? this.addingId}";
 
   bool birthdayAlreadyExists(ABirthday birthday) {
     return birthdays.values
@@ -145,7 +148,4 @@ class BirthdayBoard extends IModel {
             element.date.day == birthday.date.day)
         .isNotEmpty;
   }
-  
-  
-  
 }

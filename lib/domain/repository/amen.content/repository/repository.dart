@@ -31,6 +31,11 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
   //   collectionReference = firestore.collection(dbCollectionPath);
   // }
 
+
+  void onContentUpdated(T content) {
+
+  }
+
   @override
   Future<List<T>> getCollectionAsList(ContentQuery? query) async {
     return (await getQueryReference(query).get())
@@ -46,8 +51,8 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
 
   Future<List<T>> filter(List<T> docs, ContentQuery? query) async {
     List<T> data = (await getQueryReference(query)
-            .where("id", whereIn: docs.map((e) => e.id).toList())
-            .get())
+        .where("id", whereIn: docs.map((e) => e.id).toList())
+        .get())
         .docs
         .map((QueryDocumentSnapshot doc) {
       if (doc.data() != null) {
@@ -65,7 +70,7 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     if (query != null) {
       return whereQueryRef(query)
           .limit(query.limit);
-          // .orderBy(query.orderProperty, descending: query.orderDescending);
+      // .orderBy(query.orderProperty, descending: query.orderDescending);
     } else {
       return collectionReference;
     }
@@ -178,10 +183,12 @@ class ContentRepository<T extends IModel, F extends IModelFactory<T>>
     }
     DocumentSnapshot updatedSnapshot = await collectionReference.doc(id).get();
     if (updatedSnapshot.data() != null) {
-      return docFactory
+      final T doc = docFactory
           .fromJson(updatedSnapshot.data() as Map<String, dynamic>);
+    onContentUpdated(doc);
+    return doc;
     } else {
-      throw "Document data is null";
+    throw "Document data is null";
     }
   }
 

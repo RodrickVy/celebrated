@@ -1,7 +1,7 @@
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
 
 import 'package:celebrated/authenticate/models/auth.with.dart';
 import 'package:celebrated/util/list.extention.dart';
@@ -14,7 +14,6 @@ import 'package:google_fonts/google_fonts.dart';
 enum ProviderAction { signUp, signIn }
 /// provider buttons to be used  by auth later , currently not in use
 class ProviderButtons extends StatelessWidget {
-  final AuthController controller = Get.find<AuthController>();
   final bool darkMode = false;
   final AuthButtonStyle? style = AuthButtonStyle(
     padding: const EdgeInsets.all(12),
@@ -242,13 +241,13 @@ borderRadius: 0,
       switch (action) {
         case AuthWith.EmailLink:
         case AuthWith.Facebook:
-          return controller.signInWithPopUpProvider(
+          return authService.signInWithPopUpProvider(
               provider: FacebookAuthProvider());
         case AuthWith.Github:
-          return controller.signInWithPopUpProvider(
+          return authService.signInWithPopUpProvider(
               provider: GithubAuthProvider());
         case AuthWith.Google:
-          return controller.signInWithPopUpProvider(
+          return authService.signInWithPopUpProvider(
               provider: GoogleAuthProvider());
         case AuthWith.Apple:
         case AuthWith.Microsoft:
@@ -260,7 +259,7 @@ borderRadius: 0,
         case AuthWith.Password:
         case AuthWith.Anon:
         case AuthWith.Twitter:
-          return controller.signInWithPopUpProvider(
+          return authService.signInWithPopUpProvider(
               provider: TwitterAuthProvider());
       }
     }();

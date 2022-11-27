@@ -1,6 +1,6 @@
 import 'package:celebrated/appIntro/interface/intro.controller.interface.dart';
 import 'package:celebrated/appIntro/models/intro.item.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
+
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:get/get.dart';
@@ -62,7 +62,7 @@ class IntroScreenController extends GetxController implements IAppIntroControlle
     if (current < __items.length - 1) {
       current.value++;
     } else {
-      NavController.instance.to(AppRoutes.profile);
+     navService.to(AppRoutes.profile);
     }
   }
 
@@ -77,6 +77,9 @@ class IntroScreenController extends GetxController implements IAppIntroControlle
   /// called when skip is pressed in slideshow
   @override
   void skipIntro() {
-    NavController.instance.to(AppRoutes.profile);
+   navService.to(AppRoutes.profile);
   }
 }
+
+
+ final IntroScreenController introScreenController =Get.find<IntroScreenController>();

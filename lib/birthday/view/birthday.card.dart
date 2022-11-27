@@ -1,20 +1,19 @@
-import 'package:celebrated/birthday/controller/birthdays.controller.dart';
-import 'package:celebrated/birthday/data/static.data.dart';
+
 import 'package:celebrated/birthday/model/birthday.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BirthdayCard2ViewOnly extends AppStateView<BirthdaysController> {
+class BirthdayCard2ViewOnly extends AdaptiveUI {
   final ABirthday birthday;
   final double? width;
   final double? height;
   final VoidCallback? onSelect;
 
-  BirthdayCard2ViewOnly(
+  const BirthdayCard2ViewOnly(
       {Key? key,
       this.width = 160,
       this.height = 280,

@@ -11,7 +11,7 @@ import 'package:flutter/widgets.dart';
 /// [selectedIndex] is required and must not be null.
 class BottomNavyBar extends StatelessWidget {
 
-  BottomNavyBar({
+  const BottomNavyBar({
     Key? key,
     this.selectedIndex = 0,
     this.showElevation = true,
@@ -146,10 +146,10 @@ class _ItemWidget extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Container(
             width: isSelected ? 130 : 50,
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,

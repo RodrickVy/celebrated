@@ -1,7 +1,5 @@
-import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/app.theme.dart';
+
 import 'package:celebrated/authenticate/view/avatar.view.dart';
-import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +44,7 @@ class AppTopBar extends PreferredSize {
     if (Adaptive(Get.context!).isPhone) {
       if (Get.currentRoute == AppRoutes.home) {
         Get.log("home route");
-        return AvatarView();
+        return const AvatarView();
       } else {
 
         if(Get.previousRoute.isEmpty){

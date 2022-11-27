@@ -147,11 +147,11 @@ class NotificationSnackBar extends StatelessWidget {
   Color get bgColor {
     switch (FeedbackService.appNotification.value!.type) {
       case NotificationType.error:
-        return Color(0xFFFFA598);
+        return const Color(0xFFFFA598);
       case NotificationType.success:
-        return Color(0xFFDDFFB4);
+        return const Color(0xFFDDFFB4);
       case NotificationType.warning:
-        return Color(0xFFFFE6A5);
+        return const Color(0xFFFFE6A5);
       case NotificationType.neutral:
         return Colors.white;
     }

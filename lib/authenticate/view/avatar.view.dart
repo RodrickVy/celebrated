@@ -1,17 +1,13 @@
 import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/appIntro/controller/intro.controller.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// view that shows the users avatar and gracefully handles a generic avatar for unauthenticated users
-class AvatarView extends AppStateView<AuthController> {
-  AvatarView({this.radius = 120, Key? key}) : super(key: key);
+class AvatarView extends AdaptiveUI {
+  const AvatarView({this.radius = 120, Key? key}) : super(key: key);
   final double radius;
 
   @override
@@ -24,7 +20,7 @@ class AvatarView extends AppStateView<AuthController> {
       height: radius + 10,
       child: InkWell(
           onTap: () {
-            NavController.instance.to(AppRoutes.profile);
+           navService.to(AppRoutes.profile);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

@@ -1,6 +1,4 @@
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/authenticate/models/auth.pages.dart';
-import 'package:celebrated/domain/model/enum.dart';
+
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,7 +36,7 @@ class AppRoutes {
   static const String docs = '/docs/:id';
 
 
-  static List<String> noAppBarRoutes = [home,lists,splash,privacy ];
+  static List<String> noAppBarRoutes = [lists,splash,privacy ];
 
   static List<String> authRoutes = [profile,authSignIn,authSignIn,authPasswordReset];
 

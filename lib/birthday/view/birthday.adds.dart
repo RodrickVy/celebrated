@@ -1,6 +1,6 @@
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/birthday/adapter/birthdays.factory.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/adding.birthday.stages.dart';
@@ -9,8 +9,8 @@ import 'package:celebrated/birthday/model/birthday.list.dart';
 import 'package:celebrated/birthday/view/birthday.date.name.dart';
 import 'package:celebrated/domain/repository/amen.content/model/query.dart';
 import 'package:celebrated/domain/repository/amen.content/model/query.methods.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -39,7 +39,7 @@ Future<BirthdayBoard> getBoard() {
           _stage(BirthdayAddStage.notFound);
           return BirthdayBoard.empty();
         }
-        if (AuthController.instance.isAuthenticated.isFalse) {
+        if (authService.isAuthenticated.isFalse) {
           /// asks user to sign up if they are just visiting to view list
           FeedbackService.announceSignUpPromo();
         }
@@ -101,7 +101,7 @@ class BirthdaysOpenEditor extends AppPageView {
   }
 
   announce(BirthdayBoard board) {
-    if (AuthController.instance.accountUser.value.uid == board.authorId) {
+    if (authService.accountUser.value.uid == board.authorId) {
       /// give edit option is user is the owner of this list
       FeedbackService.announce(
           notification: AppNotification.empty().copyWith(
@@ -115,7 +115,7 @@ class BirthdaysOpenEditor extends AppPageView {
                   style: TextStyle(color: Colors.black),
                 ),
                 onPressed: () {
-                  NavController.instance.to("${AppRoutes.lists}?${board.id}");
+                 navService.to("${AppRoutes.lists}?${board.id}");
                 }),
           ));
     }
@@ -157,7 +157,7 @@ class BirthdaysOpenEditor extends AppPageView {
               AppButton(
                   key: UniqueKey(),
                   isTextButton: true,
-                  onPressed: () => null,
+                  onPressed: () {},
                   child: const Text("ask the owner to renew the link or")),
               const SizedBox(
                 width: 50,
@@ -167,14 +167,14 @@ class BirthdaysOpenEditor extends AppPageView {
                   key: UniqueKey(),
                   child: const Text("Go home"),
                   onPressed: () {
-                    NavController.instance.to(AppRoutes.home);
+                   navService.to(AppRoutes.home);
                   }),
               // if (AuthController.instance.isAuthenticated.isTrue)
               //   AppButton(
               //       key: UniqueKey(),
               //       child: const Text("retry"),
               //       onPressed: () {
-              //         Get.toNamed(Get.currentRoute);
+              //         navService.to(Get.currentRoute);
               //       }),
             ],
           ),
@@ -196,7 +196,7 @@ class BirthdaysOpenEditor extends AppPageView {
             color: AppTheme.themeData.colorScheme.primary.withAlpha(380),
           ),
           padding: const EdgeInsets.all(2),
-          child: NotificatonsView(
+          child: NotificationsView(
             key: UniqueKey(),
           ),
         );
@@ -231,7 +231,7 @@ class BirthdaysOpenEditor extends AppPageView {
               key: const Key(""),
               label: "Retry Again",
               onPressed: () {
-                NavController.instance.popParam("success");
+               navService.popParam("success");
               }),
         ),
         notificationHolder
@@ -267,10 +267,9 @@ class BirthdaysOpenEditor extends AppPageView {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: (board.name.contains("list")
+                  text: "${board.name.contains("list")
                       ? (' birthdays')
-                      : " birthday-list") +
-                      "!",
+                      : " birthday-list"}!",
                 )
               ]),
             ),
@@ -306,7 +305,7 @@ class BirthdaysOpenEditor extends AppPageView {
             width: 200,
           ),
         ),
-        if (AuthController.instance.isAuthenticated.isFalse)
+        if (authService.isAuthenticated.isFalse)
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
@@ -323,11 +322,11 @@ class BirthdaysOpenEditor extends AppPageView {
                   )
                 ])),
           ),
-        if (AuthController.instance.isAuthenticated.isFalse)
+        if (authService.isAuthenticated.isFalse)
           AppButton(
             onPressed: () {
               FeedbackService.clearErrorNotification();
-              NavController.instance.to("${AppRoutes.profile}?nextTo=9lists");
+             navService.to("${AppRoutes.profile}?nextTo=9lists");
             },
             key: UniqueKey(),
             child: Text(
@@ -336,7 +335,7 @@ class BirthdaysOpenEditor extends AppPageView {
               textAlign: TextAlign.center,
             ),
           ),
-        if (AuthController.instance.isAuthenticated.isFalse)
+        if (authService.isAuthenticated.isFalse)
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
@@ -346,11 +345,11 @@ class BirthdaysOpenEditor extends AppPageView {
               textAlign: TextAlign.center,
             ),
           ),
-        if (AuthController.instance.isAuthenticated.isFalse)
+        if (authService.isAuthenticated.isFalse)
           AppButton(
             onPressed: () {
               FeedbackService.clearErrorNotification();
-              NavController.instance.to(AppRoutes.authSignIn);
+             navService.to(AppRoutes.authSignIn);
             },
             key: UniqueKey(),
             child: Text(
@@ -370,12 +369,12 @@ class BirthdaysOpenEditor extends AppPageView {
   Widget editView(BirthdayBoard board, Adaptive adapter) {
     return Obx(
           () {
-        AuthController.instance.accountUser.value;
+            authService.accountUser.value;
         final TextEditingController _nameEditorController = TextEditingController(
-            text: AuthController.instance.accountUser.value.name);
+            text: authService.accountUser.value.name);
 
         final TextEditingController _birthdateController =
-        TextEditingController(text: AuthController.instance.accountUser.value.birthdate.toString());
+        TextEditingController(text: authService.accountUser.value.birthdate.toString());
         return ListView(
           children: [
             const SizedBox(

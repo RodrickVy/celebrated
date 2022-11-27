@@ -1,25 +1,24 @@
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/domain/view/app.text.field.dart';
+
+import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
-
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'auth.button.dart';
 
 /// a login form , for authentication
-/// Uses the feedback spinner for actions as well as local [NotificatonsView] for errors,warning.
+/// Uses the feedback spinner for actions as well as local [NotificationsView] for errors,warning.
 // ignore: must_be_immutable
-class SignInPage extends AppStateView<AuthController> {
+class SignInPage extends AdaptiveUI {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
 
@@ -74,7 +73,7 @@ class SignInPage extends AppStateView<AuthController> {
                         const SizedBox(
                           height: 10,
                         ),
-                        const NotificatonsView(),
+                        const NotificationsView(),
                         const SizedBox(
                           height: 10,
                         ),
@@ -86,7 +85,7 @@ class SignInPage extends AppStateView<AuthController> {
                                 isTextButton: true,
                                 key: UniqueKey(),
                                 onPressed: () {
-                                  NavController.instance
+                                 navService
                                       .to(AppRoutes.authPasswordReset);
                                 }),
                           ],
@@ -103,7 +102,7 @@ class SignInPage extends AppStateView<AuthController> {
                           onPressed: () async {
                             FeedbackService.spinnerUpdateState(
                                 key: FeedbackSpinKeys.signInForm, isOn: true);
-                            await controller.signInWithEmail(
+                            await authService.signInWithEmail(
                                 email: emailTextController.value.text,
                                 password: passwordTextController.value.text);
                             FeedbackService.spinnerUpdateState(
@@ -117,7 +116,7 @@ class SignInPage extends AppStateView<AuthController> {
                           key: UniqueKey(),
                           isTextButton: true,
                           onPressed: () async {
-                            Get.toNamed(AppRoutes.authSignUp);
+                            navService.to(AppRoutes.authSignUp);
                           },
                           child: Text(
                             "create account",

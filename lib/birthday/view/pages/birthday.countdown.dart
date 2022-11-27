@@ -1,15 +1,15 @@
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.wide.loader.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,27 +17,20 @@ import 'package:share_plus/share_plus.dart';
 
 
 /// the homepage for birthdays, has tips, current birthdays etc.
-class BirthdayPageView extends AppPageView {
-   BirthdayPageView({Key? key}) : super(key: key);
-  static final BirthdaysController controller =Get.find<BirthdaysController>();
+class BirthdayCountDown extends AppPageView {
+   BirthdayCountDown({Key? key}) : super(key: key);
 
-  final Future<ABirthday> birthday =
-  BirthdaysController.instance.birthdayFromBirthdayId();
+  final Future<ABirthday> birthday = birthdaysController.birthdayFromBirthdayId();
+  
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return FutureBuilder(
         future: birthday,
         builder: (context, AsyncSnapshot<ABirthday> snapshot) {
           if (!snapshot.hasData) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SpinKitSpinningCircle(
-                  color: adapter.theme.colorScheme.primary,
-                ),
-                const Text("getting things ready...")
-              ],
-            );
+            return const LoadingSpinner();
+          }else if(snapshot.hasError){
+
           }
 
           final ABirthday birthday = snapshot.data!;
@@ -121,7 +114,6 @@ class BirthdayPageView extends AppPageView {
                       child: const Text("Share Reminder to others"),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -137,6 +129,7 @@ class BirthdayPageView extends AppPageView {
         });
   }
 }
+
 
 // class BirthdayEditor extends StatelessWidget {
 //   late TextEditingController _nameEditorController;

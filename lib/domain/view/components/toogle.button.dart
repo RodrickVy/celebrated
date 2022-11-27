@@ -1,4 +1,5 @@
-import 'package:celebrated/app.swatch.dart';
+
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/domain/model/toggle.option.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class AppToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
         ()=> ToggleButtons(
+
         onPressed: (int selectedIndex) {
           onInteraction!=null?onInteraction!():(){};
          toggleOptions.value = toggleOptions.map2((element, int optionIndex) {
@@ -45,6 +47,7 @@ class AppToggleButton extends StatelessWidget {
         selectedColor: Colors.black,
           selectedBorderColor: Colors.transparent,
           borderColor: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
         isSelected: toggleOptions.map((element) => element.state).toList(),
         children: toggleOptions.map((element) => element.view).toList(),
       ),

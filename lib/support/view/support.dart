@@ -1,7 +1,7 @@
-import 'package:celebrated/appIntro/controller/intro.controller.dart';
+
 import 'package:celebrated/document/controller/document.view.controller.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/support/controller/support.controller.dart';
 import 'package:celebrated/home/model/feature.dart';
 import 'package:celebrated/home/model/feature.progress.dart';

@@ -3,7 +3,7 @@ import 'package:celebrated/document/controller/document.view.controller.dart';
 import 'package:celebrated/document/model/doc.element.dart';
 import 'package:celebrated/document/model/doc.element.type.dart';
 import 'package:celebrated/document/model/document.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,19 +66,17 @@ class DocumentViewer extends AppPageView{
                         children: [
                           Container(
                             width: 28,
-                            padding: EdgeInsets.all(3),
-                            child: Icon(
+                            padding: const EdgeInsets.all(3),
+                            child: const Icon(
                               Icons.circle,
                               color: Colors.black12,
                               size: 12,
                             ),
                           ),
                           Expanded(
-                            child: Container(
-                              child: Text(
-                                element.value,
-                                style: adapter.textTheme.bodyMedium,
-                              ),
+                            child: Text(
+                              element.value,
+                              style: adapter.textTheme.bodyMedium,
                             ),
                           ),
                         ],

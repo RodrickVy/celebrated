@@ -1,31 +1,30 @@
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.dart';
-import 'package:celebrated/navigation/interface/controller.interface.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NavController extends GetxController implements INavController {
+class NavService extends GetxController {
   static List<OnRouteObserver> onRouteListeners = [];
 
-  @override
   String get currentItem {
     return "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
   }
 
-  @override
+  NavService._() {
+    onInit();
+  }
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  static NavController instance = Get.find<NavController>();
+  static NavService instance = NavService._();
 
   final RxInt currentBottomBarIndex = RxInt(0);
 
   final RxBool _drawerExpanded = false.obs;
 
-  @override
   List<AppPage> get items => AppRoutes.items;
 
-  @override
   String decodeNextToFromRoute() {
     if (Get.parameters["nextTo"] != null) {
       return Get.parameters["nextTo"]!.split("9").join("/").trim();
@@ -34,34 +33,28 @@ class NavController extends GetxController implements INavController {
     }
   }
 
-  @override
   String addNextToOnRoute(String route, String nextRoute) {
     String routeToBeResumed = nextRoute.split("/").join("9").trim();
 
     return "$route/?nextTo=${routeToBeResumed.trim()}";
   }
 
-  @override
   to(String route) {
     Get.toNamed(route);
   }
 
-  @override
   int get currentItemIndex => currentBottomBarIndex.value;
 
-  @override
   toAppPageIndex(int index) {
     currentBottomBarIndex(index);
     to(AppRoutes.items[index].route);
   }
 
-  @override
   void closeDrawer() {
     scaffoldKey.currentState!.closeDrawer();
     Get.log("closing");
   }
 
-  @override
   void openDrawer() {
     scaffoldKey.currentState!.openDrawer();
     Get.log("opening");
@@ -69,7 +62,7 @@ class NavController extends GetxController implements INavController {
 
   void withParam(String key, String value) {
     Get.log("Adding $key with $value");
-    Get.toNamed(currentRouteWithParams({...Get.parameters, key: value}));
+    navService.to(currentRouteWithParams({...Get.parameters, key: value}));
   }
 
   String currentRouteWithParams(Map<String, String?> parameters) {
@@ -95,25 +88,23 @@ class NavController extends GetxController implements INavController {
   }
 
   void popParam(String key) {
-    Get.toNamed(currentRouteWithParams(Get.parameters..remove(key)));
+    navService.to(currentRouteWithParams(Get.parameters..remove(key)));
   }
 
   void back() {
     Get.back();
   }
 
-  @override
   void toggleDrawerExpansion() {
     _drawerExpanded.toggle();
   }
 
-  @override
   bool get drawerExpanded => _drawerExpanded.value;
 
-  static  OnRouteObserver routeCategoryListener = OnRouteObserver(
-      run: (String route, Map<String, String?> parameters, Function cancel) {
+  static OnRouteObserver routeCategoryListener = OnRouteObserver(
+      run: (String route, Map<String, String?> parameters,_,__) {
 
-        String itemName = "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
+        final String itemName = '/${route.split("/").last}';
         Get.log("Gourd working $itemName ");
         switch (itemName) {
           case AppRoutes.authPasswordReset:
@@ -123,28 +114,27 @@ class NavController extends GetxController implements INavController {
           case AppRoutes.profile:
           case AppRoutes.home:
           case AppRoutes.splash:
-            case AppRoutes.support:
-           NavController.instance.currentBottomBarIndex(0);
-           break;
+          case AppRoutes.support:
+           navService.currentBottomBarIndex(0);
+            break;
           case AppRoutes.lists:
           case AppRoutes.openListEdit:
           case AppRoutes.birthday:
           case AppRoutes.shareBoard:
-            NavController.instance.currentBottomBarIndex(1);
+           navService.currentBottomBarIndex(1);
             break;
           case AppRoutes.gifts:
-            NavController.instance.currentBottomBarIndex(2);
+           navService.currentBottomBarIndex(2);
             break;
           case AppRoutes.cards:
-            NavController.instance.currentBottomBarIndex(3);
+           navService.currentBottomBarIndex(3);
             break;
           case AppRoutes.parties:
-            NavController.instance.currentBottomBarIndex(4);
+           navService.currentBottomBarIndex(4);
             break;
         }
-
       },
-      when: (_,__)=>true);
+      when: (_, __) => true);
 
   @override
   onInit() {
@@ -153,18 +143,22 @@ class NavController extends GetxController implements INavController {
   }
 
   registerRouteObserver(OnRouteObserver guard) {
-      onRouteListeners.add(guard);
+    onRouteListeners.add(guard);
   }
 
-  removeOnRoute(String key) {
-    onRouteListeners.remove(key);
+  removeOnRoute(OnRouteObserver observer) {
+    onRouteListeners.remove(observer);
   }
 
   callOnRoute(String route, Map<String, String?> parameters) {
     for (var guard in onRouteListeners) {
       if (guard.when(route, parameters)) {
-        guard.run(route, parameters, removeOnRoute);
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+          guard.run(route, parameters, removeOnRoute,to);
+        });
       }
     }
   }
 }
+
+final NavService navService = NavService.instance;

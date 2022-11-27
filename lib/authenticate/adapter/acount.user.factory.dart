@@ -2,6 +2,7 @@ import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/models/content_interaction.dart';
 import 'package:celebrated/authenticate/models/auth.with.dart';
 import 'package:celebrated/authenticate/models/user.claims.dart';
+import 'package:celebrated/birthday/model/birthday.list.dart';
 import 'package:celebrated/domain/model/imodel.factory.dart';
 import 'package:celebrated/util/enum.dart';
 
@@ -23,7 +24,9 @@ class AccountUserFactory extends IModelFactory<AccountUser> {
       "bio": model.bio,
       'interactions': model.interactions.map((e) => e.toMap()).toList(),
       "birthdate": model.birthdate.millisecondsSinceEpoch,
-      "settings": model.settings
+      "settings": model.settings,
+      'defaultReminderType':model.defaultReminderType.name,
+      'silencedBirthdayLists':model.silencedBirthdayLists
     };
   }
 
@@ -46,6 +49,8 @@ class AccountUserFactory extends IModelFactory<AccountUser> {
           .map((e) => UserContentInteraction.fromMap(e))
           .toList(),
       settings: Map.from(json["settings"])??{},
+      silencedBirthdayLists: List.from(json["silencedBirthdayLists"]??[]),
+      defaultReminderType: BirthdayReminderType.values.byName(json['defaultReminderType']??'sms'),
       birthdate: DateTime.fromMillisecondsSinceEpoch(json['birthdate'] ??json['timeCreated']),
     );
   }

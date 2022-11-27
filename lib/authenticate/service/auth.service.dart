@@ -3,14 +3,13 @@ import 'package:celebrated/authenticate/errors/app.errors.dart';
 import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/models/content_interaction.dart';
 import 'package:celebrated/authenticate/requests/sign_up_request.dart';
-import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/controller/validators.dart';
+import 'package:celebrated/domain/service/app.initializing.state.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
-import 'package:celebrated/authenticate/models/auth.user.dart';
-import 'package:celebrated/support/controller/support.controller.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/domain/model/data.validator.dart';
@@ -18,25 +17,19 @@ import 'package:celebrated/domain/repository/amen.content/repository/repository.
 import 'package:celebrated/support/models/notification.type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 /// manages authentication state and maintenance of Account and Auth objects of the user
-class AuthController extends GetxController with ContentRepository<AccountUser, AccountUserFactory> {
+class AuthService extends GetxController with ContentRepository<AccountUser, AccountUserFactory> {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   /// pattern used for google sign in on android/ios/web:  https://petercoding.com/firebase/2021/05/24/using-google-sign-in-with-firebase-in-flutter/
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  static AuthController instance = Get.find<AuthController>();
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
-  /// tracking user
   final Rx<AccountUser> accountUser = AccountUser.empty().obs;
-
-  // final Rx<AuthUser> user = Rx(AuthUser.empty());
-
   final RxBool isAuthenticated = false.obs;
 
   @override
@@ -48,56 +41,24 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
   @override
   CollectionReference<Map<String, dynamic>> get collectionReference => firestore.collection('users');
 
-  /// validators
-  Validator get userNameValidator => Validator("user-name", [
-        Validation((value) => value.isNotEmpty, "User name can't be empty"),
-        Validation(
-            (value) => value.length >= 3, "Your user-name is to short, usernames must have at-list 3 characters"),
-        Validation((value) => value.length <= 40,
-            "Your user-name is to long, usernames must have no  greater than 40 characters"),
-      ]);
+  AuthService._() {
+    navService.registerRouteObserver(OnRouteObserver(
+      when: (route, _) => AppRoutes.profile == route && isAuthenticated.value != true,
+      run: (___, __, _, rerouteTo) {
+        rerouteTo(AppRoutes.authSignIn);
+      },
+    ));
+    onInit();
+  }
 
-  Validator get emailFormValidator => Validator("user-name", [
-        Validation((value) => value.isNotEmpty, "Email can't be empty"),
-        Validation((value) => value.length >= 4,
-            "Your email is invalid , its too short, emails must have at-list 3 characters"),
-        Validation((value) => value.length <= 320,
-            "Your email is too long , are you sure its valid? Valid emails cannot be longer than 320 chaarcters."),
-      ]);
-
-  Validator get passwordValidator => Validator("password", [
-        Validation((value) => value.isNotEmpty, "Password cannot be empty"),
-        Validation((value) => value.length >= 6,
-            "Your password is too short and weak, try adding a number, letters and at-list a symbol"),
-        Validation((value) => !value.trim().contains(" "), "Your password can't have spaces"),
-        Validation((value) => value.length <= 100,
-            "Your password is too long is to long,passwords can't exceed 100 characters"),
-      ]);
-
-  Validator get phoneValidator => Validator("phone", [
-        Validation((value) => value.isNotEmpty, "Phone number cannot be empty"),
-        Validation((value) => value.length >= 5, "Invalid phone number"),
-      ]);
+  static AuthService instance = AuthService._();
 
   @override
   void onInit() {
     super.onInit();
 
-    NavController.instance.registerRouteObserver(OnRouteObserver(
-      when: (route, _) => AppRoutes.authRoutes.contains(route),
-      run: (String route, Map<String, String?> parameters, Function cancel) {
-        if (isAuthenticated.value != true) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-            Get.toNamed(AppRoutes.authSignIn);
-          });
-        } else {
-          if (route != AppRoutes.profile) {
-            Get.toNamed(AppRoutes.profile);
-          }
-        }
-      },
-    ));
-    FirebaseAuth.instance.authStateChanges().listen((User? fireUser) async {
+    auth.authStateChanges().listen((User? fireUser) async {
+      InitStateController.setState(key: authLoadState, loaded: false);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         /// Auth-user object is created from firebase authentication
         if (fireUser != null) {
@@ -119,11 +80,12 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
           // }
           //
           // /// takes user to the nextTo page if one was configured when initially routing to auth
-
-          updateAppAuthState(fireUser);
+          syncOnAuthentication(fireUser);
+          InitStateController.setState(key: authLoadState, loaded: true);
         } else {
           accountUser(AccountUser.empty());
           isAuthenticated(false);
+          InitStateController.setState(key: authLoadState, loaded: true);
         }
       });
 
@@ -137,6 +99,7 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
         }
       });
     });
+    InitStateController.setState(key: authLoadState, loaded: true);
   }
 
   // syncs auth user to firestore, if user is signing up a firestore object
@@ -145,27 +108,6 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
   /// an attempt to fetch user data when they sign in, if the data is found
   /// its loaded , if not this is the users first login hence an [AccountUser]
   /// object is created and sent to firestore.
-  Future<AccountUser> _syncWithFirestore(AuthUser user) async {
-    try {
-      return await getContent(user.uid).then((AccountUser value) async {
-        int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
-        await updateContent(user.uid, {'lastLogin': loginTimestamp}).then((value) {});
-        // after return the AccountUser object
-        return value.copyWith(
-            lastLogin: DateTime.fromMillisecondsSinceEpoch(
-                loginTimestamp)); // found the user! meaning this is just a login in, and now updating their last login to match now
-      });
-    } catch (error) {
-      /// if the document doesn't exist create a user object
-      if (error.toString().toLowerCase().contains("not found")) {
-        return createUserAccount(AccountUser.empty());
-      } else {
-        FeedbackService.announce(
-            notification: AppNotification.unknownError().copyWith(message: error.toString(), title: error.toString()));
-        return accountUser.value;
-      }
-    }
-  }
 
   // Sign Up & SignIn & Password Reset
   Future<AccountUser> createUserAccount(AccountUser user) async {
@@ -177,16 +119,23 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
     // }
   }
 
-  signInWithEmail({required String email, required String password}) async {
-    if (validateField(emailFormValidator, email) && validateField(passwordValidator, password)) {
+  Future<AccountUser> signInWithEmail({required String email, required String password}) async {
+    if (validateField(Validators.emailFormValidator, email) && validateField(Validators.passwordValidator, password)) {
       try {
-        await auth.signInWithEmailAndPassword(email: email, password: password);
+        UserCredential credential = await auth.signInWithEmailAndPassword(email: email, password: password);
+        if (credential.user != null) {
+          int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
+          return await updateContent(credential.user!.uid, {'lastLogin': loginTimestamp});
+        } else {
+          AnnounceErrors.updateLoginTimestampFailed();
+        }
       } on FirebaseAuthException catch (error) {
         AnnounceErrors.exception(error);
       } catch (e) {
         AnnounceErrors.unknown(e);
       }
     }
+    return AccountUser.empty();
   }
 
   Future<void> signUp(SignUpEmailRequest request) async {
@@ -212,16 +161,17 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
     }
   }
 
-  void updateAppAuthState(User user) async {
+  /// updates all local variables when authentication state has changed
+  void syncOnAuthentication(User user) async {
     try {
       accountUser(await getContent(user.uid));
       isAuthenticated(true);
     } catch (_) {}
     if (Get.parameters["nextTo"] != null) {
-      NavController.instance.to(NavController.instance.decodeNextToFromRoute());
+      navService.to(NavService.instance.decodeNextToFromRoute());
     } else {
-      if(AppRoutes.authRoutes.contains(Get.currentRoute)){
-        NavController.instance.to(AppRoutes.lists);
+      if (AppRoutes.authRoutes.contains(Get.currentRoute)) {
+        navService.to(AppRoutes.lists);
       }
     }
   }
@@ -233,60 +183,6 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
       AnnounceErrors.exception(error);
     } catch (e) {
       AnnounceErrors.unknown(e);
-    }
-  }
-
-  Future<void> signUpWithEmail(
-      {required String name,
-      required DateTime birthdate,
-      required String email,
-      required String password,
-      required String phone}) async {
-    if (validateField(userNameValidator, name) &&
-        validateField(emailFormValidator, email) &&
-        validateField(passwordValidator, password) &&
-        validateField(phoneValidator, phone)) {
-      try {
-        await auth
-            .createUserWithEmailAndPassword(email: email, password: password)
-            .then((UserCredential userCredential) async {
-          if (userCredential.user != null) {
-            await userCredential.user!.updateDisplayName(name).then((value) async {
-              final AuthUser authUser = AuthUser.fromFireAuth(userCredential.user);
-              final AccountUser accountData = AccountUser.fromUser(userCredential.user!);
-              await createUserAccount(accountData.copyWith(
-                phone: phone,
-                email: email,
-                birthdate: birthdate,
-              ));
-              // user(authUser);
-              accountUser(accountData);
-              isAuthenticated(true);
-            });
-          } else {
-            FeedbackService.announce(
-                notification: AppNotification(
-              title: "Something went wrong",
-              message: "Please try to login in again, or report bug if it happens again",
-              appWide: true,
-              child: AppButton(
-                isTextButton: true,
-                onPressed: () {
-                  SupportController.suggestFeature();
-                },
-                label: "Report Bug",
-                key: UniqueKey(),
-              ),
-              canDismiss: true,
-              type: NotificationType.error,
-            ));
-          }
-        });
-      } on FirebaseAuthException catch (error) {
-        AnnounceErrors.exception(error);
-      } catch (e) {
-        AnnounceErrors.unknown(e);
-      }
     }
   }
 
@@ -313,7 +209,7 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
   }
 
   Future<bool> sendPasswordResetEmail({required String email}) async {
-    if (validateField(emailFormValidator, email)) {
+    if (validateField(Validators.emailFormValidator, email)) {
       try {
         await auth.sendPasswordResetEmail(
           email: email,
@@ -327,20 +223,14 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
         AnnounceErrors.unknown(e);
         return true;
       }
-    } else {
-      FeedbackService.announce(
-          notification: AppNotification.unknownError().copyWith(
-        appWide: false,
-        title: emailFormValidator.validate(email),
-      ));
-      return true;
     }
+    return false;
   }
 
   Future<void> logout() async {
     try {
       await auth.signOut();
-      NavController.instance.to(AppRoutes.authSignIn);
+      navService.to(AppRoutes.authSignIn);
     } on FirebaseAuthException catch (error) {
       AnnounceErrors.exception(error);
     } catch (e) {
@@ -350,7 +240,7 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
 
   // Editing Profile
   Future<AccountUser> updateUserName({required String name}) async {
-    if (isAuthenticated.value && validateField(userNameValidator, name) && name != accountUser.value.name) {
+    if (isAuthenticated.value && validateField(Validators.userNameValidator, name) && name != accountUser.value.name) {
       try {
         return await updateContent(accountUser.value.uid, {'name': name}).then((value) {
           accountUser(value);
@@ -480,8 +370,8 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
                   OutlinedButton(
                     onPressed: () async {
                       try {
-                        String route = NavController.instance.addNextToOnRoute(AppRoutes.profile, Get.currentRoute);
-                        await NavController.instance.to(route);
+                        String route = navService.addNextToOnRoute(AppRoutes.profile, Get.currentRoute);
+                        await navService.to(route);
                       } catch (_) {
                         Get.log(_.toString());
                       }
@@ -503,4 +393,25 @@ class AuthController extends GetxController with ContentRepository<AccountUser, 
       return false;
     }
   }
+
+  void pauseBirthdayListNotifications(String id) {
+    updateContent(accountUser.value.uid, {
+      "silencedBirthdayLists": [...accountUser.value.silencedBirthdayLists, id]
+    });
+  }
+
+  void resumeBirthdayListNotifications(String id) {
+    updateContent(accountUser.value.uid,
+        {"silencedBirthdayLists": accountUser.value.silencedBirthdayLists.where((element) => element != id)});
+  }
+
+  @override
+  void onContentUpdated(AccountUser content) {
+    if(content != accountUser.value){
+      accountUser(content);
+    }
+
+  }
 }
+
+final AuthService authService = AuthService.instance;

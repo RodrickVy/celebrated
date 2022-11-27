@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:celebrated/domain/view/app.text.field.dart';
-import 'package:celebrated/util/adaptive.dart';
+import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,22 +57,19 @@ class EditableTextView extends StatelessWidget {
 
         __editMode.value == true
             ? Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                  child: Center(
-                    child: IconButton(
-                        onPressed: () {
-                          __editMode(false);
-                          onSave(_textEditingController.value.text);
-                        },
-                        icon: const Icon(
-                          Icons.save,
-                          color: Colors.black,
-                          size: 18,
-                        )),
-                  ),
-                ),
-                  Expanded(
+                  IconButton(
+                      onPressed: () {
+                        __editMode(false);
+                        onSave(_textEditingController.value.text);
+                      },
+                      icon: const Icon(
+                        Icons.save,
+                        color: Colors.black,
+                        size: 18,
+                      )),
+                  Flexible(
                     flex: 3,
                     child: AppTextField(
                         key: UniqueKey(),

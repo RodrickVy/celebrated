@@ -1,16 +1,18 @@
 // ignore_for_file: prefer_for_elements_to_map_fromiterable
 
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/birthday/adapter/birthday.list.factory.dart';
 import 'package:celebrated/birthday/controller/birthday.board.view.controller.dart';
 import 'package:celebrated/birthday/data/static.data.dart';
 import 'package:celebrated/birthday/interface/birthday.controller.interface.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/birthday/model/birthday.list.dart';
+
 import 'package:celebrated/domain/repository/amen.content/model/query.dart';
 import 'package:celebrated/domain/repository/amen.content/model/query.methods.dart';
-import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/service/app.initializing.state.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -37,6 +39,10 @@ class BirthdaysController extends GetxController
   RxMap<String, BirthdayBoard> birthdayBoards =
       RxMap<String, BirthdayBoard>({});
 
+
+
+
+
   static BirthdaysController instance = Get.find<BirthdaysController>();
 
   @override
@@ -52,12 +58,14 @@ class BirthdaysController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    AuthController.instance.isAuthenticated.listen((authenticated) async {
+    authService.isAuthenticated.listen((authenticated) async {
       if (authenticated) {
+        InitStateController.setState(key: listsLoadState, loaded: false);
         birthdayBoards(Map.fromIterable(await getCollectionAsList(null),
             key: (e) => e.id, value: (e) => e));
         BirthdaysController.instance.currentListId( orderedBoards.isNotEmpty ? orderedBoards[0].id:"");
         BirthdaysController.instance.currentListId.refresh();
+        InitStateController.setState(key: listsLoadState, loaded: true);
         // birthdayBoards.values.map((e)async{
         //   if(e.authorName != AuthController.instance.accountUser.value.displayName){
         //     await updateContent(e.id,{"authorName":AuthController.instance.accountUser.value.displayName});
@@ -83,7 +91,7 @@ class BirthdaysController extends GetxController
   Future<List<BirthdayBoard>> getCollectionAsList(ContentQuery? query) async {
     return await queryCollection(query ??
         ContentQuery("authorId", QueryMethods.isEqualTo,
-            AuthController.instance.accountUser.value.uid));
+            authService.accountUser.value.uid));
   }
 
   @override
@@ -133,16 +141,16 @@ class BirthdaysController extends GetxController
   /// creates a new birthday list
   @override
   Future<String?> createNewList() async {
-    if (AuthController.instance.isAuthenticated.isTrue) {
+    if (authService.isAuthenticated.isTrue) {
       final String id = const Uuid().v4();
 
       /// set content to firestore
       await setContent(BirthdayBoard.empty().copyWith(
           id: id,
           name: "New List",
-          authorName: AuthController.instance.accountUser.value.name,
+          authorName:authService.accountUser.value.name,
           hex: __listsUsableColors().first,
-          authorId: AuthController.instance.accountUser.value.uid));
+          authorId: authService.accountUser.value.uid));
 
       /// route to list/id immediately,so the view shows this newly created list
       currentListId(id);
@@ -174,7 +182,7 @@ class BirthdaysController extends GetxController
           if (value.isEmpty) {
             return BirthdayBoard.empty();
           }
-          if (AuthController.instance.isAuthenticated.isFalse) {
+          if (authService.isAuthenticated.isFalse) {
             /// asks user to sign up if they are just visiting to view list
             FeedbackService.announceSignUpPromo();
           }
@@ -211,7 +219,7 @@ class BirthdaysController extends GetxController
                   AppButton(
                     key: UniqueKey(),
                     onPressed: () {
-                      NavController.instance.to(AppRoutes.home);
+                     navService.to(AppRoutes.home);
                       // todo assess why FeedbackService doesn't sort this out on its own
                       FeedbackService.clearErrorNotification();
                     },
@@ -244,7 +252,7 @@ class BirthdaysController extends GetxController
                     AppButton(
                       key: UniqueKey(),
                       onPressed: () {
-                        NavController.instance.to(AppRoutes.home);
+                       navService.to(AppRoutes.home);
                         // todo assess why FeedbackService doesn't sort this out on its own
                         FeedbackService.clearErrorNotification();
                       },
@@ -271,4 +279,23 @@ class BirthdaysController extends GetxController
   sendReminders(){
 
   }
+
+  RxBool showNotificationSettings= false.obs;
+
+  Rx<SettingBox> currentSettingBox= SettingBox.none.obs;
+
+  void updateListsStartReminding(BirthdayBoard board,int remindTime) async {
+   await updateContent(board.id,{'startReminding':remindTime});
+  }
+}
+
+
+ final BirthdaysController birthdaysController = Get.find<BirthdaysController>();
+
+
+enum SettingBox{
+  none,
+  shareList,
+  invite,
+  notifications
 }

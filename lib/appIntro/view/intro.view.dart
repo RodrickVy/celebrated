@@ -1,8 +1,8 @@
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/appIntro/interface/intro.controller.interface.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class AppIntro<C extends IAppIntroController> extends AppStateView<C> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if(controller.currentItemIndex == controller.splashItems.length-1)
-                      SizedBox(height: 50,),
+                      const SizedBox(height: 50,),
                     if(controller.currentItemIndex != controller.splashItems.length-1)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,

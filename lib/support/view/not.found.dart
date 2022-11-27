@@ -1,11 +1,11 @@
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/list.extention.dart';
 import 'package:flutter/material.dart';
 class NotFoundView extends AppPageView {
-  NotFoundView({Key? key}) : super(key: key);
+  const NotFoundView({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -36,7 +36,7 @@ class NotFoundView extends AppPageView {
                   textAlign: TextAlign.center,
                 ),
               ),
-              ...NavController.instance.items.map2((item, index) {
+              ...NavService.instance.items.map2((item, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: AppButton(
@@ -44,7 +44,7 @@ class NotFoundView extends AppPageView {
                       isTextButton: true,
                       label: item.name,
                       onPressed: () async {
-                        NavController.instance.to(item.route);
+                       navService.to(item.route);
                       }),
                 );
               })

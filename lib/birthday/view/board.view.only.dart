@@ -1,7 +1,7 @@
 
 
 import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/birthday/controller/birthdays.controller.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/birthday/model/birthday.list.dart';
@@ -9,8 +9,8 @@ import 'package:celebrated/birthday/model/birthday.view.mode.dart';
 import 'package:celebrated/birthday/view/birthday.tile.view.only.dart';
 import 'package:celebrated/domain/model/enum.dart';
 import 'package:celebrated/birthday/view/birthday.card.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -23,7 +23,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'b.list.view.dart';
 
 final Future<BirthdayBoard> board = BirthdaysController().boardFromViewId();
 
@@ -31,7 +30,7 @@ final Future<BirthdayBoard> board = BirthdaysController().boardFromViewId();
 class BoardViewOnly extends AppPageView {
   const BoardViewOnly({Key? key}) : super(key: key);
 
-  static final BirthdaysController controller = Get.find<BirthdaysController>();
+
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -69,7 +68,7 @@ class BoardViewOnly extends AppPageView {
                             key: UniqueKey(),
                             child: const Text("Go Back"),
                             onPressed: () {
-                              NavController.instance.back();
+                             navService.back();
                             }),
                         const SizedBox(
                           width: 50,
@@ -80,7 +79,7 @@ class BoardViewOnly extends AppPageView {
                 ],
               );
             }
-            if (AuthController.instance.accountUser.value.uid == board.authorId) {
+            if (authService.accountUser.value.uid == board.authorId) {
               /// give edit option is user is the owner of this list
               FeedbackService.announce(
                   notification: AppNotification.empty().copyWith(
@@ -97,7 +96,7 @@ class BoardViewOnly extends AppPageView {
                                 child: const Text("Edit"),
                                 onPressed: () {
                                   BirthdaysController.instance.currentListId(board.id);
-                                  NavController.instance.to(AppRoutes.lists);
+                                 navService.to(AppRoutes.lists);
                                 }),
                           ],
                         ),
@@ -181,7 +180,7 @@ class BoardViewOnly extends AppPageView {
                       color: Colors.white,
                     ),
                     padding: const EdgeInsets.all(2),
-                    child: NotificatonsView(
+                    child: NotificationsView(
                       key: UniqueKey(),
                     ),
                   ),
@@ -226,6 +225,6 @@ class BoardViewOnly extends AppPageView {
   }
 
   goToViewMode(BirthdayViewMode mode) {
-    NavController.instance.withParam("viewMode", AnEnum.toJson(mode));
+   navService.withParam("viewMode", AnEnum.toJson(mode));
   }
 }

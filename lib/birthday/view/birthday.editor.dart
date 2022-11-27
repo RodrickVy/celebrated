@@ -2,9 +2,8 @@
 
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/birthday/view/birthday.date.name.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/birthday/model/birthday.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 /// an editor for a birthday  can take , a full or empty object and returns you and edited one whent he user saves.
-class BirthdayEditor extends AppStateView<BirthdaysController> {
+class BirthdayEditor extends AdaptiveUI {
   late TextEditingController _nameEditorController;
   late TextEditingController _birthdateController;
   late int _remindDaysBefore;

@@ -1,5 +1,4 @@
 import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/domain/view/app.text.field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,13 +28,13 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-        primary: Colors.black,
+            foregroundColor: Colors.black,
         // backgroundColor: const Color(0xFFCDBA57)
       )),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
               // primary:            const Color(0xFFCDBA57),
-              onPrimary: Colors.black)),
+              foregroundColor: Colors.black)),
       buttonTheme: const ButtonThemeData(/* const Color(0xFFCDBA57)*/),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppSwatch.primary.shade500,
@@ -62,6 +61,8 @@ class AppTheme {
         caption: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black, letterSpacing: 0.4),
         overline: GoogleFonts.lato(fontSize: 10, fontWeight: FontWeight.w400, color: Colors.black, letterSpacing: 1.5),
       ));
+
+  static double borderRadius = 12;
 
 
   static InputDecoration get inputDecoration => InputDecoration(

@@ -152,7 +152,7 @@ class HomeController extends GetxController {
   ];
 
   static const String googlePlayStoreCTA = 'Keep track & remember birthdays of those that matter';
-  static const String playStoreUrl = "https://play.google.com/apps/test/com.rudo.bereminder/1";
+  static const String playStoreUrl = "https://play.google.com/store/apps/details?id=com.rodrickvy.celebrated";
   static const String playStoreBtnImage = "assets/logos/play_button.png";
 
   static const List<CoreValue> values = [

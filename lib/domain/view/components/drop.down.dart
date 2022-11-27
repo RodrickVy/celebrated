@@ -7,7 +7,7 @@ RxInt selectedIndex = 0.obs;
 /// used to filer birthdays
 class ButtonDropDown extends StatelessWidget {
 
-    List<DropDownAction> _actions = [];
+    late List<DropDownAction> _actions;
 
 
 

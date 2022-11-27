@@ -36,6 +36,7 @@ dependencies:
   cloud_functions: ^4.0.4
   pricing_cards: ^0.0.7
   flutter_stripe: ^7.0.0
+  url_strategy: ^0.2.0
 
 
 dev_dependencies:

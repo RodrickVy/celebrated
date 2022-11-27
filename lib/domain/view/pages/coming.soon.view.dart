@@ -1,24 +1,20 @@
 
 
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/birthday/controller/birthdays.controller.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 
 /// page showing the users birthdays , and enables the user to update the lists.
-class ComingSoon extends AppStateView<BirthdaysController> {
-  final AuthController authController = Get.find<AuthController>();
+class ComingSoon extends AdaptiveUI {
   final String image;
   final String title;
   final String description;
 
-  ComingSoon({required this.image, required this.title, required this.description, Key? key}) : super(key: key);
+  const ComingSoon({required this.image, required this.title, required this.description, Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -61,7 +57,7 @@ class ComingSoon extends AppStateView<BirthdaysController> {
                     elevation: 0,
                     label: const Text("Coming soon"),
                     onSelected: (bool value) {
-                      Get.toNamed(AppRoutes.support);
+                      navService.to(AppRoutes.support);
                     },
                     shape: AppTheme.shape,
                     backgroundColor: Colors.white,

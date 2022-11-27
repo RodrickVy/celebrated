@@ -1,7 +1,6 @@
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/notification.type.dart';
-import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,8 +8,8 @@ import 'package:get/get.dart';
 /// [FeedbackService] that are not appWide,
 /// when your notifications are nto appWide this view must be
 /// placed in your UI if you want the notifications to sure.
-class NotificatonsView extends StatelessWidget {
-  const NotificatonsView({Key? key}) : super(key: key);
+class NotificationsView extends StatelessWidget {
+  const NotificationsView({Key? key}) : super(key: key);
 
 
   @override

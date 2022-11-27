@@ -1,21 +1,20 @@
-  import 'package:celebrated/authenticate/controller/auth.controller.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.text.field.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
-
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// view for recovering password,
 // ignore: must_be_immutable
-class PasswordResetPage extends AppStateView<AuthController> {
+class PasswordResetPage extends AdaptiveUI{
   final TextEditingController emailTextController = TextEditingController();
 
   PasswordResetPage({Key? key}) : super(key: key);
@@ -50,7 +49,7 @@ class PasswordResetPage extends AppStateView<AuthController> {
                         autoFillHints: const [AutofillHints.email],
                       ),
                       const SizedBox(height: 10),
-                      const NotificatonsView(),
+                      const NotificationsView(),
                       AppButton(
                         key: UniqueKey(),
                         child: Text(
@@ -60,7 +59,7 @@ class PasswordResetPage extends AppStateView<AuthController> {
                         onPressed: () async {
                           FeedbackService.spinnerUpdateState(
                               key: FeedbackSpinKeys.passResetForm, isOn: true);
-                          await controller.sendPasswordResetEmail(
+                          await authService.sendPasswordResetEmail(
                             email: emailTextController.value.text,
                           );
 
@@ -73,7 +72,7 @@ class PasswordResetPage extends AppStateView<AuthController> {
                         key: UniqueKey(),
                         isTextButton: true,
                         onPressed: ()  {
-                          Get.toNamed(AppRoutes.authSignIn);
+                          navService.to(AppRoutes.authSignIn);
                         },
                         child: Text(
                           "sign in",

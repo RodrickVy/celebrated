@@ -1,4 +1,4 @@
-import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/support.controller.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
@@ -27,7 +27,22 @@ class AnnounceErrors{
         canDismiss: true,
         type: NotificationType.error,
       ));
- 
+  static  updateLoginTimestampFailed ()=> FeedbackService.announce(
+      notification: AppNotification(
+        title: "Something went wrong",
+        message: "Please try to login in again, or report bug if it happens again",
+        appWide: true,
+        child: AppButton(
+          isTextButton: true,
+          onPressed: () {
+            SupportController.suggestFeature();
+          },
+          label: "Report Bug",
+          key: UniqueKey(),
+        ),
+        canDismiss: true,
+        type: NotificationType.error,
+      ));
   static exception (error)=>FeedbackService.announce(
       notification: appNotificationFromCode(error.code).copyWith(appWide: false, message: error.message));
 

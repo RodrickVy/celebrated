@@ -1,8 +1,11 @@
+
+
 import 'package:celebrated/authenticate/models/content_interaction.dart';
 import 'package:celebrated/authenticate/models/user.claims.dart';
 import 'package:celebrated/authenticate/models/user.content.interaction.type.dart';
 import 'package:celebrated/authenticate/models/auth.with.dart';
 import 'package:celebrated/authenticate/requests/sign_up_request.dart';
+import 'package:celebrated/birthday/model/birthday.list.dart';
 import 'package:celebrated/domain/model/imodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -40,11 +43,17 @@ class AccountUser implements IModel {
   final DateTime birthdate;
 
   final Map<String, String> settings;
+  /// birthday lists whose notifications have been paused
+  final List<String> silencedBirthdayLists;
+  /// birthday lists whose notifications have been paused
+  final BirthdayReminderType defaultReminderType;
 
   AccountUser({
      this.claims = const[UserClaim.starter],
     required this.bio,
     required this.birthdate,
+    this.silencedBirthdayLists = const [],
+    this.defaultReminderType = BirthdayReminderType.phoneNotification,
     required this.settings,
     required this.timeCreated,
     required this.interactions,

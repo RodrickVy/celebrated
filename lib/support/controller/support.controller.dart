@@ -1,4 +1,4 @@
-import 'package:celebrated/domain/view/app.button.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/home/controller/home.controller.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/app.notification.dart';

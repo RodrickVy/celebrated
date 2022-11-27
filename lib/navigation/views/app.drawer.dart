@@ -1,29 +1,23 @@
-import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
 import 'package:celebrated/authenticate/view/avatar.view.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
-import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/navigation/interface/controller.interface.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppDesktopDrawer<NAV extends INavController> extends AppStateView<NAV> {
-  final AuthController authController = Get.find<AuthController>();
-
-  AppDesktopDrawer({Key? key}) : super(key: key);
+class AppDesktopDrawer extends AdaptiveUI {
+  const AppDesktopDrawer({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(() {
-      controller.currentItemIndex;
+      navService.currentItemIndex;
 
       return AnimatedContainer(
-        width: controller.drawerExpanded ? 280 : 70,
+        width: navService.drawerExpanded ? 280 : 70,
         height: adapter.height,
         duration: const Duration(milliseconds: 400),
         decoration: BoxDecoration(border: Border(right: AppTheme.shape.side)),
@@ -37,35 +31,10 @@ class AppDesktopDrawer<NAV extends INavController> extends AppStateView<NAV> {
                     padding: const EdgeInsets.only(top: 20),
                     alignment: Alignment.topCenter,
                     child: AvatarView(
-                      radius: controller.drawerExpanded ? 90 : 80,
+                      radius: navService.drawerExpanded ? 90 : 80,
                     )),
-                // Obx(
-                //   () => Padding(
-                //       padding: const EdgeInsets.all(6),
-                //       child: Text(
-                //         controller.drawerExpanded
-                //             ? authController.accountUser.value.name
-                //             : authController.accountUser.value.initials,
-                //         style: GoogleFonts.mavenPro(
-                //           fontSize: 17,
-                //           fontWeight: FontWeight.w600,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       )),
-                // ),
-                // controller.drawerExpanded
-                //     ? OpenDrawerItem(
-                //         controller: controller,
-                //         item: AppRoutes.homePage,
-                //       )
-                //     : ClosedDrawerItem(item: AppRoutes.homePage, controller: controller),
-                ...controller.items.map((AppPage item) {
-                  return controller.drawerExpanded
-                      ? OpenDrawerItem(
-                          controller: controller,
-                          item: item,
-                        )
-                      : ClosedDrawerItem(item: item, controller: controller);
+                ...navService.items.map((AppPage item) {
+                  return navService.drawerExpanded ? OpenDrawerItem(item: item) : ClosedDrawerItem(item: item);
                 }).toList(),
                 const Spacer(),
                 Row(
@@ -73,9 +42,9 @@ class AppDesktopDrawer<NAV extends INavController> extends AppStateView<NAV> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          controller.toggleDrawerExpansion();
+                          navService.toggleDrawerExpansion();
                         },
-                        icon: Icon(controller.drawerExpanded ? Icons.arrow_back_ios : Icons.arrow_forward_ios))
+                        icon: Icon(navService.drawerExpanded ? Icons.arrow_back_ios : Icons.arrow_forward_ios))
                   ],
                 ),
               ],
@@ -89,7 +58,6 @@ class OpenDrawerItem extends StatelessWidget {
   OpenDrawerItem({
     Key? key,
     required this.item,
-    required this.controller,
   }) : super(key: key) {
     Future.delayed(const Duration(seconds: 1), () {
       show(true);
@@ -97,7 +65,6 @@ class OpenDrawerItem extends StatelessWidget {
   }
 
   final AppPage item;
-  final INavController controller;
   final RxBool show = false.obs;
 
   @override
@@ -118,10 +85,10 @@ class OpenDrawerItem extends StatelessWidget {
               style: GoogleFonts.poppins(fontSize: 18),
             ),
             tileColor: Colors.transparent,
-            selected: controller.items[controller.currentItemIndex] == item,
+            selected: navService.items[navService.currentItemIndex] == item,
             shape: AppTheme.shape.copyWith(side: BorderSide.none),
             onTap: () {
-              NavController.instance.to(item.route);
+             navService.to(item.route);
             },
             contentPadding: const EdgeInsets.all(12),
           ),
@@ -135,11 +102,9 @@ class ClosedDrawerItem extends StatelessWidget {
   const ClosedDrawerItem({
     Key? key,
     required this.item,
-    required this.controller,
   }) : super(key: key);
 
   final AppPage item;
-  final INavController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -152,10 +117,10 @@ class ClosedDrawerItem extends StatelessWidget {
         // AppSwatch.primary.shade500.withAlpha(34),
         title: Icon(item.icon),
         tileColor: Colors.transparent,
-        selected: controller.items[controller.currentItemIndex] == item,
+        selected: navService.items[navService.currentItemIndex] == item,
         shape: AppTheme.shape.copyWith(side: BorderSide.none),
         onTap: () {
-          NavController.instance.to(item.route);
+         navService.to(item.route);
         },
         contentPadding: const EdgeInsets.all(12),
       ),

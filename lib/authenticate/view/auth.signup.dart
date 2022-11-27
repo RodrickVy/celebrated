@@ -1,11 +1,11 @@
 import 'dart:ui';
-
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/controller/auth.controller.dart';
 import 'package:celebrated/authenticate/requests/sign_up_request.dart';
-import 'package:celebrated/domain/view/app.button.dart';
-import 'package:celebrated/domain/view/app.state.view.dart';
-import 'package:celebrated/domain/view/app.text.field.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/app.state.view.dart';
+import 'package:celebrated/domain/view/components/app.text.field.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
@@ -20,7 +20,7 @@ import 'package:phone_form_field/phone_form_field.dart';
 
 /// auth sign up form , for authentication this is not a page just the form.
 // ignore: must_be_immutable
-class SignUpPage extends AppStateView<AuthController> {
+class SignUpPage extends AdaptiveUI {
   final Rx<SignUpEmailRequest> formData = Rx(SignUpEmailRequest.empty());
 
   final Rx<String> orgSelected = typeOfOrgs.last.obs;
@@ -174,7 +174,7 @@ class SignUpPage extends AppStateView<AuthController> {
                           height: 5,
                         ),
 
-                        const NotificatonsView(),
+                        const NotificationsView(),
                         const SizedBox(
                           height: 10,
                         ),
@@ -187,7 +187,7 @@ class SignUpPage extends AppStateView<AuthController> {
                           ),
                           onPressed: () async {
                             FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: true);
-                            await controller.signUp(formData.value);
+                            await authService.signUp(formData.value);
                             FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: false);
                           },
                         ),
@@ -198,7 +198,7 @@ class SignUpPage extends AppStateView<AuthController> {
                           key: UniqueKey(),
                           isTextButton: true,
                           onPressed: () async {
-                            Get.toNamed(AppRoutes.authSignIn);
+                            navService.to(AppRoutes.authSignIn);
                           },
                           child: Text(
                             "or sign in",

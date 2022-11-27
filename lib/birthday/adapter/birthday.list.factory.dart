@@ -24,6 +24,8 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
           id: json['id'] as String,
           addingId:json["addingId"] ?? json["birthdayAddLink"] ?? '',
           authorId: json['authorId'] ?? '',
+          startReminding: json['startReminding']??2,
+          notificationType: BirthdayReminderType.values.byName(json['notificationType']??'sms'),
           authorName: (json["authorName"]??'').toString().trim(),
           watchers: List.from(json['watchers']??[]).map((e) => BirthdaysWatcher.fromMap(e)).toList()
       );
@@ -46,7 +48,9 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
       'viewingId': model.viewingId,
       "addingId": model.addingId,
       'id': model.id,
+      'notificationType':model.notificationType.name,
       'authorId': model.authorId,
+      'startReminding': model.startReminding,
       'authorName':model.authorName,
       'watchers':model.watchers.map((e) => e.toMap()).toList()
     };

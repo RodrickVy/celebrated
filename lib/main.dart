@@ -3,20 +3,18 @@ import 'package:celebrated/appIntro/view/intro.view.dart';
 import 'package:celebrated/authenticate/view/auth.login.dart';
 import 'package:celebrated/authenticate/view/auth.password.recovery.view.dart';
 import 'package:celebrated/authenticate/view/auth.signup.dart';
-import 'package:celebrated/authenticate/view/avatar.selector.dart';
 import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/view/authentication.view.dart';
 import 'package:celebrated/authenticate/view/profile.view.dart';
 import 'package:celebrated/birthday/view/birthday.adds.dart';
 import 'package:celebrated/birthday/view/birthday.leader.board.dart';
-import 'package:celebrated/birthday/view/birthday.page.dart';
+import 'package:celebrated/birthday/view/pages/birthday.countdown.dart';
 import 'package:celebrated/birthday/view/birthdays.list.dart';
 import 'package:celebrated/birthday/view/board.view.only.dart';
 import 'package:celebrated/document/view/document.viewer.dart';
-import 'package:celebrated/domain/view/app.page.view.dart';
-import 'package:celebrated/domain/view/coming.soon.view.dart';
+import 'package:celebrated/domain/view/pages/app.page.view.dart';
+import 'package:celebrated/domain/view/pages/coming.soon.view.dart';
 import 'package:celebrated/firebase_options.dart';
 import 'package:celebrated/home/view/home.page.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
@@ -27,15 +25,14 @@ import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/not.found.dart';
 import 'package:celebrated/support/view/notification.snackbar.dart';
 import 'package:celebrated/support/view/support.dart';
-import 'package:celebrated/util/list.extention.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:get/route_manager.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
-  setUrlStrategy(PathUrlStrategy());
+  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -58,10 +55,10 @@ class App extends StatelessWidget {
         //     name: AppRoutes.avatarEditor,
         //     page: () =>
         //         AvatarEditorView(key: const Key(AppRoutes.avatarEditor))),
-        GetPage(name: AppRoutes.birthday, page: () => BirthdayPageView(key: const Key(AppRoutes.birthday))),
+        GetPage(name: AppRoutes.birthday, page: () => BirthdayCountDown(key: const Key(AppRoutes.birthday))),
         GetPage(name: AppRoutes.shareBoard, page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
         GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareBoard))),
-        GetPage(name: AppRoutes.lists, page: () => const BirthdayBoardsView(key: Key(AppRoutes.lists))),
+        GetPage(name: AppRoutes.lists, page: () => const BirthdayListsPage(key: Key(AppRoutes.lists))),
         GetPage(name: AppRoutes.openListEdit, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
         GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
         GetPage(
@@ -73,27 +70,30 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.authSignUp, page: () => SignUpPage()),
         GetPage(name: AppRoutes.authSignIn, page: () => SignInPage()),
 
-    GetPage(
-        name: AppRoutes.cards,
-        page: () => ComingSoon(
-          image: 'assets/intro/card.png',
-          title: 'Cards',
-          description: 'Create unique birthday cards that you can invite others to sign.  Ad image/video etc on card and easily share via link.',
-        )),
-    GetPage(
-        name: AppRoutes.parties,
-        page: () => ComingSoon(
-          image: 'assets/intro/party.png',
-          title: 'Parties',
-          description: 'Organize parties, with easy forms for invites, and  lists for planning. Fun birthday games from deep meaningful to funny and trivial.',
-        )),
-    GetPage(
-        name: AppRoutes.gifts,
-        page: () => ComingSoon(
-          image: 'assets/intro/gift_happy.png',
-          title: 'Gifts',
-          description: 'Organize parties, with easy forms for invites, and  lists for planning. Fun birthday games from deep meaningful to funny and trivial.',
-        )),
+        GetPage(
+            name: AppRoutes.cards,
+            page: () => const ComingSoon(
+                  image: 'assets/intro/card.png',
+                  title: 'Cards',
+                  description:
+                      'Create unique birthday cards that you can invite others to sign.  Ad image/video etc on card and easily share via link.',
+                )),
+        GetPage(
+            name: AppRoutes.parties,
+            page: () => const ComingSoon(
+                  image: 'assets/intro/party.png',
+                  title: 'Parties',
+                  description:
+                      'Organize parties, with easy forms for invites, and  lists for planning. Fun birthday games from deep meaningful to funny and trivial.',
+                )),
+        GetPage(
+            name: AppRoutes.gifts,
+            page: () => const ComingSoon(
+                  image: 'assets/intro/gift_happy.png',
+                  title: 'Gifts',
+                  description:
+                      'Create and share virtual gifts of any online product with personal note and packaging.Share Gift cards,subscriptions or any gift. ',
+                )),
         GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
         GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
       ];
@@ -117,7 +117,8 @@ class App extends StatelessWidget {
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
-          NavController.instance.callOnRoute(routing.current, Get.parameters);
+          String route = Get.currentRoute.split("?").first;
+         navService.callOnRoute(route, Get.parameters);
         }
       },
       debugShowCheckedModeBanner: false,
