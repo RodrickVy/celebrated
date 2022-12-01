@@ -1,7 +1,7 @@
 
 import 'package:celebrated/document/controller/document.view.controller.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
-import 'package:celebrated/domain/view/pages/app.page.view.dart';
+import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/support/controller/support.controller.dart';
 import 'package:celebrated/home/model/feature.dart';
 import 'package:celebrated/home/model/feature.progress.dart';
@@ -86,21 +86,21 @@ class SupportView extends AppPageView {
                 child: AppButton(
                     key: UniqueKey(),
                     isTextButton: true,
-                    label: "Suggest A Feature",
+                    label: "Give Us Feedback",
                     onPressed: () async {
-                      if (await launchUrl(Uri.parse('https://forms.gle/PcRBorBV2MJuKfjT9'))) {}
+                      if (await launchUrl(Uri.parse('https://523ay2iqdlf.typeform.com/to/LELPUugH'))) {}
                     }),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AppButton(
-                    key: UniqueKey(),
-                    isTextButton: true,
-                    label: "Report an Issue",
-                    onPressed: () async {
-                      if (await launchUrl(Uri.parse('https://forms.gle/AfoGuMz65HvP5Lvg7'))) {}
-                    }),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: AppButton(
+              //       key: UniqueKey(),
+              //       isTextButton: true,
+              //       label: "Report an Issue",
+              //       onPressed: () async {
+              //         if (await launchUrl(Uri.parse('https://forms.gle/AfoGuMz65HvP5Lvg7'))) {}
+              //       }),
+              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AppButton(

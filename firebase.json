@@ -12,7 +12,11 @@
     ],
     "rewrites": [
       {
-        "source": "**",
+        "source": "/link/**",
+        "dynamicLinks": true
+      },
+      {
+        "source": "!/link/**",
         "destination": "/index.html"
       }
     ]

@@ -1,5 +1,5 @@
 import 'package:celebrated/appIntro/controller/intro.controller.dart';
-import 'package:celebrated/birthday/controller/birthdays.controller.dart';
+import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:get/get.dart';
 
 

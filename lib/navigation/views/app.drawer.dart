@@ -1,6 +1,6 @@
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/view/avatar.view.dart';
-import 'package:celebrated/domain/view/components/app.state.view.dart';
+import 'package:celebrated/authenticate/view/components/user.avatar.dart';
+import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/util/adaptive.dart';

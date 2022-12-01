@@ -680,7 +680,7 @@ class AppNotification implements IModel {
   factory AppNotification.userNotAuthenticated() {
     return AppNotification(
       code: ResponseCode.userNotAuthenticated,
-      title: "So Sorry!, Something went wrong, please try again",
+      title: "Looks like you are not authenticated",
       message:
           "",
       route: Get.currentRoute,
@@ -692,7 +692,7 @@ class AppNotification implements IModel {
     //  this is sent to know that the user's email link has been sent
     return AppNotification(
       code: ResponseCode.internalError,
-      title: "So Sorry!, Something went wrong, please try again",
+      title: "So Sorry!, Something went wrong internally",
       message:
           "",
       route: Get.currentRoute,

@@ -1,37 +1,52 @@
+import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:get/get.dart';
 
-class Validator {
+class Validator<T> {
   final String name;
-  final List<Validation> validations;
+  final List<Validation<T>> validations;
 
   Validator(this.name, this.validations);
 
-  String? validate(String val) {
+  String? validate(T val) {
     for (var validation in validations) {
       if (validation.test(val) == false) {
-        return validation.errorMessage;
+        return validation.errorMessage?? validation.messageBuilder!(val);
       }
     }
     return null;
   }
 
-  AppNotification asError(String val) {
-    return AppNotification(
-        message: validations.first.errorMessage,
-        title: validate(val) ?? "",
-        code: ResponseCode.unknownError,
-        route: Get.currentRoute,
-        stack: "stack",
-        appWide: true,
-        timestamp: DateTime.now().microsecondsSinceEpoch);
+  String? announceValidation(T value){
+    final String? error = validate(value);
+
+    if (error != null) {
+      Get.log(error);
+      FeedbackService.announce(
+        notification:  AppNotification(
+            message: error,
+            title: error,
+            code: ResponseCode.normal,
+            route: Get.currentRoute,
+            stack: "stack",
+            appWide: false,
+            timestamp: DateTime.now().microsecondsSinceEpoch)
+      );
+      return error;
+    }
+    return null;
   }
+
 }
 
-class Validation {
-  final bool Function(String value) test;
-  final String errorMessage;
-
-  Validation(this.test, this.errorMessage);
+class Validation<T> {
+  final bool Function(T value) test;
+  final String? errorMessage;
+ final Function(T value)? messageBuilder;
+ 
+  Validation(this.test, { this.errorMessage,this.messageBuilder}){
+    assert([messageBuilder != null , errorMessage !=null].contains(true), "Provide least a messageBuilder or a message, both cant be null");
+    assert([messageBuilder != null , errorMessage !=null].contains(false), "Provide least a messageBuilder or a message, both cant be null");
+  }
 }

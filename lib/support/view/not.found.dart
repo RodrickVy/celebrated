@@ -1,8 +1,8 @@
 import 'package:celebrated/domain/view/components/app.button.dart';
-import 'package:celebrated/domain/view/pages/app.page.view.dart';
+import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
-import 'package:celebrated/util/list.extention.dart';
+import 'package:celebrated/util/list.extension.dart';
 import 'package:flutter/material.dart';
 class NotFoundView extends AppPageView {
   const NotFoundView({Key? key}) : super(key: key);

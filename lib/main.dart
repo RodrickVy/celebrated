@@ -1,24 +1,24 @@
-import 'package:celebrated/appIntro/controller/intro.controller.dart';
 import 'package:celebrated/appIntro/view/intro.view.dart';
-import 'package:celebrated/authenticate/view/auth.login.dart';
-import 'package:celebrated/authenticate/view/auth.password.recovery.view.dart';
-import 'package:celebrated/authenticate/view/auth.signup.dart';
 import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/authenticate/view/profile.view.dart';
-import 'package:celebrated/birthday/view/birthday.adds.dart';
-import 'package:celebrated/birthday/view/birthday.leader.board.dart';
-import 'package:celebrated/birthday/view/pages/birthday.countdown.dart';
-import 'package:celebrated/birthday/view/birthdays.list.dart';
-import 'package:celebrated/birthday/view/board.view.only.dart';
+import 'package:celebrated/authenticate/view/pages/auth.actions.dart';
+import 'package:celebrated/authenticate/view/pages/profile.dart';
+import 'package:celebrated/authenticate/view/pages/signin.dart';
+import 'package:celebrated/authenticate/view/pages/signup.dart';
+import 'package:celebrated/authenticate/view/pages/verify.email.dart';
+import 'package:celebrated/lists/view/birthday.adds.dart';
+import 'package:celebrated/lists/view/birthday.leader.board.dart';
+import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
+import 'package:celebrated/lists/view/birthdays.list.dart';
+import 'package:celebrated/lists/view/board.view.only.dart';
 import 'package:celebrated/document/view/document.viewer.dart';
-import 'package:celebrated/domain/view/pages/app.page.view.dart';
 import 'package:celebrated/domain/view/pages/coming.soon.view.dart';
 import 'package:celebrated/firebase_options.dart';
 import 'package:celebrated/home/view/home.page.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/subscription/view/subscription.view.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
@@ -30,6 +30,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:url_strategy/url_strategy.dart';
+
+import 'authenticate/view/pages/password.reset.dart';
+import 'domain/view/interface/app.page.wrapper.dart';
 
 void main() async {
   setPathUrlStrategy();
@@ -45,7 +48,7 @@ class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   List<GetPage> get getPages => [
-        GetPage(name: AppRoutes.splash, page: () => AppIntro<IntroScreenController>()),
+        GetPage(name: AppRoutes.splash, page: () => const AppIntro()),
         GetPage(
             name: AppRoutes.home,
             page: () => const HomePage(
@@ -61,15 +64,18 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.lists, page: () => const BirthdayListsPage(key: Key(AppRoutes.lists))),
         GetPage(name: AppRoutes.openListEdit, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
         GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
+        GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
         GetPage(
             name: AppRoutes.docs,
             page: () => DocumentViewer(
                   key: const Key(AppRoutes.docs),
                 )),
         GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
-        GetPage(name: AppRoutes.authSignUp, page: () => SignUpPage()),
-        GetPage(name: AppRoutes.authSignIn, page: () => SignInPage()),
-
+        GetPage(name: AppRoutes.authSignUp, page: () => const SignUpPage()),
+        GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
+        GetPage(name: AppRoutes.authActions, page: () => AuthActionsHandler()),
+        GetPage(name: AppRoutes.verifyEmail, page: () => const VerifyEmail()),
+        GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
         GetPage(
             name: AppRoutes.cards,
             page: () => const ComingSoon(
@@ -109,16 +115,16 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: 'celebrated',
       theme: AppTheme.themeData,
-      unknownRoute: GetPage(name: AppRoutes.notFound, page: () => NotFoundView(key: const Key(AppRoutes.notFound))),
+      unknownRoute: GetPage(name: AppRoutes.notFound, page: () => const NotFoundView(key: Key(AppRoutes.notFound))),
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
-      initialRoute: AppRoutes.splash,
+      initialRoute:AppRoutes.splash,
       initialBinding: AppBindings(),
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
           String route = Get.currentRoute.split("?").first;
-         navService.callOnRoute(route, Get.parameters);
+          navService.callOnRoute(route, Get.parameters);
         }
       },
       debugShowCheckedModeBanner: false,
@@ -127,7 +133,7 @@ class App extends StatelessWidget {
             page: () => SizedBox(
                   width: Get.width,
                   height: Get.height,
-                  child: AppPageViewWrapper(
+                  child: AppPageWrapper(
                     body: Stack(
                       children: [
                         SizedBox(

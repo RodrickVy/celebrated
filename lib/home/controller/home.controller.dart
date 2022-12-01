@@ -113,26 +113,43 @@ class HomeController extends GetxController {
   ];
 
   static const List<AppFeature> mainFeatures = [
+
     AppFeature(
-        name: "Group related birthdays into lists",
-        icon: Icons.list_alt_outlined,
-        description: "group birthdays into your wanted lists eg. department,teams or custom",
-        progress: TaskProgress.done),
-    AppFeature(
-        name: "Send out birthday collection link",
-        icon: Icons.add_link,
-        description: "Easily collect birthdays of from everyone with a link",
-        progress: TaskProgress.done),
-    AppFeature(
-        name: "Members can subscribe to lists to get notified",
+        name: "Never forget birthdays",
         icon: Icons.notifications,
-        description:
-            "any member of organization can subscribe to a birthday list notification, to get a phone text notification when its someones birthday.",
+        description: "Categorize birthdays in lists. Get SMS, Email and Whatsapp birthday reminders, and let others subscribe to birthday lists, to also get  reminders.",
         progress: TaskProgress.done),
     AppFeature(
-        name: "Birthday note card that all can sign",
-        icon: Icons.edit,
-        description: "Birthday note card that all members can sign",
+        name: "Collect birthday information with ease",
+        icon: Icons.add_link,
+        description: "Collect birthday info via a sharable form, import from ccv file or contacts.",
+        progress: TaskProgress.done),
+    AppFeature(
+        name: "Gift with confidence",
+        icon: Icons.card_giftcard,
+        description: "Know everyone's birthdays wishlists & create and share interactive virtual gifts of online products from amazon, ebay + more coming. ",
+        progress: TaskProgress.done),
+    AppFeature(
+        name: "Unlimited birthday cards",
+        icon: Icons.email_sharp,
+        description: "Choose from templates, to create a unique birthday cards that others can sign with notes,images,video etc.",
+        progress: TaskProgress.done),
+    AppFeature(
+        name: "Connect more with games",
+        icon: Icons.gamepad,
+        description: "Group games designed for birthday parties ranging from fun to deep and meaningful.",
+        progress: TaskProgress.done),
+    AppFeature(
+        name: "Stress-free birthday planning ",
+        icon: Icons.next_plan,
+        description: "Forms/invite links to reach to party invites , allowing you to pull off big birthday parties with no stress,",
+        progress: TaskProgress.done),
+
+
+    AppFeature(
+        name: "Custom branding",
+        icon: Icons.branding_watermark,
+        description: "Custom organization branding on birthday cards,invite pages, party forms,gifts etc.",
         progress: TaskProgress.done),
     AppFeature(
         name: "all managed from one account",
@@ -142,7 +159,7 @@ class HomeController extends GetxController {
   ];
   static const String homeBanner = "assets/logos/banner.png";
   static const List<TargetGroup> targets = [
-    TargetGroup(name: 'individuals', color: Colors.lightGreen, description: '', painPoints: [], icon: Icons.checklist_rtl),
+    // TargetGroup(name: 'individuals', color: Colors.lightGreen, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(name: 'families', color: Colors.green, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(name: 'schools', color: Colors.orange, description: '', painPoints: [], icon: Icons.checklist_rtl),
     TargetGroup(
@@ -151,7 +168,7 @@ class HomeController extends GetxController {
     // TargetGroup(name: 'organizations', color: Colors.purple, description: '', painPoints: [], icon:Icons.checklist_rtl)
   ];
 
-  static const String googlePlayStoreCTA = 'Keep track & remember birthdays of those that matter';
+  static const String googlePlayStoreCTA = 'Take birthday celebration to the next level, with more meaning connection fun.';
   static const String playStoreUrl = "https://play.google.com/store/apps/details?id=com.rodrickvy.celebrated";
   static const String playStoreBtnImage = "assets/logos/play_button.png";
 
@@ -162,7 +179,7 @@ class HomeController extends GetxController {
         image: "assets/intro/broken_barriers.png",
         description: "Celebrated is a great way for schools, churches and any organizations to break barriers."),
     CoreValue(
-        name: "Expression",
+          name: "Expression",
         color: Colors.yellowAccent,
         image: "assets/intro/thank_you.png",
         description:

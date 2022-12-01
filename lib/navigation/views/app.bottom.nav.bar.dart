@@ -1,9 +1,9 @@
 
-import 'package:celebrated/domain/view/components/app.state.view.dart';
-import 'package:celebrated/domain/view/components/bottom.navybar.dart';
+import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
+import 'package:celebrated/domain/view/components/nav/bottom.navybar.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
-import 'package:celebrated/util/list.extention.dart';
+import 'package:celebrated/util/list.extension.dart';
 import 'package:flutter/material.dart';
 
 class AppBottomNavBar extends AdaptiveUI {

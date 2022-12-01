@@ -1,4 +1,4 @@
-import 'package:celebrated/birthday/data/static.data.dart';
+import 'package:celebrated/lists/data/static.data.dart';
 import 'package:flutter/material.dart';
 import 'package:lit_relative_date_time/controllers.dart';
 import 'package:lit_relative_date_time/models.dart';

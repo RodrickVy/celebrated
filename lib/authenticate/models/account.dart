@@ -1,16 +1,18 @@
 
 
-import 'package:celebrated/authenticate/models/content_interaction.dart';
-import 'package:celebrated/authenticate/models/user.claims.dart';
-import 'package:celebrated/authenticate/models/user.content.interaction.type.dart';
+import 'package:celebrated/domain/services/content.store/model/content.interaction.dart';
+import 'package:celebrated/subscription/controller/subscription.service.dart';
+import 'package:celebrated/subscription/models/subscription.dart';
+import 'package:celebrated/subscription/models/subscription.plan.dart';
+import 'package:celebrated/domain/services/content.store/model/content.interaction.type.dart';
 import 'package:celebrated/authenticate/models/auth.with.dart';
-import 'package:celebrated/authenticate/requests/sign_up_request.dart';
-import 'package:celebrated/birthday/model/birthday.list.dart';
+import 'package:celebrated/authenticate/requests/signup.request.dart';
+import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/domain/model/imodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
-class AccountUser implements IModel {
+class UserAccount implements IModel {
 
 
   final String phone;
@@ -21,8 +23,6 @@ class AccountUser implements IModel {
 
   final String providerId;
 
-  // final String displayName;
-
   final String uid;
 
   final DateTime lastLogin;
@@ -32,7 +32,7 @@ class AccountUser implements IModel {
 
   final bool emailVerified;
   
-  final List<UserClaim> claims;
+  final SubscriptionPlan subscriptionPlan;
 
   final String avatar;
 
@@ -48,8 +48,8 @@ class AccountUser implements IModel {
   /// birthday lists whose notifications have been paused
   final BirthdayReminderType defaultReminderType;
 
-  AccountUser({
-     this.claims = const[UserClaim.starter],
+  UserAccount({
+     this.subscriptionPlan = SubscriptionPlan.none,
     required this.bio,
     required this.birthdate,
     this.silencedBirthdayLists = const [],
@@ -133,15 +133,26 @@ class AccountUser implements IModel {
   //
 
 
+  Subscription?  get subscription {
+   try{
+    return subscriptionService.subscriptions
+         .firstWhere((element) => element.id == subscriptionPlan);
+   } catch(_){
+     return null;
+   }
+  }
+
   String get initials{
     if(name.trim().isEmpty){
       return "";
     }
     return name.split(" ").map((e) => e.split("").first.capitalize).join(".");
   }
-  static AccountUser empty() {
-    return AccountUser(
-        claims: [UserClaim.starter],
+
+  get firstName => name.trim().isNotEmpty ? name.split(" ").first :"";
+  static UserAccount empty() {
+    return UserAccount(
+        subscriptionPlan:SubscriptionPlan.none,
         timeCreated: DateTime.now(),
         interactions: [],
         name: "",
@@ -176,7 +187,7 @@ class AccountUser implements IModel {
     }
   }
 
-  AccountUser copyWith({
+  UserAccount copyWith({
     String? phone,
     String? email,
     AuthWith? authMethod,
@@ -187,14 +198,14 @@ class AccountUser implements IModel {
     DateTime? timeCreated,
     String? name,
     bool? emailVerified,
-    List<UserClaim>? claims,
+    SubscriptionPlan? subscriptionPlan,
     String? avatar,
     List<UserContentInteraction>? interactions,
     String? bio,
     DateTime? birthdate,
     Map<String, String>? settings,
   }) {
-    return AccountUser(
+    return UserAccount(
       phone: phone ?? this.phone,
       email: email ?? this.email,
       authMethod: authMethod ?? this.authMethod,
@@ -205,7 +216,7 @@ class AccountUser implements IModel {
       timeCreated: timeCreated ?? this.timeCreated,
       name: name ?? this.name,
       emailVerified: emailVerified ?? this.emailVerified,
-      claims: claims ?? this.claims,
+      subscriptionPlan: subscriptionPlan ?? this.subscriptionPlan,
       avatar: avatar ?? this.avatar,
       interactions: interactions ?? this.interactions,
       bio: bio ?? this.bio,
@@ -214,10 +225,10 @@ class AccountUser implements IModel {
     );
   }
 
-  static AccountUser fromUser(User user) {
+  static UserAccount fromUser(User user) {
     final DateTime timestamp = DateTime.now();
-    return AccountUser(
-        claims: [UserClaim.starter],
+    return UserAccount(
+        subscriptionPlan:SubscriptionPlan.none,
         timeCreated: timestamp,
         interactions: [],
         bio: "",
@@ -234,10 +245,10 @@ class AccountUser implements IModel {
         settings: {});
   }
 
-  static AccountUser mergeAuthWithRequest(User user,SignUpEmailRequest request) {
+  static UserAccount mergeAuthWithRequest(User user,SignUpEmailRequest request) {
     final DateTime timestamp = DateTime.now();
-    return AccountUser(
-        claims: [UserClaim.starter],
+    return UserAccount(
+        subscriptionPlan: SubscriptionPlan.none,
         timeCreated: timestamp,
         interactions: [],
         bio: "",

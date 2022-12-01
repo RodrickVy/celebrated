@@ -9,7 +9,6 @@ class FeatureAccess{
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-
       'limit': limit,
     };
   }

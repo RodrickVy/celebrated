@@ -1,4 +1,5 @@
-import 'package:celebrated/domain/repository/amen.content/repository/repository.dart';
+
+import 'package:celebrated/domain/services/content.store/repository/repository.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
@@ -18,7 +19,7 @@ import 'package:get/get.dart';
 /// 2. FeedbackSpinners - simple widget wrapper to add a live feedback to the user. explained well in [FeedbackSpinner] comments.
 /// 3. UserBug reporting - system that allows the user to report an error , right when it happens and see how we are dealing with it.
 class FeedbackService extends GetxController
-    with ContentRepository<AppNotification, AppNotificationFactory> {
+    with ContentStore<AppNotification, AppNotificationFactory> {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseStorage storage = FirebaseStorage.instance;
 

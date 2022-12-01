@@ -44,9 +44,9 @@ class AppTheme {
             GoogleFonts.inter(fontSize: 93, fontWeight: FontWeight.w300, color: Colors.black, letterSpacing: -1.5),
         headline2:
             GoogleFonts.inter(fontSize: 58, fontWeight: FontWeight.w300, color: Colors.black, letterSpacing: -0.5),
-        headline3: GoogleFonts.inter(color: Colors.black, fontSize: 46, fontWeight: FontWeight.w400),
+        headline3: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 46, fontWeight: FontWeight.w400),
         headline4:
-            GoogleFonts.inter(fontSize: 33, fontWeight: FontWeight.w400, color: Colors.black, letterSpacing: 0.25),
+            GoogleFonts.playfairDisplay(fontSize: 33, fontWeight: FontWeight.w400, color: Colors.black, letterSpacing: 0.25),
         headline5: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 23, fontWeight: FontWeight.w400),
         headline6:
             GoogleFonts.inter(fontSize: 19, fontWeight: FontWeight.w500, color: Colors.black, letterSpacing: 0.15),
@@ -63,6 +63,8 @@ class AppTheme {
       ));
 
   static double borderRadius = 12;
+
+  static double borderRadius2 = 24;
 
 
   static InputDecoration get inputDecoration => InputDecoration(

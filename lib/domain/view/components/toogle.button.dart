@@ -1,7 +1,7 @@
 
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/domain/model/toggle.option.dart';
-import 'package:celebrated/util/list.extention.dart';
+import 'package:celebrated/util/list.extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

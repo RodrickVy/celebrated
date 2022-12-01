@@ -1,4 +1,4 @@
-// import 'package:celebrated/birthday/model/birthday.dart';
+// import 'package:celebrated/lists/model/birthday.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //
 // /// service that handles device notifications

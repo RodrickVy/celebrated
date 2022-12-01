@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // 'https://celebrated-app.web.app'
 class AppRoutes {
-  static const String domainUrlBase ='https://celebrated-app.web.app' ;
+  static const String domainUrlBase ='https://celebratedapp.com' ;
   static const String home = "/home";
   static const String lists = "/lists";
   static const String gifts = "/gifts";
@@ -28,6 +28,7 @@ class AppRoutes {
   static const String authSignUp = "/sign_up";
   static const String subscriptions = "/subscriptions";
   static const String verifyEmail = "/verify_email";
+  static const String authActions = "/actions";
   static const String authPasswordReset =
       "/auth/password_reset";
   static const String bBoard = "/b-board";

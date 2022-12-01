@@ -31,7 +31,7 @@ class AppTextField extends StatelessWidget {
   final Function(String value)? onChanged;
 
   AppTextField(
-      {required Key key,
+      { Key? key,
       required this.label,
       required this.hint,
       this.onTap,
@@ -59,6 +59,7 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Todo optimize to be DRY
     if (obscureOption == true) {
       return Obx(
         () => TextField(
@@ -75,6 +76,7 @@ class AppTextField extends StatelessWidget {
           cursorColor: Colors.black,
           onTap: onTap,
           key: key,
+
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureOption == true ? !showPass.value : false,
@@ -109,7 +111,8 @@ class AppTextField extends StatelessWidget {
       autofillHints: autoFillHints,
       autocorrect: autoCorrect,
       enabled: enabled,
-      onChanged: (_) {
+      onChanged: (String value) {
+        onChanged != null ? onChanged!(value) : () {};
         FeedbackService.clearErrorNotification();
       },
       autofocus: autoFocus,

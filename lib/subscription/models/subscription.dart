@@ -1,4 +1,6 @@
 
+import 'package:celebrated/subscription/models/subscription.plan.dart';
+
 import 'feature.access.dart';
 
 class Subscription {
@@ -6,11 +8,14 @@ class Subscription {
   final int price;
   final String description;
   final List<FeatureAccess> featureAccess;
+  final SubscriptionPlan id;
+  final bool mainPricing;
 
   const Subscription({
     required this.name,
+    this.mainPricing = false,
     required this.price,
-    required this.description,
+    required this.description, this.id = SubscriptionPlan.free,
     required this.featureAccess
   });
 
@@ -20,6 +25,7 @@ class Subscription {
       'name': name,
       'price': price,
       'description': description,
+      'id':id.name,
       'featureAccess': featureAccess.map((e) => e.name).toList(),
     };
   }
@@ -28,6 +34,7 @@ class Subscription {
     return Subscription(
       name: map['name'] as String,
       price: map['price'] as int,
+      id: SubscriptionPlan.values.byName(map["id"]),
       description: map['description'] as String,
       featureAccess: List.from(map['featureAccess']).map((e) =>FeatureAccess.fromMap(e)).toList(),
     );

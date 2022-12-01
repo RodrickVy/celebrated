@@ -1,5 +1,7 @@
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/domain/view/pages/app.page.view.dart';
+import 'package:celebrated/appIntro/controller/intro.controller.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/home/controller/home.controller.dart';
 import 'package:celebrated/home/model/target.group.dart';
 import 'package:celebrated/home/model/value.dart';
@@ -28,7 +30,16 @@ class HomePage extends AppPageView{
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AppButton(
+                  key: UniqueKey(),
+                  isTextButton: true,
+                  label: "Give Us Feedback",
+                  onPressed: () async {
+                    if (await launchUrl(Uri.parse('https://523ay2iqdlf.typeform.com/to/LELPUugH'))) {}
+                  }),
+            ),
             Container(
               decoration: BoxDecoration(
                  border: Border.fromBorderSide( AppTheme.shape.side),
@@ -42,6 +53,7 @@ class HomePage extends AppPageView{
                 margin: EdgeInsets.zero,
                 child: Column(
                   children: [
+
                     Row(
                       mainAxisAlignment:MainAxisAlignment.end,
                       children: [
@@ -49,7 +61,21 @@ class HomePage extends AppPageView{
                           padding: const EdgeInsets.all(8.0),
                           child: ChoiceChip(
                             elevation: 0,
-                            label: const Text("Alpha"),
+                            label: const Text("🎥 intro video"),
+                            onSelected: (bool value) {
+                              navService.to(AppRoutes.splash);
+                              introScreenController.videoPlaying(true);
+                            },
+                            shape: AppTheme.shape,
+                            backgroundColor: Colors.white,
+                            selected: false,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ChoiceChip(
+                            elevation: 0,
+                            label: const Text("👉🏿 progress"),
                             onSelected: (bool value) {
                              navService.to(AppRoutes.support);
                             },
@@ -110,6 +136,72 @@ class HomePage extends AppPageView{
             const SizedBox(height: 50,),
             Padding(
               padding: const EdgeInsets.all(8.0),
+              child: Wrap(
+                children: [
+                  Container(
+                    width:adapter.width,
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Here is what you get",
+                      style: adapter.textTheme.headlineSmall,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+
+                  ...HomeController.mainFeatures.map((e) {
+                    return Container(
+                      width: adapter.width,
+                      child: Card(
+                        shape: AppTheme.shape,
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Icon(
+                                  e.icon,
+                                  size: 25,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  e.name,
+                                  style: adapter.textTheme.bodyLarge,textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(e.description,  style: adapter.textTheme.bodyMedium,textAlign: TextAlign.center,),
+                              ),
+
+
+                              // ListTile(
+                              //   shape: AppTheme.shape,
+                              //
+                              //   title: Text(
+                              //     e.name,
+                              //     style: adapter.textTheme.bodyLarge,
+                              //   ),
+                              //   leading:  Icon(
+                              //     e.icon,
+                              //     size: 25,
+                              //   ),
+                              //   subtitle: Text(e.description,  style: adapter.textTheme.bodyMedium,),
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 HomeController.googlePlayStoreCTA,
                 style: adapter.textTheme.headline6,
@@ -131,36 +223,7 @@ class HomePage extends AppPageView{
               ),
             ),
             const SizedBox(height: 50,),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Here is what you get for free",
-                      style: adapter.textTheme.headlineSmall,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  ...HomeController.mainFeatures.map((e) {
-                    return ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                      title: Text(
-                        e.name,
-                        style: adapter.textTheme.bodyLarge,
-                      ),
-                      leading:  Icon(
-                      e.icon,
-                        size: 25,
-                      ),
-                      subtitle: Text(e.description,  style: adapter.textTheme.bodyMedium,),
-                    );
-                  }).toList(),
-                ],
-              ),
-            ),
-            const SizedBox(height: 50,),
+
             Text(
               "Transforming Organizations!",
               style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
