@@ -3,6 +3,8 @@ import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/view/pages/auth.actions.dart';
+import 'package:celebrated/authenticate/view/pages/complete.signin.dart';
+import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
@@ -73,8 +75,8 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
         GetPage(name: AppRoutes.authSignUp, page: () => const SignUpPage()),
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
-        GetPage(name: AppRoutes.authActions, page: () => AuthActionsHandler()),
-        GetPage(name: AppRoutes.verifyEmail, page: () => const VerifyEmail()),
+        GetPage(name: AppRoutes.completeSignIn, page: () => CompleteEmailVerification()),
+        GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
         GetPage(
             name: AppRoutes.cards,
@@ -102,6 +104,7 @@ class App extends StatelessWidget {
                 )),
         GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
         GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
+        GetPage(name: AppRoutes.actions, page: () => const AuthActionsHandler(key: Key(AppRoutes.support))),
       ];
 
   @override
@@ -118,7 +121,7 @@ class App extends StatelessWidget {
       unknownRoute: GetPage(name: AppRoutes.notFound, page: () => const NotFoundView(key: Key(AppRoutes.notFound))),
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 800),
-      initialRoute:AppRoutes.splash,
+      initialRoute: AppRoutes.splash,
       initialBinding: AppBindings(),
       routingCallback: (Routing? routing) {
         if (routing != null) {

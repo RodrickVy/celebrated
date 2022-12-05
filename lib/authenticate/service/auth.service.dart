@@ -16,20 +16,20 @@ import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+final FirebaseFirestore firestore = FirebaseFirestore.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+final FirebaseAuth auth = FirebaseAuth.instance;
+
 /// manages authentication state and maintenance of Account and Auth objects of the user
 class AuthService extends GetxController with ContentStore<UserAccount, AccountUserFactory> {
-  static FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  /// pattern used for google sign in on android/ios/web:  https://petercoding.com/firebase/2021/05/24/using-google-sign-in-with-firebase-in-flutter/
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
   final Rx<UserAccount> accountUser = UserAccount.empty().obs;
+
   final RxBool isAuthenticated = false.obs;
 
   @override
@@ -53,15 +53,10 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
       },
     ));
     auth.authStateChanges().listen((User? fireUser) async {
-      // InitStateController.setState(key: authLoadState, loaded: false);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        /// Auth-user object is created from firebase authentication
         if (fireUser != null) {
-          Get.log("Auth State Changes Triggered");
+          Get.log("Auth state changes triggered");
           await syncOnAuthentication(fireUser);
-          if (fireUser.emailVerified != true && !Get.currentRoute.contains(AppRoutes.authActions)) {
-            navService.to(AppRoutes.verifyEmail);
-          }
 
           // InitStateController.setState(key: authLoadState, loaded: true);
         } else {
@@ -70,7 +65,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           // InitStateController.setState(key: authLoadState, loaded: true);
         }
       });
-      Get.log("Auth state changes triggered");
 
       /// setting all the spinners in auth-components off ,when authentication has changed!
       FeedbackService.appNotification.listen((AppNotification? error) {
@@ -86,21 +80,10 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   static AuthService instance = AuthService._();
 
-  // syncs auth user to firestore, if user is signing up a firestore object
-  // for the user is created if the user is simply logging in their object's lastLogin is updated
-  ///Auth User state, all listen to this for changes, empty objects means no one is signed in
-  /// an attempt to fetch user data when they sign in, if the data is found
-  /// its loaded , if not this is the users first login hence an [UserAccount]
-  /// object is created and sent to firestore.
-
   // Sign Up & SignIn & Password Reset
   Future<UserAccount> createUserAccount(UserAccount user) async {
     await setContent(user);
-    // if (success) {
-    //   return await _syncWithFirestore(user);
-    // } else {
     return user;
-    // }
   }
 
   Future<void> signUp(SignUpEmailRequest request) async {
@@ -112,6 +95,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           await userCredential.user!.updateDisplayName(request.name);
           final UserAccount accountData = UserAccount.mergeAuthWithRequest(userCredential.user!, request);
           await createUserAccount(accountData);
+          syncOnAuthentication(userCredential.user!);
         } else {
           AnnounceErrors.accountCreationFailed();
         }
@@ -132,7 +116,8 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         if (credential.user != null) {
           int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
           Get.log("Updated user: passed ${credential.user!.uid}");
-          return await updateContent(credential.user!.uid, {'lastLogin': loginTimestamp,"emailVerified": credential.user!.emailVerified});
+          return await updateContent(
+              credential.user!.uid, {'lastLogin': loginTimestamp, "emailVerified": credential.user!.emailVerified});
         } else {
           AnnounceErrors.updateLoginTimestampFailed();
         }
@@ -150,26 +135,17 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   /// updates all local variables when authentication state has changed
   Future<void> syncOnAuthentication(User user) async {
     try {
-      if (user.emailVerified == true && accountUser.value.emailVerified == false) {
-        await updateContent(user.uid, {"emailVerified": true});
-      }
+      await updateContent(user.uid, {"emailVerified": user.emailVerified == true});
       accountUser(await getContent(user.uid));
-
       isAuthenticated(true);
-      if (user.emailVerified == true && accountUser.value.subscriptionPlan == SubscriptionPlan.none) {
-        navService.to(AppRoutes.subscriptions);
+      if (user.emailVerified != true && !Get.currentRoute.contains(AppRoutes.completeSignIn)) {
+        navService.addNextToOnRoute(AppRoutes.verifyEmail, navService.getNextRoute ?? '');
+      } else if (user.emailVerified == true && !accountUser.value.hasSetSubscription) {
+        navService.addNextToOnRoute(AppRoutes.subscriptions, navService.getNextRoute ?? '');
+      } else if (navService.toNextIfAny() == false && navService.inAuthRoutes()) {
+        navService.to(AppRoutes.lists);
       }
-      if (Get.parameters["nextTo"] != null) {
-        navService.to(NavService.instance.decodeNextToFromRoute());
-      } else {
-        print("${Get.currentRoute.split("?").first} || ${AppRoutes.authRoutes}");
-        if (AppRoutes.authRoutes.contains(Get.currentRoute.split("?").first)) {
-          navService.to(AppRoutes.lists);
-        }
-      }
-    } catch (_) {
-      // AnnounceErrors.unknown(_);
-    }
+    } catch (_) {}
   }
 
   signInWithPopUpProvider({required provider}) async {
@@ -230,6 +206,72 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
     return false;
   }
 
+  ActionCodeSettings emailLinkActionSettings(String email) {
+    return ActionCodeSettings(
+      url: 'https://celebratedapp.com/?email=${email}&nextUrl=${navService.getNextRoute ?? ''}',
+      androidInstallApp: true,
+      androidMinimumVersion: '2',
+      androidPackageName: "com.rodrickvy.celebrated",
+      iOSBundleId: "com.rodrickvy.celebrated",
+      handleCodeInApp: true,
+    );
+  }
+
+  /// send verification of email to user and returns weather the users email is verified
+  Future<bool> sendSignInLink(String email) async {
+    if (Validators.validateField(Validators.emailFormValidator, email)) {
+      try {
+        await auth.sendSignInLinkToEmail(email: email, actionCodeSettings: emailLinkActionSettings(email));
+        return true;
+      } on FirebaseAuthException catch (error) {
+        AnnounceErrors.announceErrorFromCode(error.code, error.message ?? "");
+        return false;
+      } catch (e) {
+        AnnounceErrors.unknown(e);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  /// handles the return url of a email verification link
+  Future<bool> handleSignInLink(String email, String emailLink) async {
+    if (Validators.validateField(Validators.emailFormValidator, email)) {
+      try {
+        if (auth.isSignInWithEmailLink(emailLink)) {
+          Get.log("isValidLink  $emailLink");
+          //   FeedbackService.announce(notification: AppNotification(title: "Key: ${emailLink}",appWide: true));
+          UserCredential? credential = await auth.signInWithEmailLink(email: email, emailLink: emailLink);
+          if (credential.user != null) {
+            await updateContent(credential.user!.uid, {"emailVerified": true});
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          AnnounceErrors.signInLinkExpired();
+
+          return false;
+        }
+      } on FirebaseAuthException catch (error) {
+        AnnounceErrors.announceErrorFromCode(
+            error.code,
+            (error.message != null && error.message?.trim() != 'Error')
+                ? error.message!
+                : "Something went wrong, try again.");
+
+        Get.log("code: ${error.code} message:${error.message} ${error.stackTrace} $emailLink");
+        return false;
+      } catch (e) {
+        Get.log("code: ${e} message:${e}  $emailLink");
+        AnnounceErrors.unknown(e);
+        // return false;
+        rethrow;
+      }
+    }
+    return false;
+  }
+
   Future<void> logout() async {
     try {
       await auth.signOut();
@@ -248,23 +290,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         name != accountUser.value.name) {
       try {
         return await updateContent(accountUser.value.uid, {'name': name}).then((value) {
-          accountUser(value);
-          accountUser.refresh();
-          return value;
-        });
-      } catch (error) {
-        FeedbackService.announce(
-            notification: AppNotification.unknownError().copyWith(message: error.toString(), title: error.toString()));
-        return accountUser.value;
-      }
-    }
-    return accountUser.value;
-  }
-
-  Future<UserAccount> updateBio({required String bio}) async {
-    if (isAuthenticated.value && bio != accountUser.value.bio) {
-      try {
-        return await updateContent(accountUser.value.uid, {'bio': bio}).then((value) {
           accountUser(value);
           accountUser.refresh();
           return value;
@@ -407,63 +432,10 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
     }
   }
 
-  setSubscriptionPlan(SubscriptionPlan subscriptionPlan, [String promoCode = ""]) {
+  Future<void> setSubscriptionPlan(SubscriptionPlan subscriptionPlan, [String promoCode = ""]) async {
     if (subscriptionPlan == SubscriptionPlan.test) {
-      updateContent(accountUser.value.uid, {"subscriptionPlan": subscriptionPlan.name});
+      await updateContent(accountUser.value.uid, {"subscriptionPlan": subscriptionPlan.name});
       navService.to(AppRoutes.profile);
-    }
-  }
-
-  /// send verification of email to user and returns weather the users email is verified
-  Future<bool> verifyUsersEmail() async {
-    if (accountUser.value.emailVerified == true) {
-      return true;
-    }
-
-    // var acs = ActionCodeSettings(
-    //     // URL you want to redirect back to. The domain (www.example.com) for this
-    //     // URL must be whitelisted in the Firebase Console.
-    //     url: 'https://celebrated-app.web.app/actions?email',
-    //     // This must be true
-    //     handleCodeInApp: true,
-    //     iOSBundleId: 'com.rodrickvy.celebrated',
-    //     androidPackageName: 'com.rodrickvy.celebrated',
-    //     // installIfNotAvailable
-    //     androidInstallApp: true,
-    //     // minimumVersion
-    //     androidMinimumVersion: '12');
-
-    if (Validators.validateField(Validators.emailFormValidator, accountUser.value.email)) {
-      try {
-        auth.currentUser?.sendEmailVerification();
-        // FeedbackService.successAlertSnack("Reset Email Sent! Check Your Spam Folder If You Can't Find It", 7000);
-        return true;
-      } on FirebaseAuthException catch (error) {
-        AnnounceErrors.announceErrorFromCode(error.code, error.message ?? "");
-        return false;
-      } catch (e) {
-        AnnounceErrors.unknown(e);
-        return false;
-      }
-    }
-    return false;
-  }
-
-  /// handles the return url of a email verification link
-  Future<bool> handleEmailVerifiedAction(String actionCode, String continueUrl) async {
-    try {
-      await auth.applyActionCode(actionCode);
-      Get.reload(force: true);
-      if (isAuthenticated.isTrue && auth.currentUser != null) {
-        syncOnAuthentication(auth.currentUser!);
-      }
-      return true;
-    } on FirebaseAuthException catch (error) {
-      AnnounceErrors.announceErrorFromCode(error.code, error.message ?? "");
-      return false;
-    } catch (e) {
-      AnnounceErrors.unknown(e);
-      return false;
     }
   }
 
@@ -478,6 +450,46 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
       return false;
     } catch (e) {
       AnnounceErrors.unknown(e);
+      return false;
+    }
+  }
+
+  Future<bool> sendVerificationCode() async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+      'sendEmailVerificationCode',
+      options: HttpsCallableOptions(
+        timeout: const Duration(seconds: 5),
+      ),
+    );
+
+    dynamic data = (await callable.call()).data;
+    Get.log("$data");
+    return data['success'] ?? false;
+  }
+
+  Future<bool> verifyEmailCode(String code) async {
+    if (Validators.authCodeValidator.announceValidation(code) == null) {
+      HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+        'verifyEmailVerificationCode',
+        options: HttpsCallableOptions(
+          timeout: const Duration(seconds: 5),
+        ),
+      );
+
+      dynamic data = (await callable.call(<String, dynamic>{
+        'code': code,
+      }))
+          .data;
+      Get.log("$data");
+      if(data['error'] != null && data['error'] == 'code-invalid-or-expired' ){
+        FeedbackService.announce(notification: AppNotification(title: "The code is either invalid or expired, check your email for the latest code."));
+      }else if(data['success']==true){
+        await auth.currentUser?.reload();
+        syncOnAuthentication(auth.currentUser!);
+      }
+      return data['success'] ?? false;
+    } else {
+
       return false;
     }
   }

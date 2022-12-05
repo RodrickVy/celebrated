@@ -51,4 +51,8 @@ class Validators {
     }
     return true;
   }
+
+  static Validator get authCodeValidator => Validator<String>("authCodeValidator",[
+    Validation((value) => value.isNotEmpty, errorMessage: "code can't be empty"),
+  ]);
 }

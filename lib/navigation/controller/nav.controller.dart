@@ -1,3 +1,6 @@
+import 'package:celebrated/navigation/controller/links.handler/dynamic.links.stub.dart'
+if (dart.library.io) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.io.dart'
+if (dart.library.js) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.web.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
@@ -25,13 +28,23 @@ class NavService extends GetxController {
 
   List<AppPage> get items => AppRoutes.items;
 
-  String decodeNextToFromRoute() {
-    if (Get.parameters["nextTo"] != null) {
-      return Get.parameters["nextTo"]!.split("9").join("/").trim();
+  bool toNextIfAny() {
+    if (currentHasNext) {
+      to(getNextRoute!);
+      return true;
     } else {
-      return "";
+      return false;
     }
   }
+
+  String? get getNextRoute {
+    if (currentHasNext) {
+      return Get.parameters["nextTo"]!.split("9").join("/").trim();
+    }
+    return null;
+  }
+
+  bool get currentHasNext => Get.parameters["nextTo"] != null;
 
   String addNextToOnRoute(String route, String nextRoute) {
     String routeToBeResumed = nextRoute.split("/").join("9").trim();
@@ -102,8 +115,7 @@ class NavService extends GetxController {
   bool get drawerExpanded => _drawerExpanded.value;
 
   static OnRouteObserver routeCategoryListener = OnRouteObserver(
-      run: (String route, Map<String, String?> parameters,_,__) {
-
+      run: (String route, Map<String, String?> parameters, _, __) {
         final String itemName = '/${route.split("/").last}';
         Get.log("Gourd working $itemName ");
         switch (itemName) {
@@ -115,22 +127,22 @@ class NavService extends GetxController {
           case AppRoutes.home:
           case AppRoutes.splash:
           case AppRoutes.support:
-           navService.currentBottomBarIndex(0);
+            navService.currentBottomBarIndex(0);
             break;
           case AppRoutes.lists:
           case AppRoutes.openListEdit:
           case AppRoutes.birthday:
           case AppRoutes.shareBoard:
-           navService.currentBottomBarIndex(1);
+            navService.currentBottomBarIndex(1);
             break;
           case AppRoutes.gifts:
-           navService.currentBottomBarIndex(2);
+            navService.currentBottomBarIndex(2);
             break;
           case AppRoutes.cards:
-           navService.currentBottomBarIndex(3);
+            navService.currentBottomBarIndex(3);
             break;
           case AppRoutes.parties:
-           navService.currentBottomBarIndex(4);
+            navService.currentBottomBarIndex(4);
             break;
         }
       },
@@ -140,6 +152,11 @@ class NavService extends GetxController {
   onInit() {
     super.onInit();
     registerRouteObserver(routeCategoryListener);
+  }
+
+  @override
+  onReady() {
+    DynamicLinksHandler.instance.listen();
   }
 
   registerRouteObserver(OnRouteObserver guard) {
@@ -154,10 +171,14 @@ class NavService extends GetxController {
     for (var guard in onRouteListeners) {
       if (guard.when(route, parameters)) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-          guard.run(route, parameters, removeOnRoute,to);
+          guard.run(route, parameters, removeOnRoute, to);
         });
       }
     }
+  }
+
+  bool inAuthRoutes([String? currentRoute]) {
+    return AppRoutes.authRoutes.contains((currentRoute ?? Get.currentRoute).split("?").first);
   }
 }
 

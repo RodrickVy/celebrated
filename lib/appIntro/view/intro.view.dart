@@ -9,7 +9,7 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_fade/image_fade.dart';
-import 'package:video_player/video_player.dart';
+
 
 /// The app's intro view, with no dependency on the actual controller since this can change anytime.
 class AppIntro extends AdaptiveUI {

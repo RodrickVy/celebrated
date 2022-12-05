@@ -46,6 +46,10 @@ class AnnounceErrors{
   static exception (error)=>FeedbackService.announce(
       notification: appNotificationFromCode(error.code).copyWith(appWide: false, message: error.message));
 
+  static  dynamicLinkFailed(error) {
+    return FeedbackService.announce(
+        notification: appNotificationFromCode(error.code).copyWith(appWide: true,canDismiss: true, message: error.message));
+  }
 
   static unknown(error)=>   FeedbackService.announce(
       notification: AppNotification.unknownError().copyWith(
@@ -240,4 +244,10 @@ class AnnounceErrors{
   static void announceErrorFromCode(String code,String message){
      FeedbackService.announce(notification: appNotificationFromCode(code,).copyWith(title: message));
  }
+
+  static void signInLinkExpired() {
+    FeedbackService.announce(notification: AppNotification.invalidRequest().copyWith(title:"Invalid or expired link, request another",message: "The sign in link  has probably expired, or is invalid, please try requesting another link") );
+  }
+
+
 }

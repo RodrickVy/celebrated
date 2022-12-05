@@ -10,7 +10,7 @@ class AppRoutes {
   static const String gifts = "/gifts";
   static const String cards = "/cards";
   static const String parties = "/parties";
-
+  static const String actions = "/actions";
 
   static const String about = "/about";
   static const String plan = "/plan";
@@ -28,7 +28,8 @@ class AppRoutes {
   static const String authSignUp = "/sign_up";
   static const String subscriptions = "/subscriptions";
   static const String verifyEmail = "/verify_email";
-  static const String authActions = "/actions";
+  static const String completeSignIn = "/completeSignIn";
+  static const String link = '/?link';
   static const String authPasswordReset =
       "/auth/password_reset";
   static const String bBoard = "/b-board";

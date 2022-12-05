@@ -69,6 +69,11 @@ class UserAccount implements IModel {
     required this.phone,
   });
 
+
+  bool get hasSetSubscription {
+    return subscriptionPlan != SubscriptionPlan.none;
+  }
+
   // bool hasReadAccess(String dbpath) {
   //   return claims.containsKey("hasReadAccess") &&
   //       List.from(claims["hasReadAccess"]!).contains(dbpath);

@@ -98,6 +98,7 @@ class SignUpPage extends AdaptiveUI {
   FormPhoneField get phoneField => FormPhoneField(
     autoFocus: true,
     initialValue: UIFormState.signUpFormData.phoneNumber,
+
     onChanged: (PhoneNumber? p) {
       if (p != null) {
         UIFormState.phoneNumber(p.international);

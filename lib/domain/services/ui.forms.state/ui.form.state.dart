@@ -16,8 +16,9 @@ class UIFormState {
   static Rx<DateTime> birthdate = DateTime.now().obs;
   static RxString phoneNumber = ''.obs;
   static RxString promoCode = ''.obs;
+  static RxString authCode = ''.obs;
   static Rx<SubscriptionPlan> subscriptionPlan = SubscriptionPlan.free.obs;
-  static RxBool emailVerificationLinkSent  = false.obs;
+  static RxBool signInLinkSent  = false.obs;
   static SignInEmailRequest get signInFormData => SignInEmailRequest(email: email.value, password: password.value);
 
   static SignUpEmailRequest get signUpFormData => SignUpEmailRequest(

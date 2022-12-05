@@ -126,33 +126,33 @@ class SignInPage extends AdaptiveUI {
   int get currentIndex => int.parse(Get.parameters['stage'] ?? '0');
 
   AppTextField get emailField => AppTextField(
-        fieldIcon: Icons.email,
-        label: "Email",
-        hint: "eg. example@gmail.com",
-        autoFocus: true,
-        controller: TextEditingController(text: UIFormState.signInFormData.email),
-        onChanged: (data) {
-          UIFormState.email(data?.trim());
-        },
-        key: UniqueKey(),
-        keyboardType: TextInputType.emailAddress,
-        autoFillHints: const [AutofillHints.email, AutofillHints.username],
-      );
+    fieldIcon: Icons.email,
+    label: "Email",
+    hint: "eg. example@gmail.com",
+    autoFocus: true,
+    controller: TextEditingController(text: UIFormState.signInFormData.email),
+    onChanged: (data) {
+      UIFormState.email(data?.trim());
+    },
+    key: UniqueKey(),
+    keyboardType: TextInputType.emailAddress,
+    autoFillHints: const [AutofillHints.email, AutofillHints.username],
+  );
 
   AppTextField get passwordField => AppTextField(
-        fieldIcon: Icons.vpn_key,
-        label: "Password",
-        autoFocus: true,
-        hint: "minimum 6 characters",
-        controller: TextEditingController(text: UIFormState.signInFormData.password),
-        onChanged: (data) {
-          UIFormState.password(data);
-        },
-        obscureOption: true,
-        key: UniqueKey(),
-        keyboardType: TextInputType.visiblePassword,
-        autoFillHints: const [AutofillHints.password],
-      );
+    fieldIcon: Icons.vpn_key,
+    label: "Password",
+    autoFocus: true,
+    hint: "minimum 6 characters",
+    controller: TextEditingController(text: UIFormState.signInFormData.password),
+    onChanged: (data) {
+      UIFormState.password(data);
+    },
+    obscureOption: true,
+    key: UniqueKey(),
+    keyboardType: TextInputType.visiblePassword,
+    autoFillHints: const [AutofillHints.password],
+  );
 
   Column stageView(Adaptive adapter) {
     switch (currentIndex) {
