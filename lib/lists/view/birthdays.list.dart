@@ -4,7 +4,6 @@ import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/lists/view/b.list.empty.dart';
 import 'package:celebrated/lists/view/b.list.view.dart';
-import 'package:celebrated/lists/view/birthday.adds.dart';
 import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/navigation/views/app.bar.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -50,7 +49,7 @@ class BirthdayListsPage extends AppPageView {
                 )
                 .toList(),
           ],
-          pagesLength: authService.isAuthenticated.isFalse || birthdaysController.orderedBoards.isEmpty ? 1: birthdaysController.orderedBoards.length,
+          pagesLength: authService.user.isUnauthenticated || birthdaysController.orderedBoards.isEmpty ? 1: birthdaysController.orderedBoards.length,
           initialPage: 0,
           views: [
             ...birthdaysController.orderedBoards.map2((element, int index) {
@@ -61,7 +60,7 @@ class BirthdayListsPage extends AppPageView {
           ],
           actionButton: Obx(
             () {
-              if (authService.isAuthenticated.isFalse ||
+              if ( authService.user.isUnauthenticated  ||
                   birthdaysController.currentListId.value.isEmpty ||
                   birthdaysController.birthdayBoards[birthdaysController.currentListId.value] == null) {
                 return const SizedBox();
@@ -183,7 +182,7 @@ class _BListTabView extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         indicatorColor: AppSwatch.primary.shade400,
                         tabs: [
-                          if (birthdaysController.birthdayBoards.isEmpty || authService.isAuthenticated.isFalse)
+                          if (birthdaysController.birthdayBoards.isEmpty ||  authService.user.isUnauthenticated )
                             const Tab(
                               text: "",
                             ),
@@ -195,7 +194,7 @@ class _BListTabView extends StatelessWidget {
             )),
         body: TabBarView(
           children: [
-            if (birthdaysController.birthdayBoards.isEmpty || authService.isAuthenticated.isFalse) const BListInfo(),
+            if (birthdaysController.birthdayBoards.isEmpty ||  authService.user.isUnauthenticated ) const BListInfo(),
             ...views
           ],
         ),

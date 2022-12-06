@@ -3,12 +3,12 @@ import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/view/pages/auth.actions.dart';
-import 'package:celebrated/authenticate/view/pages/complete.signin.dart';
+import 'package:celebrated/authenticate/view/pages/email.link.sent.dart';
+import 'package:celebrated/authenticate/view/pages/email.signin.dart';
 import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
-import 'package:celebrated/authenticate/view/pages/verify.email.dart';
 import 'package:celebrated/lists/view/birthday.adds.dart';
 import 'package:celebrated/lists/view/birthday.leader.board.dart';
 import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
@@ -56,10 +56,6 @@ class App extends StatelessWidget {
             page: () => const HomePage(
                   key: Key(AppRoutes.home),
                 )),
-        // GetPage(
-        //     name: AppRoutes.avatarEditor,
-        //     page: () =>
-        //         AvatarEditorView(key: const Key(AppRoutes.avatarEditor))),
         GetPage(name: AppRoutes.birthday, page: () => BirthdayCountDown(key: const Key(AppRoutes.birthday))),
         GetPage(name: AppRoutes.shareBoard, page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
         GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareBoard))),
@@ -75,7 +71,7 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
         GetPage(name: AppRoutes.authSignUp, page: () => const SignUpPage()),
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
-        GetPage(name: AppRoutes.completeSignIn, page: () => CompleteEmailVerification()),
+
         GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
         GetPage(
@@ -103,6 +99,8 @@ class App extends StatelessWidget {
                       'Create and share virtual gifts of any online product with personal note and packaging.Share Gift cards,subscriptions or any gift. ',
                 )),
         GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
+        GetPage(name: AppRoutes.authEmailSignInComplete, page: () => CompleteEmailSignIn()),
+        GetPage(name: AppRoutes.authEmailSignInForm, page: () => const EmailSignInForm()),
         GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
         GetPage(name: AppRoutes.actions, page: () => const AuthActionsHandler(key: Key(AppRoutes.support))),
       ];
@@ -126,8 +124,7 @@ class App extends StatelessWidget {
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
-          String route = Get.currentRoute.split("?").first;
-          navService.callOnRoute(route, Get.parameters);
+          navService.callOnRoute(Get.currentRoute.split("?").first, Get.parameters);
         }
       },
       debugShowCheckedModeBanner: false,

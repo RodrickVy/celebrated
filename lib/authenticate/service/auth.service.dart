@@ -1,5 +1,6 @@
 import 'package:celebrated/authenticate/adapter/user.acount.factory.dart';
 import 'package:celebrated/authenticate/models/account.dart';
+import 'package:celebrated/authenticate/models/verify.email.response.dart';
 import 'package:celebrated/authenticate/requests/signin.request.dart';
 import 'package:celebrated/domain/services/content.store/model/content.interaction.dart';
 import 'package:celebrated/authenticate/requests/signup.request.dart';
@@ -11,6 +12,7 @@ import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:celebrated/subscription/models/subscription.plan.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/controller/notification.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
@@ -28,12 +30,14 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 
 /// manages authentication state and maintenance of Account and Auth objects of the user
 class AuthService extends GetxController with ContentStore<UserAccount, AccountUserFactory> {
-  final Rx<UserAccount> accountUser = UserAccount.empty().obs;
+  /// a live listenable to keep track of the current user
+  final Rx<UserAccount> userLive = UserAccount.unAuthenticated().obs;
 
-  final RxBool isAuthenticated = false.obs;
+  /// quick way to get the current user in a given time, wont update
+  UserAccount get user => userLive.value;
 
   @override
-  UserAccount get empty => UserAccount.empty();
+  UserAccount get empty => UserAccount.unAuthenticated();
 
   @override
   AccountUserFactory get docFactory => AccountUserFactory();
@@ -42,40 +46,48 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   CollectionReference<Map<String, dynamic>> get collectionReference => firestore.collection('users');
 
   AuthService._() {
-    navService.registerRouteObserver(OnRouteObserver(
-      when: (route, _) => AppRoutes.profile == route,
-      run: (___, __, _, rerouteTo) {
-        if (isAuthenticated.value == true && accountUser.value.emailVerified == false) {
-          rerouteTo(AppRoutes.verifyEmail);
-        } else if (isAuthenticated.value != true) {
-          rerouteTo(AppRoutes.authSignIn);
-        }
-      },
-    ));
-    auth.authStateChanges().listen((User? fireUser) async {
+    auth.authStateChanges().listen((User? authUser) async {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        if (fireUser != null) {
-          Get.log("Auth state changes triggered");
-          await syncOnAuthentication(fireUser);
-
-          // InitStateController.setState(key: authLoadState, loaded: true);
+        if (authUser != null) {
+          await syncOnAuthentication(authUser);
+          await saveDeviceTokenToDB();
+          await addDeviceToUsersPlatforms();
         } else {
-          accountUser(UserAccount.empty());
-          isAuthenticated(false);
-          // InitStateController.setState(key: authLoadState, loaded: true);
+          userLive(UserAccount.unAuthenticated());
         }
       });
 
       /// setting all the spinners in auth-components off ,when authentication has changed!
       FeedbackService.appNotification.listen((AppNotification? error) {
         if (error != null) {
-          FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: false);
-          FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: false);
-          FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.authProviderButtons, isOn: false);
-          FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.passResetForm, isOn: false);
+          FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
         }
       });
     });
+  }
+
+  Future<void> saveDeviceTokenToDB() async {
+    if (userLive.value.deviceToken.isEmpty) {
+      await authService.updateContent(authService.userLive.value.id, {"deviceToken": notificationService.fcmToken});
+    }
+  }
+
+  Future<void> addDeviceToUsersPlatforms() async {
+    if (!userLive.value.platforms.contains(devicePlatform)) {
+      await authService.updateContent(authService.userLive.value.id, {
+        "platforms": [...userLive.value.platforms, devicePlatform]
+      });
+    }
+  }
+
+  static String get devicePlatform {
+    return GetPlatform.isWeb
+        ? 'web'
+        : GetPlatform.isAndroid
+            ? "android"
+            : GetPlatform.isIOS
+                ? "ios"
+                : 'other';
   }
 
   static AuthService instance = AuthService._();
@@ -115,9 +127,10 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
             await auth.signInWithEmailAndPassword(email: request.email, password: request.password);
         if (credential.user != null) {
           int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
-          Get.log("Updated user: passed ${credential.user!.uid}");
-          return await updateContent(
+           await updateContent(
               credential.user!.uid, {'lastLogin': loginTimestamp, "emailVerified": credential.user!.emailVerified});
+          await syncOnAuthentication(credential.user!);
+          return user;
         } else {
           AnnounceErrors.updateLoginTimestampFailed();
         }
@@ -129,23 +142,40 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         AnnounceErrors.unknown(e);
       }
     }
-    return UserAccount.empty();
+    return UserAccount.unAuthenticated();
   }
 
   /// updates all local variables when authentication state has changed
   Future<void> syncOnAuthentication(User user) async {
     try {
-      await updateContent(user.uid, {"emailVerified": user.emailVerified == true});
-      accountUser(await getContent(user.uid));
-      isAuthenticated(true);
-      if (user.emailVerified != true && !Get.currentRoute.contains(AppRoutes.completeSignIn)) {
-        navService.addNextToOnRoute(AppRoutes.verifyEmail, navService.getNextRoute ?? '');
-      } else if (user.emailVerified == true && !accountUser.value.hasSetSubscription) {
-        navService.addNextToOnRoute(AppRoutes.subscriptions, navService.getNextRoute ?? '');
-      } else if (navService.toNextIfAny() == false && navService.inAuthRoutes()) {
+      userLive(await getContent(user.uid));
+      print("${navService.nextRouteExists}");
+      if (navService.nextRouteExists) {
+        navService.toNextRoute();
+      } else {
         navService.to(AppRoutes.lists);
       }
-    } catch (_) {}
+    } catch (_) {
+      AnnounceErrors.syncingWithAuthFailed(_);
+    }
+  }
+
+  bool emailNeedsVerification([String? currentRoute]) =>
+      user.isAuthenticated && navService.routeIsNot(AppRoutes.verifyEmail, currentRoute);
+
+  bool userNeedsToBeAuthenticated([String? currentRoute]) =>
+      user.isUnauthenticated && !(navService.authRoutes.contains(navService.baseRoute(currentRoute)));
+
+          //&&
+    //  !navService.authRoutes.contains(navService.baseRoute(currentRoute)) &&
+     // navService.authProtectedRoutes.contains(navService.baseRoute(currentRoute));
+
+  bool userNeedsToSelectPlan([String? currentRoute]) =>
+      !emailNeedsVerification(currentRoute) &&
+      navService.subscriptionClarityRoutes.contains(navService.baseRoute(currentRoute));
+
+  Future<void> syncAuthUserWithAccount(User authUser) async {
+    await updateContent(authUser.uid, {"emailVerified": authUser.emailVerified == true});
   }
 
   signInWithPopUpProvider({required provider}) async {
@@ -285,41 +315,36 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   // Editing Profile
   Future<UserAccount> updateUserName({required String name}) async {
-    if (isAuthenticated.value &&
-        Validators.validateField(Validators.userNameValidator, name) &&
-        name != accountUser.value.name) {
+    if (user.isAuthenticated && Validators.validateField(Validators.userNameValidator, name) && name != user.name) {
       try {
-        return await updateContent(accountUser.value.uid, {'name': name}).then((value) {
-          accountUser(value);
-          accountUser.refresh();
-          return value;
+         await updateContent(userLive.value.uid, {'name': name}).then((value) {
+          userLive(value);
+          userLive.refresh();
         });
       } catch (error) {
-        FeedbackService.announce(
-            notification: AppNotification.unknownError().copyWith(message: error.toString(), title: error.toString()));
-        return accountUser.value;
+        AnnounceErrors.unknown(error);
       }
     }
-    return accountUser.value;
+    return userLive.value;
   }
 
   Future<UserAccount> updateBirthdate({required DateTime date}) async {
     try {
-      return await updateContent(accountUser.value.uid, {'birthdate': date.millisecondsSinceEpoch}).then((value) {
-        accountUser(value);
-        accountUser.refresh();
+      return await updateContent(userLive.value.uid, {'birthdate': date.millisecondsSinceEpoch}).then((value) {
+        userLive(value);
+        userLive.refresh();
         return value;
       });
     } catch (error) {
       FeedbackService.announce(
           notification: AppNotification.unknownError().copyWith(message: error.toString(), title: error.toString()));
-      return accountUser.value;
+      return userLive.value;
     }
   }
 
   Future<UserAccount> updatePhoneNumber({required String newPhone}) async {
     FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
-    return await updateContent(accountUser.value.uid, {"phone": newPhone}).then((value) {
+    return await updateContent(userLive.value.uid, {"phone": newPhone}).then((value) {
       FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
       return value;
     });
@@ -332,27 +357,22 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   /// method that adds an interaction to the database and returns a boolean whereas the interaction was added or removed.
   Future<bool> addInteraction({required UserContentInteraction interaction}) async {
     // if user exists
-    if (isAuthenticated.value && !accountUser.value.isEmpty()) {
+    if (user.isAuthenticated) {
       try {
-        ///
-        List<UserContentInteraction> newts = accountUser.value.interactions;
-        if (!accountUser.value.interactions.contains(interaction)) {
-          newts = [...accountUser.value.interactions, interaction];
-        } else if (interaction.isOneTimeReversibleAction()) {
+        List<UserContentInteraction> newts = user.interactions;
+        if (interaction.reversible && interaction.isOneTime) {
           newts.removeWhere((element) => element.id == interaction.id);
-          await updateContent(accountUser.value.uid, {'interactions': newts.map((e) => e.toMap()).toList()})
-              .then((value) {
-            accountUser(value);
-            accountUser.refresh();
+          await updateContent(userLive.value.uid, {'interactions': newts.map((e) => e.toMap()).toList()}).then((value) {
+            userLive(value);
+            userLive.refresh();
           });
           return false;
         } else {
-          newts = [...accountUser.value.interactions, interaction];
+          newts.add(interaction);
         }
-        await updateContent(accountUser.value.uid, {'interactions': newts.map((e) => e.toMap()).toList()})
-            .then((value) {
-          accountUser(value);
-          accountUser.refresh();
+        await updateContent(userLive.value.uid, {'interactions': newts.map((e) => e.toMap()).toList()}).then((value) {
+          userLive(value);
+          userLive.refresh();
         });
         return true;
       } catch (error) {
@@ -390,8 +410,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
                   OutlinedButton(
                     onPressed: () async {
                       try {
-                        String route = navService.addNextToOnRoute(AppRoutes.profile, Get.currentRoute);
-                        await navService.to(route);
+                       navService.routeKeepNext(AppRoutes.profile, Get.currentRoute);
                       } catch (_) {
                         Get.log(_.toString());
                       }
@@ -415,26 +434,26 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   }
 
   void pauseBirthdayListNotifications(String id) {
-    updateContent(accountUser.value.uid, {
-      "silencedBirthdayLists": [...accountUser.value.silencedBirthdayLists, id]
+    updateContent(userLive.value.uid, {
+      "silencedBirthdayLists": [...userLive.value.silencedBirthdayLists, id]
     });
   }
 
   void resumeBirthdayListNotifications(String id) {
-    updateContent(accountUser.value.uid,
-        {"silencedBirthdayLists": accountUser.value.silencedBirthdayLists.where((element) => element != id)});
+    updateContent(userLive.value.uid,
+        {"silencedBirthdayLists": userLive.value.silencedBirthdayLists.where((element) => element != id)});
   }
 
   @override
   void onContentUpdated(UserAccount content) {
-    if (content != accountUser.value) {
-      accountUser(content);
+    if (content != userLive.value) {
+      userLive(content);
     }
   }
 
   Future<void> setSubscriptionPlan(SubscriptionPlan subscriptionPlan, [String promoCode = ""]) async {
     if (subscriptionPlan == SubscriptionPlan.test) {
-      await updateContent(accountUser.value.uid, {"subscriptionPlan": subscriptionPlan.name});
+      await updateContent(userLive.value.uid, {"subscriptionPlan": subscriptionPlan.name});
       navService.to(AppRoutes.profile);
     }
   }
@@ -455,41 +474,62 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   }
 
   Future<bool> sendVerificationCode() async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
-      'sendEmailVerificationCode',
-      options: HttpsCallableOptions(
-        timeout: const Duration(seconds: 5),
-      ),
-    );
-
-    dynamic data = (await callable.call()).data;
-    Get.log("$data");
-    return data['success'] ?? false;
-  }
-
-  Future<bool> verifyEmailCode(String code) async {
-    if (Validators.authCodeValidator.announceValidation(code) == null) {
+    try {
       HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
-        'verifyEmailVerificationCode',
+        'sendEmailVerificationCode',
         options: HttpsCallableOptions(
           timeout: const Duration(seconds: 5),
         ),
       );
 
-      dynamic data = (await callable.call(<String, dynamic>{
-        'code': code,
-      }))
-          .data;
-      Get.log("$data");
-      if(data['error'] != null && data['error'] == 'code-invalid-or-expired' ){
-        FeedbackService.announce(notification: AppNotification(title: "The code is either invalid or expired, check your email for the latest code."));
-      }else if(data['success']==true){
-        await auth.currentUser?.reload();
-        syncOnAuthentication(auth.currentUser!);
+      dynamic data = (await callable.call()).data;
+      VerifyEmailResponse response = VerifyEmailResponse.fromMap(data);
+      if (response.succeeded) {
+        return true;
+      } else {
+        response.announceError();
+        return false;
       }
-      return data['success'] ?? false;
-    } else {
+    }  on Exception catch (exception) {
+      AnnounceErrors.exception(exception);
+      return false;
+    } catch (e) {
+      AnnounceErrors.unknown(e);
+      return false;
+    }
+  }
 
+  Future<bool> verifyEmailCode(String code) async {
+    if (Validators.authCodeValidator.announceValidation(code) == null) {
+      try {
+        HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+          'verifyEmailVerificationCode',
+          options: HttpsCallableOptions(
+            timeout: const Duration(seconds: 5),
+          ),
+        );
+        dynamic data = (await callable.call(<String, dynamic>{
+          'code': code,
+        }))
+            .data;
+        VerifyEmailResponse response = VerifyEmailResponse.fromMap(data);
+
+        if (response.succeeded) {
+          await auth.currentUser?.reload();
+          await syncOnAuthentication(auth.currentUser!);
+          return true;
+        } else {
+          response.announceError();
+          return false;
+        }
+      }  on Exception catch (exception) {
+        AnnounceErrors.exception(exception);
+        return false;
+      } catch (e) {
+        AnnounceErrors.unknown(e);
+        return false;
+      }
+    } else {
       return false;
     }
   }

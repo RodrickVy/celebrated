@@ -6,13 +6,9 @@ import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
 import 'package:flutter/material.dart';
 
-class AnnounceErrors{
-  
-  
-  
-  
-  static  accountCreationFailed ()=> FeedbackService.announce(
-      notification: AppNotification(
+class AnnounceErrors {
+  static accountCreationFailed() => FeedbackService.announce(
+          notification: AppNotification(
         title: "Something went wrong",
         message: "Please try to login in again, or report bug if it happens again",
         appWide: true,
@@ -27,43 +23,43 @@ class AnnounceErrors{
         canDismiss: true,
         type: NotificationType.error,
       ));
-  static  updateLoginTimestampFailed ()=> FeedbackService.announce(
-      notification: AppNotification(
-        title: "Something went wrong",
-        message: "Please try to login in again, or report bug if it happens again",
-        appWide: true,
-        child: AppButton(
-          isTextButton: true,
-          onPressed: () {
-            SupportController.suggestFeature();
-          },
-          label: "Report Bug",
-          key: UniqueKey(),
-        ),
-        canDismiss: true,
-        type: NotificationType.error,
-      ));
-  static exception (error)=>FeedbackService.announce(
-      notification: appNotificationFromCode(error.code).copyWith(appWide: false, message: error.message));
 
-  static  dynamicLinkFailed(error) {
+  static updateLoginTimestampFailed() => FeedbackService.announce(
+          notification: AppNotification(
+        title: "Something went wrong",
+        message: "Please try to login in again, or report bug if it happens again",
+        appWide: true,
+        child: AppButton(
+          isTextButton: true,
+          onPressed: () {
+            SupportController.suggestFeature();
+          },
+          label: "Report Bug",
+          key: UniqueKey(),
+        ),
+        canDismiss: true,
+        type: NotificationType.error,
+      ));
+
+  static exception(error) => FeedbackService.announce(
+      notification: appNotificationFromCode(error.code??ResponseCode.unknown).copyWith(appWide: false, message: error.message));
+
+  static dynamicLinkFailed(error) {
     return FeedbackService.announce(
-        notification: appNotificationFromCode(error.code).copyWith(appWide: true,canDismiss: true, message: error.message));
+        notification:
+            appNotificationFromCode(error.code).copyWith(appWide: true, canDismiss: true, message: error.message));
   }
 
-  static unknown(error)=>   FeedbackService.announce(
-      notification: AppNotification.unknownError().copyWith(
+  static unknown(error) => FeedbackService.announce(
+          notification: AppNotification.unknownError(error).copyWith(
         appWide: false,
         stack: error.toString(),
-        title: error,
       ));
-  
-  
- static ResponseCode errorToResponseCode<T>(String name, List<T> list) {
+
+  static ResponseCode errorToResponseCode<T>(String name, List<T> list) {
     String validCode = name.split("/").last.toLowerCase().split("-").join("").trim();
     try {
-      return ResponseCode.values
-          .firstWhere((code) => code.name.toLowerCase().trim() == validCode.toLowerCase());
+      return ResponseCode.values.firstWhere((code) => code.name.toLowerCase().trim() == validCode.toLowerCase());
     } catch (_) {
       return ResponseCode.unknownError;
     }
@@ -241,13 +237,27 @@ class AnnounceErrors{
     }
   }
 
-  static void announceErrorFromCode(String code,String message){
-     FeedbackService.announce(notification: appNotificationFromCode(code,).copyWith(title: message));
- }
-
-  static void signInLinkExpired() {
-    FeedbackService.announce(notification: AppNotification.invalidRequest().copyWith(title:"Invalid or expired link, request another",message: "The sign in link  has probably expired, or is invalid, please try requesting another link") );
+  static void announceErrorFromCode(String code, String message) {
+    FeedbackService.announce(
+        notification: appNotificationFromCode(
+      code,
+    ).copyWith(title: message));
   }
 
+  static void signInLinkExpired() {
+    FeedbackService.announce(
+        notification: AppNotification.invalidRequest().copyWith(
+            title: "Invalid or expired link, request another",
+            message: "The sign in link  has probably expired, or is invalid, please try requesting another link"));
+  }
 
+  static void syncingWithAuthFailed(error) {
+    FeedbackService.announce(
+        notification: AppNotification(
+            title: "Connecting to the cloud failed",
+            stack: error,
+            appWide: true,
+            message: "please reload and try again",
+            type: NotificationType.error));
+  }
 }

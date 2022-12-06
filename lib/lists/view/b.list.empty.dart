@@ -2,7 +2,6 @@ import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
-import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -57,7 +56,7 @@ class BListInfo extends AdaptiveUI {
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (birthdaysController.birthdayBoards.isEmpty && authService.isAuthenticated.isTrue)
+              if (birthdaysController.birthdayBoards.isEmpty && authService.user.isAuthenticated)
                  SizedBox(
                   width: 100,
                   child: Padding(
@@ -82,7 +81,7 @@ class BListInfo extends AdaptiveUI {
                     ),
                   ),
                 ),
-                if (authService.isAuthenticated.isFalse)
+                if (authService.user.isUnauthenticated)
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: AppButton(
@@ -95,7 +94,7 @@ class BListInfo extends AdaptiveUI {
                           "SignIn",
                         )),
                   ),
-              if (authService.isAuthenticated.isFalse)
+              if (authService.user.isUnauthenticated)
                 const Padding(
                   padding: EdgeInsets.only(left: 4.0, right: 4),
                   child: Text(
@@ -103,7 +102,7 @@ class BListInfo extends AdaptiveUI {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              if (authService.isAuthenticated.isFalse)
+              if (authService.user.isUnauthenticated)
                 Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: AppButton(
@@ -116,7 +115,7 @@ class BListInfo extends AdaptiveUI {
                         "SignUp",
                       )),
                 ),
-              if (authService.isAuthenticated.isFalse)
+              if (authService.user.isUnauthenticated)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(

@@ -25,7 +25,7 @@ class ProfilePage extends AppPageView {
   late Rx<String> phoneNumber;
 
   ProfilePage({Key? key}) : super(key: key) {
-    phoneNumber = authService.accountUser.value.phone.obs;
+    phoneNumber = authService.userLive.value.phone.obs;
   }
 
   final RxBool showBirthdayEditor = false.obs;
@@ -36,7 +36,7 @@ class ProfilePage extends AppPageView {
     return Center(
       child: Obx(
         () {
-          authService.accountUser.value;
+          authService.userLive.value;
 
           return Container(
             alignment: Alignment.center,
@@ -58,7 +58,7 @@ class ProfilePage extends AppPageView {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          authService.accountUser.value.name,
+                          authService.userLive.value.name,
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             color: Colors.black87,
@@ -68,7 +68,7 @@ class ProfilePage extends AppPageView {
                         ),
                       ),
                       Text(
-                        authService.accountUser.value.email,
+                        authService.userLive.value.email,
                         textAlign: TextAlign.center,
                       ),
 
@@ -76,7 +76,7 @@ class ProfilePage extends AppPageView {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "joined ${authService.accountUser.value.timeCreated.relativeToNowString(ctx)}",
+                          "joined ${authService.userLive.value.timeCreated.relativeToNowString(ctx)}",
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             color: Colors.black45,
@@ -85,11 +85,11 @@ class ProfilePage extends AppPageView {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      if (authService.accountUser.value.subscription != null)
+                      if (authService.userLive.value.subscription != null)
                         SubscriptionPreviewCard(
-                          subscription: authService.accountUser.value.subscription!,
+                          subscription: authService.userLive.value.subscription!,
                         ),
-                      if (authService.accountUser.value.subscription == null)
+                      if (authService.userLive.value.subscription == null)
                         AppButton(
                           key: UniqueKey(),
                           isTextButton: true,
@@ -110,7 +110,7 @@ class ProfilePage extends AppPageView {
                         child: EditableTextView(
                           key: const Key("_display_name_editor"),
                           icon: Icons.account_circle,
-                          textValue: authService.accountUser.value.name,
+                          textValue: authService.userLive.value.name,
                           label: 'username',
                           onSave: (String value) async {
                             await authService.updateUserName(name: value);
@@ -121,7 +121,7 @@ class ProfilePage extends AppPageView {
                         height: 10,
                       ),
                       FormPhoneField(
-                        initialValue: authService.accountUser.value.phone,
+                        initialValue: authService.userLive.value.phone,
                         onSaved: (PhoneNumber? p) async {
                           Get.log('Saved phone number as ${p?.international}');
                           if (Request.validateField(Validators.phoneValidator, phoneNumber.value)) {
@@ -135,7 +135,7 @@ class ProfilePage extends AppPageView {
                       BirthdayDateForm(
                         showName: false,
                         birthdateController:
-                            TextEditingController(text: authService.accountUser.value.birthdate.toString()),
+                            TextEditingController(text: authService.userLive.value.birthdate.toString()),
                         onDateFieldSubmitted: (String? date) {
                           if (date != null) {
                             authService.updateBirthdate(date: DateTime.parse(date));

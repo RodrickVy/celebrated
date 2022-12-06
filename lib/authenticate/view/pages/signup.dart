@@ -39,7 +39,7 @@ class SignUpPage extends AdaptiveUI {
               height: 50,
             ),
             FeedbackSpinner(
-              spinnerKey: FeedbackSpinKeys.signUpForm,
+              spinnerKey: FeedbackSpinKeys.auth,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Form(
@@ -292,7 +292,7 @@ class SignUpPage extends AdaptiveUI {
       onPressed: () async {
         if (currentIndex < 4) {
           if(validateCurrentStage() == null){
-            navService.to("${AppRoutes.authSignUp}?stage=${currentIndex + 1}");
+            navService.withParameter('stage','${currentIndex + 1}');
           }else{
 
           }
@@ -316,7 +316,7 @@ class SignUpPage extends AdaptiveUI {
       ),
       onPressed: () async {
         if (currentIndex > 0) {
-          navService.to("${AppRoutes.authSignUp}?stage=${currentIndex - 1}");
+          navService.withParameter('stage','${currentIndex - 1}');
         }
       },
     );
@@ -330,9 +330,9 @@ class SignUpPage extends AdaptiveUI {
         style: GoogleFonts.poppins(fontSize: 16),
       ),
       onPressed: () async {
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: true);
+        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
         await authService.signUp(UIFormState.signUpFormData);
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: false);
+        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
       },
     );
   }

@@ -80,9 +80,9 @@ class SubscriptionsPage extends AdaptiveUI {
                       style: GoogleFonts.poppins(fontSize: 16),
                     ),
                     onPressed: () async {
-                      FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: true);
+                      FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
                       await authService.setSubscriptionPlan(UIFormState.subscriptionPlan.value,UIFormState.promoCode.value);
-                      FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signUpForm, isOn: false);
+                      FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                     },
                   ),
                   const SizedBox(

@@ -1,5 +1,5 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/authenticate/view/pages/complete.signin.dart';
+import 'package:celebrated/authenticate/view/pages/email.signin.dart';
 import 'package:celebrated/domain/errors/app.errors.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
@@ -15,8 +15,8 @@ class DynamicLinksHandler {
     if (initialLink != null) {
       final Uri deepLink = initialLink.link;
       if (auth.isSignInWithEmailLink(deepLink.path)) {
-        CompleteEmailVerification.emailLink = deepLink.path;
-        navService.to(AppRoutes.completeSignIn);
+        CompleteEmailSignIn.emailLink = deepLink.path;
+        navService.to(AppRoutes.authEmailSignInComplete);
       } else {
         navService.to(deepLink.path);
       }
@@ -25,8 +25,8 @@ class DynamicLinksHandler {
 
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
       if (auth.isSignInWithEmailLink(dynamicLinkData.link.path)) {
-        CompleteEmailVerification.emailLink = dynamicLinkData.link.path;
-        navService.to(AppRoutes.completeSignIn);
+        CompleteEmailSignIn.emailLink = dynamicLinkData.link.path;
+        navService.to(AppRoutes.authEmailSignInComplete);
       } else {
         navService.to(dynamicLinkData.link.path);
       }

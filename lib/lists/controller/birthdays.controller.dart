@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_for_elements_to_map_fromiterable
 
 import 'package:celebrated/app.theme.dart';
+import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/services/app.initializing.state.dart';
 import 'package:celebrated/domain/services/content.store/model/query.dart';
@@ -11,12 +12,10 @@ import 'package:celebrated/lists/controller/birthday.board.view.controller.dart'
 import 'package:celebrated/lists/data/static.data.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
-
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
@@ -56,8 +55,8 @@ class BirthdaysController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    authService.isAuthenticated.listen((authenticated) async {
-      if (authenticated) {
+    authService.userLive.listen((UserAccount user) async {
+      if (user.isAuthenticated) {
         InitStateController.setState(key: listsLoadState, loaded: false);
         birthdayBoards(Map.fromIterable(await getCollectionAsList(null),
             key: (e) => e.id, value: (e) => e));
@@ -71,25 +70,14 @@ class BirthdaysController extends GetxController
         // });
       }
     });
-    FeedbackService.appNotification.listen((AppNotification? error) {
-      if (error != null) {
-        FeedbackService.spinnerUpdateState(
-            key: FeedbackSpinKeys.signUpForm, isOn: false);
-        FeedbackService.spinnerUpdateState(
-            key: FeedbackSpinKeys.signInForm, isOn: false);
-        FeedbackService.spinnerUpdateState(
-            key: FeedbackSpinKeys.authProviderButtons, isOn: false);
-        FeedbackService.spinnerUpdateState(
-            key: FeedbackSpinKeys.passResetForm, isOn: false);
-      }
-    });
+
   }
 
   @override
   Future<List<BirthdayBoard>> getCollectionAsList(ContentQuery? query) async {
     return await queryCollection(query ??
         ContentQuery("authorId", QueryMethods.isEqualTo,
-            authService.accountUser.value.uid));
+            authService.userLive.value.uid));
   }
 
   @override
@@ -137,18 +125,17 @@ class BirthdaysController extends GetxController
   }
 
   /// creates a new birthday list
-  @override
   Future<String?> createNewList() async {
-    if (authService.isAuthenticated.isTrue) {
+    if (authService.user.isAuthenticated) {
       final String id = const Uuid().v4();
 
       /// set content to firestore
       await setContent(BirthdayBoard.empty().copyWith(
           id: id,
           name: "New List",
-          authorName:authService.accountUser.value.name,
+          authorName:authService.userLive.value.name,
           hex: __listsUsableColors().first,
-          authorId: authService.accountUser.value.uid));
+          authorId: authService.userLive.value.uid));
 
       /// route to list/id immediately,so the view shows this newly created list
       currentListId(id);
@@ -180,7 +167,7 @@ class BirthdaysController extends GetxController
           if (value.isEmpty) {
             return BirthdayBoard.empty();
           }
-          if (authService.isAuthenticated.isFalse) {
+          if (authService.user.isAuthenticated) {
             /// asks user to sign up if they are just visiting to view list
             FeedbackService.announceSignUpPromo();
           }

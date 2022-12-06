@@ -113,4 +113,9 @@ class ABirthday extends IModel {
 
 
   int get daysToRemind => dateWithThisYear.difference(remindMeWhen).inDays;
+
+  @override
+  String  toString(){
+    return '$name:${date.toString()}';
+  }
 }

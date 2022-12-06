@@ -79,7 +79,7 @@ class BoardViewOnly extends AppPageView {
                 ],
               );
             }
-            if (authService.accountUser.value.uid == board.authorId) {
+            if (authService.userLive.value.uid == board.authorId) {
               /// give edit option is user is the owner of this list
               FeedbackService.announce(
                   notification: AppNotification.empty().copyWith(

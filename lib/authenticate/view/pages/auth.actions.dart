@@ -4,6 +4,7 @@ import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/pages/coming.soon.view.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
@@ -241,10 +242,10 @@ class PasswordResetHandler extends AdaptiveUI {
           style: GoogleFonts.poppins(fontSize: 16),
         ),
         onPressed: () async {
-          if (authService.isAuthenticated.isTrue) {
-            Get.toNamed(AppRoutes.lists);
+          if (authService.user.isAuthenticated) {
+            navService.to(AppRoutes.lists);
           } else {
-            Get.toNamed(AppRoutes.authSignIn);
+            navService.to(AppRoutes.authSignIn);
           }
         },
       ),

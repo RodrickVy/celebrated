@@ -1,5 +1,3 @@
-
-
 import 'package:celebrated/domain/services/content.store/model/content.interaction.dart';
 import 'package:celebrated/subscription/controller/subscription.service.dart';
 import 'package:celebrated/subscription/models/subscription.dart';
@@ -13,8 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class UserAccount implements IModel {
-
-
   final String phone;
 
   final String email;
@@ -25,13 +21,18 @@ class UserAccount implements IModel {
 
   final String uid;
 
+  final List<String> platforms;
+
+  final String deviceToken;
+
   final DateTime lastLogin;
+
   final DateTime timeCreated;
 
   final String name;
 
   final bool emailVerified;
-  
+
   final SubscriptionPlan subscriptionPlan;
 
   final String avatar;
@@ -43,15 +44,19 @@ class UserAccount implements IModel {
   final DateTime birthdate;
 
   final Map<String, String> settings;
+
   /// birthday lists whose notifications have been paused
   final List<String> silencedBirthdayLists;
+
   /// birthday lists whose notifications have been paused
   final BirthdayReminderType defaultReminderType;
 
   UserAccount({
-     this.subscriptionPlan = SubscriptionPlan.none,
+    this.subscriptionPlan = SubscriptionPlan.none,
     required this.bio,
     required this.birthdate,
+    this.platforms = const [],
+    this.deviceToken = '',
     this.silencedBirthdayLists = const [],
     this.defaultReminderType = BirthdayReminderType.phoneNotification,
     required this.settings,
@@ -69,10 +74,13 @@ class UserAccount implements IModel {
     required this.phone,
   });
 
-
   bool get hasSetSubscription {
     return subscriptionPlan != SubscriptionPlan.none;
   }
+
+  bool get emailIsVerified => emailVerified;
+
+  bool get emailIsNotVerified => emailVerified == false;
 
   // bool hasReadAccess(String dbpath) {
   //   return claims.containsKey("hasReadAccess") &&
@@ -137,27 +145,28 @@ class UserAccount implements IModel {
   // }
   //
 
-
-  Subscription?  get subscription {
-   try{
-    return subscriptionService.subscriptions
-         .firstWhere((element) => element.id == subscriptionPlan);
-   } catch(_){
-     return null;
-   }
+  Subscription? get subscription {
+    try {
+      return subscriptionService.subscriptions.firstWhere((element) => element.id == subscriptionPlan);
+    } catch (_) {
+      return null;
+    }
   }
 
-  String get initials{
-    if(name.trim().isEmpty){
+  String get initials {
+    if (name.trim().isEmpty) {
       return "";
     }
     return name.split(" ").map((e) => e.split("").first.capitalize).join(".");
   }
 
-  get firstName => name.trim().isNotEmpty ? name.split(" ").first :"";
-  static UserAccount empty() {
+  get firstName => name.trim().isNotEmpty ? name.split(" ").first : "";
+
+
+
+  static UserAccount unAuthenticated() {
     return UserAccount(
-        subscriptionPlan:SubscriptionPlan.none,
+        subscriptionPlan: SubscriptionPlan.none,
         timeCreated: DateTime.now(),
         interactions: [],
         name: "",
@@ -175,17 +184,18 @@ class UserAccount implements IModel {
         settings: {});
   }
 
-  bool isEmpty() {
-    return email.isEmpty && uid.isEmpty;
+  bool get isAuthenticated {
+    return email.isNotEmpty && uid.isNotEmpty;
   }
+  bool get isUnauthenticated => email.isEmpty || uid.isEmpty;
+
 
   @override
   String get id => uid;
 
   bool hasInteracted(String contentId, UserContentInteractionType type) {
     try {
-      interactions.firstWhere(
-          (element) => element.contentId == contentId && element.type == type);
+      interactions.firstWhere((element) => element.contentId == contentId && element.type == type);
       return true;
     } catch (_) {
       return false;
@@ -233,24 +243,24 @@ class UserAccount implements IModel {
   static UserAccount fromUser(User user) {
     final DateTime timestamp = DateTime.now();
     return UserAccount(
-        subscriptionPlan:SubscriptionPlan.none,
+        subscriptionPlan: SubscriptionPlan.none,
         timeCreated: timestamp,
         interactions: [],
         bio: "",
-        name: user.displayName??"",
+        name: user.displayName ?? "",
         emailVerified: user.emailVerified,
         uid: user.uid,
-        lastLogin:  timestamp,
+        lastLogin: timestamp,
         authMethod: AuthWith.Password,
-        avatar: user.photoURL??"",
+        avatar: user.photoURL ?? "",
         providerId: user.providerData[0].providerId,
-        email: user.email??"",
+        email: user.email ?? "",
         phone: user.phoneNumber ?? "",
         birthdate: timestamp,
         settings: {});
   }
 
-  static UserAccount mergeAuthWithRequest(User user,SignUpEmailRequest request) {
+  static UserAccount mergeAuthWithRequest(User user, SignUpEmailRequest request) {
     final DateTime timestamp = DateTime.now();
     return UserAccount(
         subscriptionPlan: SubscriptionPlan.none,
@@ -260,14 +270,13 @@ class UserAccount implements IModel {
         name: request.name,
         emailVerified: user.emailVerified,
         uid: user.uid,
-        lastLogin:  timestamp,
+        lastLogin: timestamp,
         authMethod: AuthWith.Password,
-        avatar: user.photoURL??"",
+        avatar: user.photoURL ?? "",
         providerId: user.providerData[0].providerId,
         email: request.email,
         phone: request.phoneNumber,
         birthdate: request.birthdate,
         settings: {});
   }
-  
 }

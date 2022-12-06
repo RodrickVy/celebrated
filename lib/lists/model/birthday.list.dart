@@ -21,7 +21,7 @@ class BirthdayBoard extends IModel {
   final BirthdayReminderType notificationType;
   final List<BirthdaysWatcher> watchers;
 
-  BirthdayBoard(
+  const BirthdayBoard(
       {required this.name,
       required this.birthdays,
       required this.addingId,
@@ -88,6 +88,7 @@ class BirthdayBoard extends IModel {
     return _birthdays;
   }
 
+
   static BirthdayBoard empty() {
     return BirthdayBoard(
         name: "",
@@ -132,7 +133,7 @@ class BirthdayBoard extends IModel {
   }
 
   String generateViewId() =>
-      "${authService.accountUser.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
+      "${authService.userLive.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
 
   String generateInviteId() => "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";
 

@@ -71,11 +71,11 @@ class AppNotification implements IModel {
         timestamp: 0);
   }
 
-  factory AppNotification.unknownError() {
+  factory AppNotification.unknownError([String? error='']) {
     return AppNotification(
       code: ResponseCode.unknownError,
-      title: "Sorry Something went wrong, didn't get the right response",
-      message: "",
+      title: error == null || error.isEmpty ? "Sorry Something went wrong, didn't get the right response":error,
+      message: "This bug was reported and our team in working to fix it asap.",
       route: Get.currentRoute,
       timestamp: DateTime.now().microsecondsSinceEpoch,
 

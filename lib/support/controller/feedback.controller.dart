@@ -4,6 +4,7 @@ import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/adapter/app.notification.factory.dart';
+import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
@@ -60,6 +61,11 @@ class FeedbackService extends GetxController
     return __listeners[key]!;
   }
 
+  
+  static closeAllAuthSpinners(){
+    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
+
+  }
   /// called anytime one wants to send a message to user.
   static announce({required AppNotification notification}) {
     Get.log(notification.message.toString());

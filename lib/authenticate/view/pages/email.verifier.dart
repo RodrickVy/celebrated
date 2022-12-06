@@ -35,7 +35,7 @@ class EmailVerifier extends AdaptiveUI {
               height: 10,
             ),
             FeedbackSpinner(
-              spinnerKey: FeedbackSpinKeys.signInForm,
+              spinnerKey: FeedbackSpinKeys.auth,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: stageView(adapter),
@@ -109,16 +109,9 @@ class EmailVerifier extends AdaptiveUI {
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
                 onPressed: () async {
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: true);
-                  //bool success = await authService.sendSignInLink(UIFormState.email.value);
-
-                  bool success = await  authService.verifyEmailCode(UIFormState.authCode.value);
-                  Get.log("Sending was success: $success");
-                  if (success &&  !navService.toNextIfAny()) {
-                    navService.to(AppRoutes.lists);
-                  }
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: false);
-
+                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
+                  await  authService.verifyEmailCode(UIFormState.authCode.value);
+                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                 },
               ),
               const SizedBox(
@@ -128,7 +121,7 @@ class EmailVerifier extends AdaptiveUI {
                 key: UniqueKey(),
                 isTextButton: true,
                 onPressed: () async {
-                  navService.to('${AppRoutes.verifyEmail}?stage=0');
+                  navService.withParameter('stage','0');
                 },
                 child: Text(
                   "Resend it",
@@ -162,7 +155,7 @@ class EmailVerifier extends AdaptiveUI {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    authService.accountUser.value.email,
+                    authService.userLive.value.email,
                     style: adapter.textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -175,12 +168,11 @@ class EmailVerifier extends AdaptiveUI {
               AppButton(
                 key: UniqueKey(),
                 onPressed: () async {
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: true);
+                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
                   bool success = await authService.sendVerificationCode();
-                  Get.log("Sending was success: $success");
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: false);
+                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                   if (success) {
-                    navService.to("${AppRoutes.verifyEmail}?stage=1");
+                    navService.withParameter('stage','1');
                   }
                 },
                 child: Text(
@@ -200,10 +192,10 @@ class EmailVerifier extends AdaptiveUI {
         key: UniqueKey(),
         isTextButton: true,
         onPressed: () async {
-          navService.to(AppRoutes.authSignUp);
+          authService.logout();
         },
         child: Text(
-          "Or create account",
+          "Sign an as another account",
           style: GoogleFonts.poppins(fontSize: 16),
         ),
       ),

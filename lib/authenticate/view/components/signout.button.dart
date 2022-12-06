@@ -16,11 +16,11 @@ class SignOutView  extends AdaptiveUI {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
       () {
-        if(authService.isAuthenticated.isFalse){
+        if(authService.user.isUnauthenticated){
           return const SizedBox();
         }
         return FeedbackSpinner(
-        spinnerKey: FeedbackSpinKeys.signOut,
+        spinnerKey: FeedbackSpinKeys.auth,
         child: SizedBox(
           width: Get.width,
           child:AppButton(
@@ -30,10 +30,10 @@ class SignOutView  extends AdaptiveUI {
             ),
             onPressed: () async {
               FeedbackService.spinnerUpdateState(
-                  key: FeedbackSpinKeys.signOut, isOn: true);
+                  key: FeedbackSpinKeys.auth, isOn: true);
               await authService.logout();
               FeedbackService.spinnerUpdateState(
-                  key: FeedbackSpinKeys.signOut, isOn: false);
+                  key: FeedbackSpinKeys.auth, isOn: false);
             },
           ),
         ),

@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 /// convention to avoid hardcoding the values.
 class FeedbackSpinKeys {
   static Key passResetForm = const Key("passResetForm");
-  static Key signUpForm = const Key("signUpForm");
-  static Key authProviderButtons = const Key("authProviders");
-  static Key signInForm = const Key("signInForm");
-  static Key signOut = const Key("signOut");
+  
+  /// all the loading indication related to authentication
+  static Key auth = const Key("authSpinner");
+  
+
   static Key updateNameForm = const Key("updateNameForm");
   static Key updateBioForm = const Key("updateBioForm");
   static Key bugSubmitForm = const Key("bugSubmitForm");

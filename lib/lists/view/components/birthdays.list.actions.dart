@@ -334,20 +334,20 @@ class NotificationSelection extends AdaptiveUI {
                         padding: const EdgeInsets.all(6.0),
                         child: Row(
                           children: [
-                            if (authService.accountUser.value.silencedBirthdayLists.contains(board.id))
+                            if (authService.userLive.value.silencedBirthdayLists.contains(board.id))
                               const Icon(Icons.notifications),
-                            if (authService.accountUser.value.silencedBirthdayLists.contains(board.id))
+                            if (authService.userLive.value.silencedBirthdayLists.contains(board.id))
                               const Text(" Resume Notifications "),
-                            if (!authService.accountUser.value.silencedBirthdayLists.contains(board.id))
+                            if (!authService.userLive.value.silencedBirthdayLists.contains(board.id))
                               const Icon(Icons.notifications_off),
-                            if (!authService.accountUser.value.silencedBirthdayLists.contains(board.id))
+                            if (!authService.userLive.value.silencedBirthdayLists.contains(board.id))
                               const Text(" Pause Notifications "),
                           ],
                         ),
                       ),
-                      state: authService.accountUser.value.silencedBirthdayLists.contains(board.id),
+                      state: authService.userLive.value.silencedBirthdayLists.contains(board.id),
                       onSelected: () {
-                        if (authService.accountUser.value.silencedBirthdayLists.contains(board.id)) {
+                        if (authService.userLive.value.silencedBirthdayLists.contains(board.id)) {
                           authService.resumeBirthdayListNotifications(board.id);
                         } else {
                           authService.pauseBirthdayListNotifications(board.id);
@@ -376,7 +376,7 @@ class NotificationSelection extends AdaptiveUI {
                 children: [
                   const Text("Remind Me : "),
                   NotifyWhen(
-                    disabled:authService.accountUser.value.silencedBirthdayLists.contains(board.id),
+                    disabled:authService.userLive.value.silencedBirthdayLists.contains(board.id),
                     values: List.generate(
                       7,
                       (index) => '${index + 1}',
@@ -394,7 +394,7 @@ class NotificationSelection extends AdaptiveUI {
               return ListTile(
                 leading: Icon(board.notificationType == e ? Icons.check_box : Icons.check_box_outline_blank),
                 title: Text(e.name),
-                enabled: !authService.accountUser.value.silencedBirthdayLists.contains(board.id),
+                enabled: !authService.userLive.value.silencedBirthdayLists.contains(board.id),
                 selected: board.notificationType == e,
                 onTap: () {
                   birthdaysController.updateContent(board.id, {"notificationType": e.name});

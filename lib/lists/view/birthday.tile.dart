@@ -1,4 +1,6 @@
+import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
+import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
@@ -28,6 +30,19 @@ class BirthdayTile extends AdaptiveUI {
       required this.birthday,
       required this.onEdit})
       : super(key: key);
+
+  List<DropDownAction> get actions => [
+        DropDownAction("Delete", Icons.delete, () {
+          onDelete(birthday);
+        }),
+        DropDownAction("Edit", Icons.edit, () {
+          onEdit(birthday);
+          birthdaysController.editBirthday(birthday.id);
+        }),
+        DropDownAction("Countdown", Icons.share, () {
+          onSelect != null ? onSelect!() : () {};
+        })
+      ];
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -64,51 +79,69 @@ class BirthdayTile extends AdaptiveUI {
                     title: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            "${birthday.name.capitalizeFirst} ",
-                            style: Adaptive(ctx)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(fontWeight: FontWeight.w400, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
+                          Container(
+                            padding: const EdgeInsets.all( 10.0),
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                             color: AppSwatch.primary.withAlpha(20),
+                           ),
+                            child: Text(
+                              "${birthday.name.capitalizeFirst} ",
+                              style: Adaptive(ctx).textTheme.headline6?.copyWith(
+                                  fontWeight: FontWeight.w400, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                    trailing: DropContextMenu(actions: [
-                      DropDownAction("Delete", Icons.delete, () {
-                        onDelete(birthday);
-                      }),
-                      DropDownAction("Edit", Icons.edit, () {
-                        onEdit(birthday);
-                        birthdaysController.editBirthday(birthday.id);
-                      }),
-                      DropDownAction("Countdown", Icons.share, () {
-                        onSelect != null ? onSelect!() : () {};
-                      })
-                    ]),
-                    subtitle: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      padding: const EdgeInsets.all(6),
-                      child: Row(
-                        children: [
+                          const SizedBox(width: 10,),
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
                               birthday.date.readable,
-                              style: Adaptive(ctx)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(fontWeight: FontWeight.w400,),
+                              style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                           Text(birthday.formattedBirthday(ctx)),
                         ],
                       ),
                     ),
+                    subtitle: Container(
+                      width: 300,
+                      height: 60,
+                      padding: const EdgeInsets.all(6),
+                      child: Row(
+                        children: [
+                          ...actions.map((e) => AppButton(
+                                onPressed: e.action,
+                                label: e.name,
+                            isTextButton:true
+                              ))
+                        ],
+                      ),
+                    ),
+                    // trailing: Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.white,
+                    //     borderRadius: BorderRadius.circular(0),
+                    //   ),
+                    //   padding: const EdgeInsets.all(6),
+                    //   child: Row(
+                    //     children: [
+                    //       Padding(
+                    //         padding: const EdgeInsets.only(right: 8.0),
+                    //         child: Text(
+                    //           birthday.date.readable,
+                    //           style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
+                    //                 fontWeight: FontWeight.w400,
+                    //               ),
+                    //         ),
+                    //       ),
+                    //       Text(birthday.formattedBirthday(ctx)),
+                    //     ],
+                    //   ),
+                    // ),
                   )),
         ),
       ),

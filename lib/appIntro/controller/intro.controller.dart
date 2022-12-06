@@ -16,13 +16,7 @@ class IntroScreenController extends GetxController {
 
   Rx<int> current = 0.obs;
 
-  IntroScreenController() {
-
-    navService.registerRouteObserver(OnRouteObserver(when: (_, __) => true,
-      run: (String route, Map<String, String?> parameters, Function quitListening, dynamic Function(String) rerouteTo) {
-        videoController.flickControlManager?.autoPause();
-      },));
-  }
+  IntroScreenController();
 
   FlickManager videoController = FlickManager(
     autoPlay: false,

@@ -45,7 +45,7 @@ borderRadius: 0,
   @override
   Widget build(BuildContext context) {
     return FeedbackSpinner(
-      spinnerKey: FeedbackSpinKeys.authProviderButtons,
+      spinnerKey: FeedbackSpinKeys.auth,
       child: SizedBox(
         width: Get.width,
         child: Padding(
@@ -236,7 +236,7 @@ borderRadius: 0,
   }
 
   _action(AuthWith action) async {
-    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.authProviderButtons, isOn: true);
+    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
     await () async {
       switch (action) {
         case AuthWith.EmailLink:
@@ -264,6 +264,6 @@ borderRadius: 0,
       }
     }();
 
-    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.authProviderButtons, isOn: false);
+    FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
   }
 }

@@ -39,7 +39,7 @@ Future<BirthdayBoard> getBoard() {
           _stage(BirthdayAddStage.notFound);
           return BirthdayBoard.empty();
         }
-        if (authService.isAuthenticated.isFalse) {
+        if (authService.user.isUnauthenticated) {
           /// asks user to sign up if they are just visiting to view list
           FeedbackService.announceSignUpPromo();
         }
@@ -101,7 +101,7 @@ class BirthdaysOpenEditor extends AppPageView {
   }
 
   announce(BirthdayBoard board) {
-    if (authService.accountUser.value.uid == board.authorId) {
+    if (authService.userLive.value.uid == board.authorId) {
       /// give edit option is user is the owner of this list
       FeedbackService.announce(
           notification: AppNotification.empty().copyWith(
@@ -305,7 +305,7 @@ class BirthdaysOpenEditor extends AppPageView {
             width: 200,
           ),
         ),
-        if (authService.isAuthenticated.isFalse)
+        if (authService.user.isUnauthenticated)
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
@@ -322,11 +322,11 @@ class BirthdaysOpenEditor extends AppPageView {
                   )
                 ])),
           ),
-        if (authService.isAuthenticated.isFalse)
+        if (authService.user.isUnauthenticated)
           AppButton(
             onPressed: () {
               FeedbackService.clearErrorNotification();
-             navService.to("${AppRoutes.profile}?nextTo=9lists");
+             navService.routeKeepNext(AppRoutes.profile,AppRoutes.lists);
             },
             key: UniqueKey(),
             child: Text(
@@ -335,7 +335,7 @@ class BirthdaysOpenEditor extends AppPageView {
               textAlign: TextAlign.center,
             ),
           ),
-        if (authService.isAuthenticated.isFalse)
+        if (authService.user.isUnauthenticated)
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
@@ -345,7 +345,7 @@ class BirthdaysOpenEditor extends AppPageView {
               textAlign: TextAlign.center,
             ),
           ),
-        if (authService.isAuthenticated.isFalse)
+        if (authService.user.isUnauthenticated)
           AppButton(
             onPressed: () {
               FeedbackService.clearErrorNotification();
@@ -369,12 +369,12 @@ class BirthdaysOpenEditor extends AppPageView {
   Widget editView(BirthdayBoard board, Adaptive adapter) {
     return Obx(
           () {
-            authService.accountUser.value;
+            authService.userLive.value;
         final TextEditingController _nameEditorController = TextEditingController(
-            text: authService.accountUser.value.name);
+            text: authService.userLive.value.name);
 
         final TextEditingController _birthdateController =
-        TextEditingController(text: authService.accountUser.value.birthdate.toString());
+        TextEditingController(text: authService.userLive.value.birthdate.toString());
         return ListView(
           children: [
             const SizedBox(

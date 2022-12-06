@@ -1,56 +1,36 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/lists/view/birthday.date.name.dart';
+import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/util/adaptive.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 /// an editor for a birthday  can take , a full or empty object and returns you and edited one whent he user saves.
 class BirthdayEditor extends AdaptiveUI {
-  late TextEditingController _nameEditorController;
-  late TextEditingController _birthdateController;
-  late int _remindDaysBefore;
-  late ABirthday birthday;
-  final ABirthday? birthdayValue;
-  final bool configureRemindTime;
-  final Function() onDelete;
+  static late Rx<ABirthday> birthday;
   final String id = const Uuid().v4();
-
+  final Function() onDelete;
   final Function(ABirthday birthday) onSave;
   final Function() onCancel;
 
   BirthdayEditor(
-      {required this.onSave,
-      required this.onDelete,
-      this.configureRemindTime = true,
-      required this.onCancel,
-      this.birthdayValue,
-      Key? key})
+      {required this.onSave, required this.onDelete, required this.onCancel, final ABirthday? birthdayValue, Key? key})
       : super(key: key) {
     if (birthdayValue != null) {
-      if (birthdayValue!.id.isEmpty) {
-        birthday = birthdayValue!.copyWith(id: id);
+      if (birthdayValue.id.isEmpty) {
+        birthday = birthdayValue.copyWith(id: id).obs;
       } else {
-        birthday = birthdayValue!;
+        birthday = birthdayValue.obs;
       }
     } else {
-      birthday = ABirthday.empty().copyWith(id: id);
+      birthday = ABirthday.empty().copyWith(id: id).obs;
     }
-
-    _nameEditorController =
-        TextEditingController(text: birthday.name.capitalizeFirst);
-    _birthdateController =
-        TextEditingController(text: birthday.date.toString());
-    final daysBefore = birthday.dateWithThisYear
-        .difference(DateTime(DateTime.now().year, birthday.remindMeWhen.month,
-            birthday.remindMeWhen.day))
-        .inDays;
-    _remindDaysBefore = daysBefore < 15 ? daysBefore : 3;
   }
 
   @override
@@ -65,30 +45,45 @@ class BirthdayEditor extends AdaptiveUI {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              BirthdayDateForm(
-                  birthdateController: _birthdateController,
-                  nameTextController: _nameEditorController),
-              // if (configureRemindTime)
-              //   Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: Row(
-              //       children: [
-              //         const Text("Remind me      "),
-              //         Flexible(
-              //           child: NotifyWhen(
-              //               values: [
-              //                 ...List.generate(
-              //                     15, (index) => (index + 1).toString())
-              //               ],
-              //               defaultValue: _remindDaysBefore.toString(),
-              //               onSelect: (String day) {
-              //                 _remindDaysBefore = int.parse(day);
-              //               }),
-              //         ),
-              //         const Text("   Before"),
-              //       ],
-              //     ),
-              //   ),
+              SizedBox(
+                height: 64,
+                child: AppTextField(
+                  label: "name",
+                  decoration: AppTheme.inputDecoration,
+                  hint: 'name',
+                  onChanged: (String name) {
+                    birthday.value = birthday.value.copyWith(name: name);
+                  },
+                  controller: TextEditingController(text: birthday.value.name),
+                  autoFillHints: const [AutofillHints.name],
+                  key: UniqueKey(),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              SizedBox(
+                height: 64,
+                child: DateTimePicker(
+                  type: DateTimePickerType.date,
+                  fieldLabelText: 'birthdate',
+                  onChanged: (String? date) {
+                    birthday.value = birthday.value.copyWith(date: date != null ? DateTime.parse(date) : null);
+                  },
+                  // controller: TextEditingController(text:  birthday.value.date.toIso8601String()),
+                  firstDate: DateTime(1200),
+                  style: const TextStyle(fontSize: 12),
+                  decoration: AppTheme.inputDecoration.copyWith(
+                    contentPadding: const EdgeInsets.only(left: 6),
+                    prefixIcon: const Icon(Icons.date_range),
+                    labelText: "Birthdate",
+                    hintText: 'click to change',
+                  ),
+                  lastDate: DateTime(9090),
+                  icon: const Icon(Icons.event),
+                  dateLabelText: 'birthdate',
+                ),
+              ),
               Row(
                 children: [
                   AppButton(
@@ -124,12 +119,8 @@ class BirthdayEditor extends AdaptiveUI {
                       "Save",
                     ),
                     onPressed: () async {
-                      onSave(birthday.copyWith(
-                          name: _nameEditorController.text,
-                          date: DateTime.parse(_birthdateController.value.text),
-                          remindMeWhen: DateTime.parse(
-                                  _birthdateController.value.text)
-                              .subtract(Duration(days: _remindDaysBefore))));
+                      Get.log(birthday.value.toString());
+                      onSave(birthday.value);
                     },
                   ),
                 ],

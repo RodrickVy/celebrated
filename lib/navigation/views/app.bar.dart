@@ -1,6 +1,7 @@
 
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/authenticate/view/components/user.avatar.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class AppTopBar extends PreferredSize {
         }
         return IconButton(
             onPressed: () {
-              if(Get.previousRoute == AppRoutes.profile && authService.isAuthenticated.isFalse){
+              if(Get.previousRoute == navService.getNextRoute){
                 Get.toNamed(AppRoutes.home);
               }else{
                 Get.back();

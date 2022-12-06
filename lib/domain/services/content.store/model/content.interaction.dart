@@ -7,14 +7,10 @@ class UserContentInteraction {
   final String contentId;
   final UserContentInteractionType type;
   final DateTime timestamp;
-  final Map<String,dynamic> data;
+  final Map<String, dynamic> data;
 
   UserContentInteraction(
-      {required this.userId,
-      required this.contentId,
-      required this.type,
-      required this.timestamp,
-      required this.data});
+      {required this.userId, required this.contentId, required this.type, required this.timestamp, required this.data});
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,20 +26,33 @@ class UserContentInteraction {
     return UserContentInteraction(
       userId: map['userId'] as String,
       contentId: map['contentId'] as String,
-      type: EnumSerialize.fromJson(
-          UserContentInteractionType.values, map['type']),
+      type: EnumSerialize.fromJson(UserContentInteractionType.values, map['type']),
       timestamp: DateTime.fromMillisecondsSinceEpoch(map['timestamp'] as int),
       data: Map.from(map['points']),
     );
   }
 
   String get id {
-    return (contentId + userId + describeEnum(type) + timestamp.toString())
-        .hashCode
-        .toString();
+    return (contentId + userId + describeEnum(type) + timestamp.toString()).hashCode.toString();
   }
 
-  bool isOneTimeReversibleAction() {
+  bool get reversible {
+    switch (type) {
+      case UserContentInteractionType.like:
+      case UserContentInteractionType.saveAsFave:
+      case UserContentInteractionType.comment:
+      case UserContentInteractionType.reply:
+        return true;
+      case UserContentInteractionType.report:
+      case UserContentInteractionType.translate:
+      case UserContentInteractionType.edit:
+      case UserContentInteractionType.create:
+      case UserContentInteractionType.share:
+        return false;
+    }
+  }
+
+  bool get isOneTime {
     switch (type) {
       case UserContentInteractionType.like:
       case UserContentInteractionType.saveAsFave:
@@ -66,14 +75,12 @@ class UserContentInteraction {
     return other.id == id;
   }
 
-
-
   UserContentInteraction copyWith({
     String? userId,
     String? contentId,
     UserContentInteractionType? type,
     DateTime? timestamp,
-    Map<String,dynamic>? data,
+    Map<String, dynamic>? data,
   }) {
     return UserContentInteraction(
       userId: userId ?? this.userId,

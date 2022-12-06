@@ -26,7 +26,9 @@ class AccountUserFactory extends IModelFactory<UserAccount> {
       "birthdate": model.birthdate.millisecondsSinceEpoch,
       "settings": model.settings,
       'defaultReminderType':model.defaultReminderType.name,
-      'silencedBirthdayLists':model.silencedBirthdayLists
+      'silencedBirthdayLists':model.silencedBirthdayLists,
+      'platforms':model.platforms,
+      'deviceToken':model.deviceToken
     };
   }
 
@@ -52,6 +54,8 @@ class AccountUserFactory extends IModelFactory<UserAccount> {
       silencedBirthdayLists: List.from(json["silencedBirthdayLists"]??[]),
       defaultReminderType: BirthdayReminderType.values.byName(json['defaultReminderType']??'sms'),
       birthdate: DateTime.fromMillisecondsSinceEpoch(json['birthdate'] ??json['timeCreated']),
+      deviceToken: json["deviceToken"]??'',
+      platforms: json['platforms']??[]
     );
   }
 }

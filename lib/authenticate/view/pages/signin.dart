@@ -1,4 +1,3 @@
-import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
@@ -38,7 +37,7 @@ class SignInPage extends AdaptiveUI {
             //   key: UniqueKey(),
             // ),
             FeedbackSpinner(
-              spinnerKey: FeedbackSpinKeys.signInForm,
+              spinnerKey: FeedbackSpinKeys.auth,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child:stageView(adapter),
@@ -132,7 +131,7 @@ class SignInPage extends AdaptiveUI {
     autoFocus: true,
     controller: TextEditingController(text: UIFormState.signInFormData.email),
     onChanged: (data) {
-      UIFormState.email(data?.trim());
+      UIFormState.email(data.trim());
     },
     key: UniqueKey(),
     keyboardType: TextInputType.emailAddress,
@@ -209,7 +208,16 @@ class SignInPage extends AdaptiveUI {
                 height: 10,
               ),
               nextButton,
-              signUpButton
+              const SizedBox(
+                height: 10,
+              ),
+              emailLinkButton,
+              const Padding(
+                padding:  EdgeInsets.all(8.0),
+                child:  Center(child: Text("or",textAlign: TextAlign.center,)),
+              ),
+              signUpButton,
+
             ]);
     }
   }
@@ -218,9 +226,9 @@ class SignInPage extends AdaptiveUI {
     return AppButton(
       key: UniqueKey(),
       onPressed: () async {
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: true);
+        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
         await authService.signIn(UIFormState.signInFormData);
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.signInForm, isOn: false);
+        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
       },
       child: Text(
         "Sign in",
@@ -244,11 +252,12 @@ class SignInPage extends AdaptiveUI {
   AppButton get nextButton {
     return AppButton(
       key: UniqueKey(),
+      minWidth: Get.width,
       onPressed: () async {
-        Get.log("Signing in ${validateCurrentStage()} && stage is ${currentIndex}");
+
         if (currentIndex < 2) {
           if (validateCurrentStage() == null) {
-            navService.to("${AppRoutes.authSignIn}?stage=${currentIndex + 1}");
+            navService.withParameter('stage','${currentIndex + 1}');
           } else {
 
           }
@@ -271,19 +280,35 @@ class SignInPage extends AdaptiveUI {
       ),
       onPressed: () async {
         if (currentIndex > 0) {
-          navService.to("${AppRoutes.authSignIn}?stage=${currentIndex - 1}");
+          navService.withParameter('stage','${currentIndex - 1}');
         }
       },
     );
   }
 
-  AppButton get signUpButton {
+  Widget get emailLinkButton {
+    return AppButton(
+      key: UniqueKey(),
+      isTextButton: true,
+      onPressed: () async {
+       navService.to(AppRoutes.authEmailSignInForm);
+      },
+      minWidth: Get.width,
+      child: Text(
+        "Use email link",
+        style: GoogleFonts.poppins(fontSize: 16),
+      ),
+    );
+  }
+
+  Widget get signUpButton {
     return AppButton(
       key: UniqueKey(),
       isTextButton: true,
       onPressed: () async {
         navService.to(AppRoutes.authSignUp);
       },
+      minWidth: Get.width,
       child: Text(
         "create account",
         style: GoogleFonts.poppins(fontSize: 16),
