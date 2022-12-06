@@ -3,7 +3,6 @@ import 'package:celebrated/app.bindings.dart';
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/view/pages/auth.actions.dart';
-import 'package:celebrated/authenticate/view/pages/email.link.sent.dart';
 import 'package:celebrated/authenticate/view/pages/email.signin.dart';
 import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
@@ -20,6 +19,7 @@ import 'package:celebrated/firebase_options.dart';
 import 'package:celebrated/home/view/home.page.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:celebrated/subscription/view/subscription.view.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
@@ -71,7 +71,6 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
         GetPage(name: AppRoutes.authSignUp, page: () => const SignUpPage()),
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
-
         GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
         GetPage(
@@ -100,7 +99,7 @@ class App extends StatelessWidget {
                 )),
         GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
         GetPage(name: AppRoutes.authEmailSignInComplete, page: () => CompleteEmailSignIn()),
-        GetPage(name: AppRoutes.authEmailSignInForm, page: () => const EmailSignInForm()),
+        GetPage(name: AppRoutes.authEmailSignInForm, page: () => const InitiateEmailSignIn()),
         GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
         GetPage(name: AppRoutes.actions, page: () => const AuthActionsHandler(key: Key(AppRoutes.support))),
       ];
@@ -124,12 +123,13 @@ class App extends StatelessWidget {
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
-          navService.callOnRoute(Get.currentRoute.split("?").first, Get.parameters);
+          // navService.callOnRoute(Get.currentRoute.split("?").first, Get.parameters);
         }
       },
       debugShowCheckedModeBanner: false,
       getPages: getPages.map((e) {
         return e.copy(
+          middlewares: navService.guards.guardsInPage(e.name),
             page: () => SizedBox(
                   width: Get.width,
                   height: Get.height,

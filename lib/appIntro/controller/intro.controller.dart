@@ -3,7 +3,7 @@ import 'package:celebrated/appIntro/models/intro.item.dart';
 
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/navigation/model/route.guard.dart';
+import 'package:celebrated/navigation/model/route.observer.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';

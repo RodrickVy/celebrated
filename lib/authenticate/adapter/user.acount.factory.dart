@@ -55,7 +55,7 @@ class AccountUserFactory extends IModelFactory<UserAccount> {
       defaultReminderType: BirthdayReminderType.values.byName(json['defaultReminderType']??'sms'),
       birthdate: DateTime.fromMillisecondsSinceEpoch(json['birthdate'] ??json['timeCreated']),
       deviceToken: json["deviceToken"]??'',
-      platforms: json['platforms']??[]
+      platforms: List.from(json['platforms'])??[]
     );
   }
 }

@@ -6,11 +6,12 @@ import 'package:celebrated/navigation/controller/links.handler/dynamic.links.stu
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
+import 'package:celebrated/navigation/model/route.observer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NavService extends GetxController {
-  static AppRouteObservers onRouteListeners = AppRouteObservers.configure([
+   AppRouteObservers routeObservers = AppRouteObservers.configure([
     OnRouteObserver(
         when: (route, _) => navService.routeIs(AppRoutes.splash, route),
         run: (_, __, ___) {
@@ -48,27 +49,36 @@ class NavService extends GetxController {
         }
       },
     ),
-    OnRouteObserver(
-      when: (route, _) => authService.userNeedsToBeAuthenticated(route),
-      run: (String route, Map<String, String?> parameters, rerouteTo) {
-        rerouteTo(AppRoutes.authSignIn);
-      },
-    ),
-    OnRouteObserver(
-      when: (route, _) => authService.emailNeedsVerification(route),
-      run: (String route, Map<String, String?> parameters, rerouteTo) {
-        print(
-            'UserNeedAuthentication: ${authService.userNeedsToBeAuthenticated(route)}   Email needs verification: ${authService.emailNeedsVerification(route)} ');
-        rerouteTo(AppRoutes.verifyEmail);
-      },
-    ),
-    OnRouteObserver(
-      when: (route, _) => authService.userNeedsToSelectPlan(route),
-      run: (String route, Map<String, String?> parameters, rerouteTo) {
-        rerouteTo(AppRoutes.subscriptions);
-      },
-    ),
   ]);
+   List<RouteGuard> guards = [
+    RouteGuard(
+      runOn: [AppRoutes.profile],
+      run: () {
+        if (authService.userNeedsToBeAuthenticated) {
+          return AppRoutes.authSignIn;
+        }
+        return null;
+      },
+    ),
+    RouteGuard(
+      runOn: [AppRoutes.profile],
+      run: () {
+        if (authService.emailNeedsVerification) {
+          return AppRoutes.verifyEmail;
+        }
+        return null;
+      },
+    ),
+    RouteGuard(
+      runOn: [AppRoutes.profile],
+      run: () {
+        if (authService.userNeedsToSelectPlan) {
+          return AppRoutes.subscriptions;
+        }
+        return null;
+      },
+    ),
+  ];
 
   String get currentItem {
     return "/${Get.currentRoute.split("?").first.split("/").sublist(1).first}";
@@ -92,10 +102,16 @@ class NavService extends GetxController {
   List<String> get authProtectedRoutes => [AppRoutes.profile, AppRoutes.verifyEmail];
 
   /// all the routes to pages where the user can authenticate
-  List<String> get authRoutes => [AppRoutes.authSignIn, AppRoutes.authSignUp, AppRoutes.authPasswordReset,AppRoutes.authEmailSignInForm,AppRoutes.authEmailSignInComplete];
+  List<String> get authRoutes => [
+        AppRoutes.authSignIn,
+        AppRoutes.authSignUp,
+        AppRoutes.authPasswordReset,
+        AppRoutes.authEmailSignInForm,
+        AppRoutes.authEmailSignInComplete
+      ];
 
   /// all the routes that require to know the users current subscription
-  List<String> get subscriptionClarityRoutes => [AppRoutes.parties];
+  List<String> get subscriptionNeededRoutes => [AppRoutes.parties];
 
   toNextRoute() {
     to(getNextRoute!);
@@ -110,26 +126,30 @@ class NavService extends GetxController {
 
   bool get nextRouteExists =>
       Get.parameters[nextParameterId] != null &&
-      Get.parameters[nextParameterId]!
-          .replaceAll(nextRouteSlashReplacer, '')
-          .replaceAll('/', '')
-          .trim()
-          .isNotEmpty;
+      Get.parameters[nextParameterId]!.replaceAll(nextRouteSlashReplacer, '').replaceAll('/', '').trim().isNotEmpty;
 
   String get nextRouteSlashReplacer => '--';
 
   String get nextParameterId => "nextTo";
 
   /// route tot he given route, but keeps the next parameter on the new route. the [to] method will route to a complete new route and will not preserve the next route.
-  String routeKeepNext(String route, [String nextRoute = '']) {
+  void routeKeepNext(String route, [String nextRoute = '']) {
     if (nextRoute.replaceAll(nextRouteSlashReplacer, '').replaceAll('/', '').trim().isNotEmpty) {
       String routeToBeResumed = (nextRoute).split("/").join(nextRouteSlashReplacer).trim();
-      return to("$route/?$nextParameterId=$routeToBeResumed");
+      to("$route/?$nextParameterId=$routeToBeResumed");
     } else if (nextRouteExists) {
-      return to("$route/?$nextParameterId=${Get.parameters[nextParameterId]!}");
+      to("$route/?$nextParameterId=${Get.parameters[nextParameterId]!}");
     } else {
-      return to(route);
+      to(route);
     }
+  }
+
+  String mergePathWithNext(String route, [String? nextRoute]) {
+    if (nextRoute != null && nextRoute.replaceAll(nextRouteSlashReplacer, '').replaceAll('/', '').trim().isNotEmpty) {
+      String routeToBeResumed = (nextRoute).split("/").join(nextRouteSlashReplacer).trim();
+      return "$route/?$nextParameterId=$routeToBeResumed";
+    }
+    return route;
   }
 
   void withParameter(String key, String value) {
@@ -137,7 +157,9 @@ class NavService extends GetxController {
         .where((element) => element.value != null)
         .fold({}, (previousValue, element) => {...previousValue, element.key: element.value!});
     parameters[key] = value;
-    Get.toNamed('${Get.currentRoute.split('/?').first}/?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}',);
+    Get.toNamed(
+      '${Get.currentRoute.split('/?').first}/?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}',
+    );
   }
 
   /// route to a given route.
@@ -208,22 +230,16 @@ class NavService extends GetxController {
     DynamicLinksHandler.instance.listen();
   }
 
-  callOnRoute(String route, Map<String, String?> parameters) {
-    onRouteListeners.run(route, parameters);
-  }
-
   String baseRoute([String? route]) {
-
     String routePath = (route ?? Get.currentRoute).split('/?').first;
-    if(routePath.replaceAll("/", '').trim().isNotEmpty){
-      print( '/${routePath}');
+    if (routePath.replaceAll("/", '').trim().isNotEmpty) {
+      print('/${routePath}');
       List<String> routeSegments = routePath.split("/").where((element) => element.trim().isNotEmpty).toList();
 
       return '/${routeSegments.first}';
-    }else{
+    } else {
       return '/';
     }
-
   }
 
   ///  checks whether the given base route is the current route, ignores the parameters and any child routes,

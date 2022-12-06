@@ -78,7 +78,7 @@ class UserAccount implements IModel {
     return subscriptionPlan != SubscriptionPlan.none;
   }
 
-  bool get emailIsVerified => emailVerified;
+  bool get emailIsVerified => emailVerified == true;
 
   bool get emailIsNotVerified => emailVerified == false;
 
@@ -162,7 +162,7 @@ class UserAccount implements IModel {
 
   get firstName => name.trim().isNotEmpty ? name.split(" ").first : "";
 
-
+  bool get hasNotSetSubscription => hasSetSubscription == false;
 
   static UserAccount unAuthenticated() {
     return UserAccount(
@@ -187,8 +187,8 @@ class UserAccount implements IModel {
   bool get isAuthenticated {
     return email.isNotEmpty && uid.isNotEmpty;
   }
-  bool get isUnauthenticated => email.isEmpty || uid.isEmpty;
 
+  bool get isUnauthenticated => email.isEmpty || uid.isEmpty;
 
   @override
   String get id => uid;
@@ -207,8 +207,8 @@ class UserAccount implements IModel {
     String? email,
     AuthWith? authMethod,
     String? providerId,
-    // String? displayName,
-    String? uid,
+    List<String>? platforms,
+    String? deviceToken,
     DateTime? lastLogin,
     DateTime? timeCreated,
     String? name,
@@ -219,14 +219,16 @@ class UserAccount implements IModel {
     String? bio,
     DateTime? birthdate,
     Map<String, String>? settings,
+    List<String>? silencedBirthdayLists,
+    BirthdayReminderType? defaultReminderType,
   }) {
     return UserAccount(
       phone: phone ?? this.phone,
       email: email ?? this.email,
       authMethod: authMethod ?? this.authMethod,
       providerId: providerId ?? this.providerId,
-      // displayName: displayName ?? this.displayName,
-      uid: uid ?? this.uid,
+      platforms: platforms ?? this.platforms,
+      deviceToken: deviceToken ?? this.deviceToken,
       lastLogin: lastLogin ?? this.lastLogin,
       timeCreated: timeCreated ?? this.timeCreated,
       name: name ?? this.name,
@@ -237,28 +239,68 @@ class UserAccount implements IModel {
       bio: bio ?? this.bio,
       birthdate: birthdate ?? this.birthdate,
       settings: settings ?? this.settings,
+      silencedBirthdayLists: silencedBirthdayLists ?? this.silencedBirthdayLists,
+      defaultReminderType: defaultReminderType ?? this.defaultReminderType,
+      uid: this.uid,
     );
   }
 
-  static UserAccount fromUser(User user) {
-    final DateTime timestamp = DateTime.now();
-    return UserAccount(
-        subscriptionPlan: SubscriptionPlan.none,
-        timeCreated: timestamp,
-        interactions: [],
-        bio: "",
-        name: user.displayName ?? "",
-        emailVerified: user.emailVerified,
-        uid: user.uid,
-        lastLogin: timestamp,
-        authMethod: AuthWith.Password,
-        avatar: user.photoURL ?? "",
-        providerId: user.providerData[0].providerId,
-        email: user.email ?? "",
-        phone: user.phoneNumber ?? "",
-        birthdate: timestamp,
-        settings: {});
-  }
+// UserAccount copyWith({
+  //   String? phone,
+  //   String? email,
+  //   AuthWith? authMethod,
+  //   String? providerId,
+  //   // String? displayName,
+  //   String? uid,
+  //   DateTime? lastLogin,
+  //   DateTime? timeCreated,
+  //   String? name,
+  //   bool? emailVerified,
+  //   SubscriptionPlan? subscriptionPlan,
+  //   String? avatar,
+  //   List<UserContentInteraction>? interactions,
+  //   String? bio,
+  //   DateTime? birthdate,
+  //   Map<String, String>? settings,
+  // }) {
+  //   return UserAccount(
+  //     phone: phone ?? this.phone,
+  //     email: email ?? this.email,
+  //     authMethod: authMethod ?? this.authMethod,
+  //     providerId: providerId ?? this.providerId,
+  //     // displayName: displayName ?? this.displayName,
+  //     uid: uid ?? this.uid,
+  //     lastLogin: lastLogin ?? this.lastLogin,
+  //     timeCreated: timeCreated ?? this.timeCreated,
+  //     name: name ?? this.name,
+  //     emailVerified: emailVerified ?? this.emailVerified,
+  //     subscriptionPlan: subscriptionPlan ?? this.subscriptionPlan,
+  //     avatar: avatar ?? this.avatar,
+  //     interactions: interactions ?? this.interactions,
+  //     bio: bio ?? this.bio,
+  //     birthdate: birthdate ?? this.birthdate,
+  //     settings: settings ?? this.settings,
+  //   );
+  // }
+  //
+  // static UserAccount fromUser(User user) {
+  //   final DateTime timestamp = DateTime.now();
+  //   return UserAccount(
+  //       subscriptionPlan: SubscriptionPlan.none,
+  //       timeCreated: timestamp,
+  //       interactions: [],
+  //       bio: "",
+  //       name: user.displayName ?? "",
+  //       emailVerified: user.emailVerified,
+  //       uid: user.uid,
+  //       lastLogin: timestamp,
+  //       authMethod: AuthWith.Password,
+  //       avatar: user.photoURL ?? "",
+  //       providerId: user.providerData[0].providerId,
+  //       email: user.email ?? "",
+  //       phone: user.phoneNumber ?? "",
+  //       birthdate: timestamp,
+  //       settings: {});
 
   static UserAccount mergeAuthWithRequest(User user, SignUpEmailRequest request) {
     final DateTime timestamp = DateTime.now();

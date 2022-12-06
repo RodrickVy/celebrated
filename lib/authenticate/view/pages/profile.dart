@@ -1,6 +1,7 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/authenticate/view/components/user.avatar.dart';
 import 'package:celebrated/authenticate/view/components/signout.button.dart';
+import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/forms/phone.form.field.dart';
 import 'package:celebrated/lists/view/birthday.date.name.dart';
@@ -10,7 +11,6 @@ import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/domain/view/components/editable.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/subscription/controller/subscription.service.dart';
 import 'package:celebrated/subscription/view/subscription.preview.card.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -25,7 +25,7 @@ class ProfilePage extends AppPageView {
   late Rx<String> phoneNumber;
 
   ProfilePage({Key? key}) : super(key: key) {
-    phoneNumber = authService.userLive.value.phone.obs;
+
   }
 
   final RxBool showBirthdayEditor = false.obs;
@@ -72,7 +72,6 @@ class ProfilePage extends AppPageView {
                         textAlign: TextAlign.center,
                       ),
 
-
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -105,27 +104,24 @@ class ProfilePage extends AppPageView {
                         height: 20,
                       ),
 
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: EditableTextView(
-                          key: const Key("_display_name_editor"),
-                          icon: Icons.account_circle,
-                          textValue: authService.userLive.value.name,
-                          label: 'username',
-                          onSave: (String value) async {
-                            await authService.updateUserName(name: value);
-                          },
-                        ),
+                      EditableTextView(
+                        key: const Key("_display_name_editor"),
+                        icon: Icons.account_circle,
+                        textValue: authService.userLive.value.name,
+                        label: 'username',
+                        onSave: (String value) async {
+                          await authService.updateUserName(name: value);
+                        },
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       FormPhoneField(
-                        initialValue: authService.userLive.value.phone,
+                        initialValue: authService.user.phone,
                         onSaved: (PhoneNumber? p) async {
                           Get.log('Saved phone number as ${p?.international}');
-                          if (Request.validateField(Validators.phoneValidator, phoneNumber.value)) {
-                            await authService.updatePhoneNumber(newPhone: phoneNumber.value);
+                          if (p != null && Request.validateField(Validators.phoneValidator, p.international)) {
+                            await authService.updatePhoneNumber(newPhone: p.international);
                           }
                         },
                       ),

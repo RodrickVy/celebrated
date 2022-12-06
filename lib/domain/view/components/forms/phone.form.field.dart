@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
+
+///
 class FormPhoneField extends AdaptiveUI {
   final Function(PhoneNumber? phoneNumber)? onChanged;
   final Function(PhoneNumber? phoneNumber)? onSaved;
@@ -54,6 +56,9 @@ class FormPhoneField extends AdaptiveUI {
       selectionWidthStyle: BoxWidthStyle.tight,
       onChanged: (PhoneNumber? p) {
         onChanged != null ? onChanged!(p) : () {}();
+        if(onSaved != null && p != null){
+          UIFormState.phoneNumber(p.international);
+        }
         FeedbackService.clearErrorNotification();
       }, // default null
     );

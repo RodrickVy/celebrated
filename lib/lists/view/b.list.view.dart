@@ -116,7 +116,7 @@ class ABListView extends AdaptiveUI {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: EditableTextView(
-                icon: Icons.delete,
+                icon: Icons.list,
                 onIconPressed: () {},
                 key: Key(board.name),
                 textValue: board.name,
@@ -149,7 +149,10 @@ class ABListView extends AdaptiveUI {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(e.icon,color: Colors.black38,),
+                                Icon(
+                                  e.icon,
+                                  color: Colors.black38,
+                                ),
                                 const SizedBox(
                                   width: 5,
                                 ),
@@ -166,7 +169,9 @@ class ABListView extends AdaptiveUI {
             ),
           ),
 
-          ListSettingsUi(board: board,),
+          ListSettingsUi(
+            board: board,
+          ),
           const SizedBox(
             height: 40,
           ),

@@ -9,7 +9,7 @@ import 'package:celebrated/domain/errors/app.errors.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/navigation/model/route.guard.dart';
+import 'package:celebrated/navigation/model/route.observer.dart';
 import 'package:celebrated/subscription/models/subscription.plan.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/notification.controller.dart';
@@ -20,6 +20,7 @@ import 'package:celebrated/support/models/notification.type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -68,7 +69,8 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   Future<void> saveDeviceTokenToDB() async {
     if (userLive.value.deviceToken.isEmpty) {
-      await authService.updateContent(authService.userLive.value.id, {"deviceToken": notificationService.fcmToken});
+      await authService
+          .updateContent(authService.userLive.value.id, {"deviceToken": await notificationService.fcmToken});
     }
   }
 
@@ -107,7 +109,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           await userCredential.user!.updateDisplayName(request.name);
           final UserAccount accountData = UserAccount.mergeAuthWithRequest(userCredential.user!, request);
           await createUserAccount(accountData);
-          syncOnAuthentication(userCredential.user!);
         } else {
           AnnounceErrors.accountCreationFailed();
         }
@@ -127,9 +128,8 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
             await auth.signInWithEmailAndPassword(email: request.email, password: request.password);
         if (credential.user != null) {
           int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
-           await updateContent(
+          await updateContent(
               credential.user!.uid, {'lastLogin': loginTimestamp, "emailVerified": credential.user!.emailVerified});
-          await syncOnAuthentication(credential.user!);
           return user;
         } else {
           AnnounceErrors.updateLoginTimestampFailed();
@@ -149,7 +149,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   Future<void> syncOnAuthentication(User user) async {
     try {
       userLive(await getContent(user.uid));
-      print("${navService.nextRouteExists}");
       if (navService.nextRouteExists) {
         navService.toNextRoute();
       } else {
@@ -157,22 +156,21 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
       }
     } catch (_) {
       AnnounceErrors.syncingWithAuthFailed(_);
+      if (kDebugMode) {
+        print('Error:: ${_.toString()}');
+      }
     }
   }
 
-  bool emailNeedsVerification([String? currentRoute]) =>
-      user.isAuthenticated && navService.routeIsNot(AppRoutes.verifyEmail, currentRoute);
+  bool get emailNeedsVerification => user.isAuthenticated && user.emailIsNotVerified;
 
-  bool userNeedsToBeAuthenticated([String? currentRoute]) =>
-      user.isUnauthenticated && !(navService.authRoutes.contains(navService.baseRoute(currentRoute)));
+  bool get userNeedsToBeAuthenticated => user.isUnauthenticated;
 
-          //&&
-    //  !navService.authRoutes.contains(navService.baseRoute(currentRoute)) &&
-     // navService.authProtectedRoutes.contains(navService.baseRoute(currentRoute));
+  //&&
+  //  !navService.authRoutes.contains(navService.baseRoute(currentRoute)) &&
+  // navService.authProtectedRoutes.contains(navService.baseRoute(currentRoute));
 
-  bool userNeedsToSelectPlan([String? currentRoute]) =>
-      !emailNeedsVerification(currentRoute) &&
-      navService.subscriptionClarityRoutes.contains(navService.baseRoute(currentRoute));
+  bool get userNeedsToSelectPlan => user.isAuthenticated && user.emailIsVerified && user.hasNotSetSubscription;
 
   Future<void> syncAuthUserWithAccount(User authUser) async {
     await updateContent(authUser.uid, {"emailVerified": authUser.emailVerified == true});
@@ -265,15 +263,14 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   }
 
   /// handles the return url of a email verification link
-  Future<bool> handleSignInLink(String email, String emailLink) async {
+  Future<bool> completeEmailSign(String email, String emailLink) async {
     if (Validators.validateField(Validators.emailFormValidator, email)) {
       try {
         if (auth.isSignInWithEmailLink(emailLink)) {
-          Get.log("isValidLink  $emailLink");
-          //   FeedbackService.announce(notification: AppNotification(title: "Key: ${emailLink}",appWide: true));
           UserCredential? credential = await auth.signInWithEmailLink(email: email, emailLink: emailLink);
           if (credential.user != null) {
             await updateContent(credential.user!.uid, {"emailVerified": true});
+            await auth.currentUser?.reload();
             return true;
           } else {
             return false;
@@ -317,7 +314,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   Future<UserAccount> updateUserName({required String name}) async {
     if (user.isAuthenticated && Validators.validateField(Validators.userNameValidator, name) && name != user.name) {
       try {
-         await updateContent(userLive.value.uid, {'name': name}).then((value) {
+        await updateContent(userLive.value.uid, {'name': name}).then((value) {
           userLive(value);
           userLive.refresh();
         });
@@ -410,7 +407,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
                   OutlinedButton(
                     onPressed: () async {
                       try {
-                       navService.routeKeepNext(AppRoutes.profile, Get.currentRoute);
+                        navService.routeKeepNext(AppRoutes.profile, Get.currentRoute);
                       } catch (_) {
                         Get.log(_.toString());
                       }
@@ -490,7 +487,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         response.announceError();
         return false;
       }
-    }  on Exception catch (exception) {
+    } on Exception catch (exception) {
       AnnounceErrors.exception(exception);
       return false;
     } catch (e) {
@@ -516,13 +513,12 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
         if (response.succeeded) {
           await auth.currentUser?.reload();
-          await syncOnAuthentication(auth.currentUser!);
           return true;
         } else {
           response.announceError();
           return false;
         }
-      }  on Exception catch (exception) {
+      } on Exception catch (exception) {
         AnnounceErrors.exception(exception);
         return false;
       } catch (e) {

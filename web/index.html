@@ -37,7 +37,6 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer=""></script>
   <link rel="stylesheet" type="text/css" href="splash/style.css">
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   <script src="splash/splash.js"></script>
 </head>
 <body>
@@ -48,6 +47,7 @@
   </picture>
   <script>
     window.addEventListener('load', function(ev) {
+
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
@@ -60,6 +60,12 @@
       });
     });
   </script>
-
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/firebase-messaging-sw.js");
+      });
+    }
+  </script>
 
 </body></html>

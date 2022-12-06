@@ -255,7 +255,7 @@ class AnnounceErrors {
     FeedbackService.announce(
         notification: AppNotification(
             title: "Connecting to the cloud failed",
-            stack: error,
+            stack: error.toString(),
             appWide: true,
             message: "please reload and try again",
             type: NotificationType.error));

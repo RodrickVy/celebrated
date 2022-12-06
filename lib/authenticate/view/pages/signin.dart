@@ -2,6 +2,7 @@ import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
+import 'package:celebrated/domain/view/components/heading.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
@@ -124,34 +125,7 @@ class SignInPage extends AdaptiveUI {
 
   int get currentIndex => int.parse(Get.parameters['stage'] ?? '0');
 
-  AppTextField get emailField => AppTextField(
-    fieldIcon: Icons.email,
-    label: "Email",
-    hint: "eg. example@gmail.com",
-    autoFocus: true,
-    controller: TextEditingController(text: UIFormState.signInFormData.email),
-    onChanged: (data) {
-      UIFormState.email(data.trim());
-    },
-    key: UniqueKey(),
-    keyboardType: TextInputType.emailAddress,
-    autoFillHints: const [AutofillHints.email, AutofillHints.username],
-  );
 
-  AppTextField get passwordField => AppTextField(
-    fieldIcon: Icons.vpn_key,
-    label: "Password",
-    autoFocus: true,
-    hint: "minimum 6 characters",
-    controller: TextEditingController(text: UIFormState.signInFormData.password),
-    onChanged: (data) {
-      UIFormState.password(data);
-    },
-    obscureOption: true,
-    key: UniqueKey(),
-    keyboardType: TextInputType.visiblePassword,
-    autoFillHints: const [AutofillHints.password],
-  );
 
   Column stageView(Adaptive adapter) {
     switch (currentIndex) {
@@ -160,11 +134,11 @@ class SignInPage extends AdaptiveUI {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              heading("Enter your password", adapter),
+              const Heading("Enter your password"),
               const SizedBox(
                 height: 10,
               ),
-              passwordField,
+              UIFormState.passwordField,
               const SizedBox(
                 height: 10,
               ),
@@ -184,8 +158,7 @@ class SignInPage extends AdaptiveUI {
                       }),
                 ],
               ),
-
-              signInButton,
+              UIFormState.signInButton,
               backButton,
             ]);
 
@@ -195,11 +168,11 @@ class SignInPage extends AdaptiveUI {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              heading("Whats ur email?", adapter),
+              const Heading("Lets sign you in, Whats ur email?"),
               const SizedBox(
                 height: 10,
               ),
-              emailField,
+              UIFormState.emailField,
               const SizedBox(
                 height: 10,
               ),
@@ -211,31 +184,18 @@ class SignInPage extends AdaptiveUI {
               const SizedBox(
                 height: 10,
               ),
-              emailLinkButton,
+              UIFormState.emailLinkButton,
               const Padding(
                 padding:  EdgeInsets.all(8.0),
                 child:  Center(child: Text("or",textAlign: TextAlign.center,)),
               ),
-              signUpButton,
+              UIFormState.signUpButton,
 
             ]);
     }
   }
 
-  AppButton get signInButton {
-    return AppButton(
-      key: UniqueKey(),
-      onPressed: () async {
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
-        await authService.signIn(UIFormState.signInFormData);
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
-      },
-      child: Text(
-        "Sign in",
-        style: GoogleFonts.poppins(fontSize: 16),
-      ),
-    );
-  }
+
 
   String? validateCurrentStage() {
     switch (currentIndex) {
@@ -286,40 +246,4 @@ class SignInPage extends AdaptiveUI {
     );
   }
 
-  Widget get emailLinkButton {
-    return AppButton(
-      key: UniqueKey(),
-      isTextButton: true,
-      onPressed: () async {
-       navService.to(AppRoutes.authEmailSignInForm);
-      },
-      minWidth: Get.width,
-      child: Text(
-        "Use email link",
-        style: GoogleFonts.poppins(fontSize: 16),
-      ),
-    );
-  }
-
-  Widget get signUpButton {
-    return AppButton(
-      key: UniqueKey(),
-      isTextButton: true,
-      onPressed: () async {
-        navService.to(AppRoutes.authSignUp);
-      },
-      minWidth: Get.width,
-      child: Text(
-        "create account",
-        style: GoogleFonts.poppins(fontSize: 16),
-      ),
-    );
-  }
-
-  Widget heading(String title, adapter) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(title, style: adapter.textTheme.headlineSmall),
-    );
-  }
 }
