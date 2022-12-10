@@ -1,3 +1,4 @@
+import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
@@ -18,9 +19,9 @@ class AuthProviderButtons extends StatelessWidget {
   final AuthButtonStyle? style = AuthButtonStyle(
     padding: const EdgeInsets.all(12),
 
-    borderWidth: 0.2,
+    borderWidth:  AppTheme.shape.side.width,
     separator: 40,
-borderRadius: 0,
+borderRadius: AppTheme.borderRadius,
     iconType: AuthIconType.secondary,
     textStyle: GoogleFonts.poppins(
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
@@ -47,14 +48,11 @@ borderRadius: 0,
     return FeedbackSpinner(
       spinnerKey: FeedbackSpinKeys.auth,
       child: SizedBox(
-        width: Get.width,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[...buttonsWithSpacing],
-          ),
+        width: Get.width-30,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[...buttonsWithSpacing],
         ),
       ),
     );
@@ -89,8 +87,6 @@ borderRadius: 0,
           onPressed: () {
             _action(method);
           },
-          //
-          key: UniqueKey(),
           text: "$_actionText ${showName ? 'Email' : ''}",
           darkMode: darkMode,
           style: style,
@@ -104,7 +100,7 @@ borderRadius: 0,
           text: "$_actionText ${showName ? 'Facebook' : ''}",
           darkMode: darkMode,
           style: style,
-          key: UniqueKey(),
+          
         );
       case AuthWith.Github:
         return GithubAuthButton(
@@ -117,7 +113,7 @@ borderRadius: 0,
           style: style,
           // width: width,
           // padding: padding,
-          key: UniqueKey(),
+          
           // textStyle: textStyle,
           // iconStyle: iconStyle,
           // buttonColor: buttonColor,
@@ -137,7 +133,7 @@ borderRadius: 0,
             _action(method);
           },
           // separator: iconSeparator + (iconSeparator * 1.3),
-          key: UniqueKey(),
+
           text: "$_actionText ${showName ? 'Google' : ''}",
           darkMode: darkMode,
           style: style,
@@ -161,7 +157,7 @@ borderRadius: 0,
           onPressed: () {
             _action(method);
           },
-          key: UniqueKey(),
+          
           // separator: iconSeparator + (iconSeparator / 2),
           text: "$_actionText ${showName ? 'Twitter' : ''}",
           darkMode: darkMode,
@@ -186,7 +182,7 @@ borderRadius: 0,
           onPressed: () {
             _action(method);
           },
-          key: UniqueKey(),
+          
           text: "$_actionText ${showName ? 'Apple' : ''}",
           darkMode: darkMode,
           style: style,
@@ -196,7 +192,7 @@ borderRadius: 0,
           onPressed: () {
             _action(method);
           },
-          key: UniqueKey(),
+          
           text: "$_actionText ${showName ? 'Microsoft' : ''}",
           darkMode: darkMode,
           style: style,
@@ -206,7 +202,7 @@ borderRadius: 0,
           onPressed: () {
             _action(method);
           },
-          key: UniqueKey(),
+          
           text: "$_actionText ${showName ? 'Password' : ''}",
           darkMode: darkMode,
           style: style,
@@ -247,8 +243,7 @@ borderRadius: 0,
           return authService.signInWithPopUpProvider(
               provider: GithubAuthProvider());
         case AuthWith.Google:
-          return authService.signInWithPopUpProvider(
-              provider: GoogleAuthProvider());
+          return authService.signInWithGoogle() ;
         case AuthWith.Apple:
         case AuthWith.Microsoft:
         case AuthWith.OAuth:

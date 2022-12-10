@@ -30,8 +30,9 @@ class NotificationService extends GetxController {
   //instance of FlutterLocalNotificationsPlugin
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  Future<void> init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
+  Future<void> init() async{
+    print("notifications service inited");
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -40,11 +41,6 @@ class NotificationService extends GetxController {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
     );
-  }
-
-  @override
-  void onInit() async {
-    super.onInit();
 
     NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
@@ -61,28 +57,17 @@ class NotificationService extends GetxController {
       case AuthorizationStatus.notDetermined:
         FeedbackService.announce(
             notification: AppNotification(
-          appWide: true,
-          title: "Want to use phone notifications for reminders? allow celebrated on your permissions",
-        ));
+              appWide: true,
+              title: "Want to use phone notifications for reminders? allow celebrated on your permissions",
+            ));
         break;
       case AuthorizationStatus.provisional:
       case AuthorizationStatus.authorized:
     }
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        FeedbackService.announce(
-            notification: AppNotification(
-          appWide: true,
-          title: "${message.data['message']}",
-        ));
-      }
-    });
-    FirebaseMessaging.onBackgroundMessage((message) async {
-      if (message.notification != null) {
-        sendNotification(message.data['message'], '');
-      }
-    });
+
+
   }
+
 
   Future selectNotification(String payload) async {
     // await Navigator.push(

@@ -32,6 +32,7 @@ class FeedbackSpinner extends StatelessWidget {
       this.onSpinStart})
       : super(key: spinnerKey) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("Loading spinner ${spinnerKey}");
       FeedbackService.spinnerDefineState(
           key: spinnerKey, isOn: defaultState);
       FeedbackService.listenToSpinner(key: spinnerKey).listen((p0) {

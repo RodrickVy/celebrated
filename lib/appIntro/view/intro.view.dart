@@ -68,7 +68,6 @@ class AppIntro extends AdaptiveUI {
                                   introScreenController.videoController.flickControlManager?.autoPause();
                                 },
                                 minWidth: 190,
-                                key: UniqueKey(),
                                 buttonHeight: 60,
                                 label: "Get Started",
                               ),
@@ -189,7 +188,6 @@ class AppIntro extends AdaptiveUI {
                               onPressed: () {
                                 introScreenController.nextScreen();
                               },
-                              key: UniqueKey(),
                               buttonHeight: 60,
                               label: "Get Started",
                             ),
@@ -201,7 +199,6 @@ class AppIntro extends AdaptiveUI {
                               onPressed: () {
                                 introScreenController.previousScreen();
                               },
-                              key: UniqueKey(),
                               isTextButton: true,
                               buttonHeight: 60,
                               label: "Back",
@@ -214,7 +211,6 @@ class AppIntro extends AdaptiveUI {
                               onPressed: () {
                                 introScreenController.nextScreen();
                               },
-                              key: UniqueKey(),
                               buttonHeight: 60,
                               label: "Next",
                             ),

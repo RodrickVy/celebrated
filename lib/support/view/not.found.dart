@@ -40,7 +40,7 @@ class NotFoundView extends AppPageView {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: AppButton(
-                      key: UniqueKey(),
+
                       isTextButton: true,
                       label: item.name,
                       onPressed: () async {

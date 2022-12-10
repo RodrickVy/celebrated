@@ -106,7 +106,7 @@ class AboutDev extends AppPageView {
                       ),
                     ),
                     TextButton(
-                      key: UniqueKey(),
+                      
                       onPressed: () async {
                         final Uri _url = Uri.parse(
                             'https://docs.google.com/forms/d/e/1FAIpQLSfH_82VfzhlgEzsRrW0Jw_Y1sqd30kaChoGnRC5u0wpgqMYxQ/viewform?usp=sf_link');
@@ -117,10 +117,10 @@ class AboutDev extends AppPageView {
                                       "Oops! Looks like we can't open this url, copy  this link instead",
                                   appWide: true,
                                   child: AppButton(
-                                      key: UniqueKey(),
+                                      
                                       child: Text(
                                           "Click To Copy :https://forms.gle/yMqYcdVHchyKqza6A "),
-                                      onPressed: () {
+                                      onPressed: () async{
                                         Clipboard.setData(const ClipboardData(
                                                 text:
                                                     "https://forms.gle/yMqYcdVHchyKqza6A"))
@@ -306,7 +306,7 @@ Fun -  we find fun and joy in what we do.
 //                             borderSide: BorderSide(width: 0.5))),
 //                     controller: _nameEditorController,
 //                     hint: 'full name',
-//                     key: UniqueKey(),
+//                     
 //                   ),
 //                 ),
 //                 const SizedBox(
@@ -332,7 +332,7 @@ Fun -  we find fun and joy in what we do.
 //                 Row(
 //                   children: [
 //                     FormSubmitButton(
-//                       key: UniqueKey(),
+//                       
 //                       child: Text(
 //                         "Cancel",
 //                         style: GoogleFonts.poppins(fontSize: 16),
@@ -345,7 +345,7 @@ Fun -  we find fun and joy in what we do.
 //                       width: 10,
 //                     ),
 //                     FormSubmitButton(
-//                       key: UniqueKey(),
+//                       
 //                       child: Text(
 //                         "Save",
 //                         style: GoogleFonts.poppins(fontSize: 16),

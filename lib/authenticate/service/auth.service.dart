@@ -7,9 +7,9 @@ import 'package:celebrated/authenticate/requests/signup.request.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/errors/app.errors.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
+import 'package:celebrated/domain/services/instances.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/navigation/model/route.observer.dart';
 import 'package:celebrated/subscription/models/subscription.plan.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/notification.controller.dart';
@@ -24,10 +24,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-final FirebaseFirestore firestore = FirebaseFirestore.instance;
-final GoogleSignIn _googleSignIn = GoogleSignIn();
-final FirebaseAuth auth = FirebaseAuth.instance;
 
 /// manages authentication state and maintenance of Account and Auth objects of the user
 class AuthService extends GetxController with ContentStore<UserAccount, AccountUserFactory> {
@@ -109,6 +105,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           await userCredential.user!.updateDisplayName(request.name);
           final UserAccount accountData = UserAccount.mergeAuthWithRequest(userCredential.user!, request);
           await createUserAccount(accountData);
+          await syncOnAuthentication(userCredential.user!);
         } else {
           AnnounceErrors.accountCreationFailed();
         }
@@ -130,6 +127,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           int loginTimestamp = DateTime.now().millisecondsSinceEpoch;
           await updateContent(
               credential.user!.uid, {'lastLogin': loginTimestamp, "emailVerified": credential.user!.emailVerified});
+          await syncOnAuthentication(credential.user!);
           return user;
         } else {
           AnnounceErrors.updateLoginTimestampFailed();
@@ -149,13 +147,13 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
   Future<void> syncOnAuthentication(User user) async {
     try {
       userLive(await getContent(user.uid));
+      await updateContent(user.uid, {"emailVerified": user.emailVerified == true});
       if (navService.nextRouteExists) {
         navService.toNextRoute();
-      } else {
+      } else if (navService.authRoutes.contains(navService.baseRoute(Get.currentRoute))) {
         navService.to(AppRoutes.lists);
       }
     } catch (_) {
-      AnnounceErrors.syncingWithAuthFailed(_);
       if (kDebugMode) {
         print('Error:: ${_.toString()}');
       }
@@ -166,15 +164,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   bool get userNeedsToBeAuthenticated => user.isUnauthenticated;
 
-  //&&
-  //  !navService.authRoutes.contains(navService.baseRoute(currentRoute)) &&
-  // navService.authProtectedRoutes.contains(navService.baseRoute(currentRoute));
-
   bool get userNeedsToSelectPlan => user.isAuthenticated && user.emailIsVerified && user.hasNotSetSubscription;
-
-  Future<void> syncAuthUserWithAccount(User authUser) async {
-    await updateContent(authUser.uid, {"emailVerified": authUser.emailVerified == true});
-  }
 
   signInWithPopUpProvider({required provider}) async {
     try {
@@ -188,7 +178,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   Future<String?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
@@ -198,13 +188,13 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
     } on FirebaseAuthException catch (error) {
       AnnounceErrors.exception(error);
     } catch (e) {
-      AnnounceErrors.unknown(e);
+      AnnounceErrors.unknown(e.toString());
     }
     return null;
   }
 
   Future<void> signOutFromGoogle() async {
-    await _googleSignIn.signOut();
+    await googleSignIn.signOut();
     await auth.signOut();
   }
 
@@ -236,7 +226,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
   ActionCodeSettings emailLinkActionSettings(String email) {
     return ActionCodeSettings(
-      url: 'https://celebratedapp.com/?email=${email}&nextUrl=${navService.getNextRoute ?? ''}',
+      url: 'https://celebratedapp.com/?email=$email&nextUrl=${navService.getNextRoute ?? ''}',
       androidInstallApp: true,
       androidMinimumVersion: '2',
       androidPackageName: "com.rodrickvy.celebrated",
@@ -271,6 +261,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
           if (credential.user != null) {
             await updateContent(credential.user!.uid, {"emailVerified": true});
             await auth.currentUser?.reload();
+            syncOnAuthentication(credential.user!);
             return true;
           } else {
             return false;
@@ -290,7 +281,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         Get.log("code: ${error.code} message:${error.message} ${error.stackTrace} $emailLink");
         return false;
       } catch (e) {
-        Get.log("code: ${e} message:${e}  $emailLink");
+        Get.log("code: $e message:$e  $emailLink");
         AnnounceErrors.unknown(e);
         // return false;
         rethrow;
@@ -395,7 +386,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
                       backgroundColor: Colors.black,
                       elevation: 0,
                     ),
-                    key: UniqueKey(),
                     child: const Text(
                       "Later",
                       style: TextStyle(color: Colors.white),
@@ -417,7 +407,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
                       backgroundColor: Colors.black,
                       elevation: 0,
                     ),
-                    key: UniqueKey(),
                     child: const Text(
                       "Sign In",
                       style: TextStyle(color: Colors.white),

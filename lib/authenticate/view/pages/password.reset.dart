@@ -18,7 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 class PasswordResetPage extends AdaptiveUI{
 
 
-  PasswordResetPage({Key? key}) : super(key: key);
+  const PasswordResetPage({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -27,7 +27,7 @@ class PasswordResetPage extends AdaptiveUI{
         width: 320,
         child: FeedbackSpinner(
             onSpinEnd: () {},
-            spinnerKey: FeedbackSpinKeys.passResetForm,
+            spinnerKey: FeedbackSpinKeys.auth,
             onSpinStart: () {},
             child: Container(
               padding: const EdgeInsets.all(10 / 2),
@@ -56,28 +56,26 @@ class PasswordResetPage extends AdaptiveUI{
                       const SizedBox(height: 10),
                       const NotificationsView(),
                       AppButton(
-                        key: UniqueKey(),
+                        
+                        loadStateKey: FeedbackSpinKeys.auth,
+                        onPressed: () async {
+
+                          await authService.sendPasswordResetEmail(
+                            email: UIFormState.email.value,
+                          );
+                        },
+
                         child: Text(
                           "Reset-Password",
                           style: GoogleFonts.mavenPro(),
                         ),
-                        onPressed: () async {
-                          FeedbackService.spinnerUpdateState(
-                              key: FeedbackSpinKeys.passResetForm, isOn: true);
-                          await authService.sendPasswordResetEmail(
-                            email: UIFormState.email.value,
-                          );
-
-                          FeedbackService.spinnerUpdateState(
-                              key: FeedbackSpinKeys.passResetForm, isOn: false);
-                        },
                       ),
                       const SizedBox(height: 10),
                       AppButton(
-                        key: UniqueKey(),
+                        
                         isTextButton: true,
                         onPressed: ()  {
-                          navService.to(AppRoutes.authSignIn);
+                          navService.routeKeepNext(AppRoutes.authSignIn);
                         },
                         child: Text(
                           "sign in",

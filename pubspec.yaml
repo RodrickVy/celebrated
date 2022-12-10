@@ -35,6 +35,8 @@ dependencies:
   firebase_dynamic_links: ^5.0.7
   firebase_messaging: ^14.1.3
   flutter_local_notifications: ^12.0.4
+  synchronized_keyboard_listener: ^0.1.0
+  syncfusion_flutter_datepicker: ^20.3.60
 
 
 dev_dependencies:

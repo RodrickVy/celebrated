@@ -1,50 +1,41 @@
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/domain/view/components/copy.text.dart';
 import 'package:celebrated/lists/adapter/birthday.list.factory.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
-import 'package:celebrated/lists/view/b.list.view.dart';
+import 'package:celebrated/lists/model/settings.ui.dart';
 import 'package:celebrated/lists/view/birthday.notify.when.dart';
 import 'package:celebrated/domain/model/drop.down.action.dart';
 import 'package:celebrated/domain/model/toggle.option.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/components/toogle.button.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 
 import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/models/app.error.code.dart';
-import 'package:celebrated/support/models/app.notification.dart';
-import 'package:celebrated/support/models/notification.type.dart';
+import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-List<DropDownAction> birthdaysListActions(BirthdayBoard board) {
+List<OptionAction> birthdaysListActions(BirthdayBoard board) {
   return [
-    DropDownAction("Share Link", Icons.share, () {
+    OptionAction("Share List", Icons.share, () {
       birthdaysController.currentSettingBox(SettingBox.shareList);
     }),
-    DropDownAction("Invite Others", Icons.add_link, () {
+    OptionAction("Collect Info", Icons.add_link, () {
       birthdaysController.currentSettingBox(SettingBox.invite);
     }),
-    DropDownAction("Notifications", Icons.notifications_sharp, () {
+    OptionAction("Notifications", Icons.notifications_sharp, () {
       birthdaysController.currentSettingBox(SettingBox.notifications);
     }),
-    DropDownAction("Delete List", Icons.delete, () {
-      FeedbackService.announce(
-        ///todo change Error Codes to notification codes
-        notification: AppNotification(
-            message: '',
-            appWide: true,
-            canDismiss: false,
-            type: NotificationType.warning,
-            title: "Are you sure you want to this '${board.name}' delete?",
-            code: ResponseCode.unknown,
-            child: DeleteListView(controller: birthdaysController, board: board)),
-      );
-    }),
+    // DropDownAction("Delete List", Icons.delete, () {
+    //
+    // }),
   ];
 }
 
@@ -68,24 +59,23 @@ class DeleteListView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: AppButton(
-              onPressed: () {
-                controller.deleteContent(board.id);
-
+              onPressed: () async{
+                await  controller.deleteList(board.id);
                 FeedbackService.clearErrorNotification();
               },
+
               isTextButton: true,
-              key: UniqueKey(),
               child: const Text("Delete"),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: AppButton(
-              onPressed: () {
+              onPressed: () async{
                 FeedbackService.clearErrorNotification();
+
               },
               isTextButton: true,
-              key: UniqueKey(),
               child: const Text("Cancel"),
             ),
           ),
@@ -112,80 +102,49 @@ class InviteOthersView extends AdaptiveUI {
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
-      ()=> Padding(
+      () => Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TitleWidget(image: "assets/intro/forget.png",title: "Invite Others to add their birthdays",),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: AppToggleButton(
-                onInteraction: () {
-                  shareOn.toggle();
-                },
-                options: [
-                  ToggleOption(
-                      view: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Row(
-                          children: const [Icon(Icons.link_off), Text(" Off")],
-                        ),
-                      ),
-                      state: shareOn.isFalse,
-                      onSelected: () {
-                        birthdaysController.updateContent(
-                            board.id, BirthdayBoardFactory().toJson(board.copyWith(addingId: "")));
-                      }),
-                  ToggleOption(
-                      view: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Row(
-                          children: const [Icon(Icons.link), Text(" On")],
-                        ),
-                      ),
-                      state: shareOn.isTrue,
-                      onSelected: () {
-                        birthdaysController.updateContent(
-                            board.id, BirthdayBoardFactory().toJson(board.copyWith(addingId: addId)));
-                      })
-                ],
-              ),
+            const TitleWidget(
+              image: "assets/intro/forget.png",
+              title: "Invite Others to add their birthdays",
             ),
             if (shareOn.isTrue)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: AppButton(
-                  onPressed: () async {
-                    if (GetPlatform.isWeb) {
-                      Clipboard.setData(ClipboardData(text: board.addInviteUrl(addId)));
-                      FeedbackService.clearErrorNotification();
-                      FeedbackService.successAlertSnack('Link Copied!');
-                    } else {
-                      await Share.share(board.addInviteUrl(addId));
-                      FeedbackService.clearErrorNotification();
-                    }
-                  },
-                  key: UniqueKey(),
-                  isTextButton: true,
-                  child: Text(GetPlatform.isWeb ? "Copy Link" : "Share Link"),
+                child: CopyText(
+                  textValue: board.addInviteUrl(),
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Wrap(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AppButton(
-                      isTextButton: true,
-                      minWidth: 60,
-                      label: "close",
-                      onPressed: () {
-                        birthdaysController.currentSettingBox(SettingBox.none);
-                      }),
+                if (board.addingId.isNotEmpty)
+                  AppButtonIcon(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async{
+                      await birthdaysController.updateContent(
+                          board.id, BirthdayBoardFactory().toJson(board.copyWith(addingId: "")));
+                    },
+                    loadStateKey: FeedbackSpinKeys.appWide,
+                    isTextButton: true,
+                    label: "Destroy Link",
+                  ),
+                AppButtonIcon(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () async {
+                    await birthdaysController.updateContent(
+                        board.id,
+                        BirthdayBoardFactory().toJson(
+                            board.copyWith(addingId: board.addingId.isNotEmpty ? board.generateInviteId() : addId)));
+                  },
+                  loadStateKey: FeedbackSpinKeys.appWide,
+                  isTextButton: true,
+                  label: "${board.addingId.isEmpty ? 'G' : 'Reg'}enerate link",
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -214,64 +173,78 @@ class ShareListView extends AdaptiveUI {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TitleWidget(image: "assets/intro/share_link.png",title:      "Share list to others to watch",),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AppToggleButton(
-              onInteraction: () {
-                shareOn.toggle();
-              },
-              options: [
-                ToggleOption(
-                    view: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Row(
-                        children: const [Icon(Icons.link_off), Text("Off")],
-                      ),
-                    ),
-                    state: shareOn.isFalse,
-                    onSelected: () {
-                      birthdaysController.updateContent(
-                          board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: "")));
-                    }),
-                ToggleOption(
-                    view: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Row(
-                        children: const [Icon(Icons.link), Text("On")],
-                      ),
-                    ),
-                    state: shareOn.isTrue,
-                    onSelected: () {
-                      birthdaysController.updateContent(
-                          board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: viewId)));
-                    })
-              ],
-            ),
+          const TitleWidget(
+            image: "assets/intro/share_link.png",
+            title: "Share list to others to watch",
           ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: AppToggleButton(
+          //     onInteraction: () {
+          //       shareOn.toggle();
+          //     },
+          //     options: [
+          //       ToggleOption(
+          //           view: Padding(
+          //             padding: const EdgeInsets.all(6.0),
+          //             child: Row(
+          //               children: const [Icon(Icons.link_off), Text(" Destory ")],
+          //             ),
+          //           ),
+          //           state: shareOn.isFalse,
+          //           onSelected: () {
+          //             birthdaysController.updateContent(
+          //                 board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: "")));
+          //           }),
+          //       ToggleOption(
+          //           view: Padding(
+          //             padding: const EdgeInsets.all(6.0),
+          //             child: Row(
+          //               children: const [Icon(Icons.link), Text("On")],
+          //             ),
+          //           ),
+          //           state: shareOn.isTrue,
+          //           onSelected: () {
+          //             birthdaysController.updateContent(
+          //                 board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: viewId)));
+          //           })
+          //     ],
+          //   ),
+          // ),
           if (shareOn.isTrue)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CopyShareLinkButton(
-                board: board,
-                viewId: viewId,
+              child: CopyText(
+                textValue: board.viewUrl(),
               ),
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AppButton(
-                    isTextButton: true,
-                    minWidth: 60,
-                    label: "close",
-                    onPressed: () {
-                      birthdaysController.currentSettingBox(SettingBox.none);
-                    }),
+              if (board.viewingId.isNotEmpty)
+                AppButtonIcon(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () async{
+                    birthdaysController.updateContent(
+                        board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: "")));
+                  },
+                  loadStateKey: FeedbackSpinKeys.appWide,
+                  isTextButton: true,
+                  label: "Destroy Link",
+                ),
+              AppButtonIcon(
+                icon: const Icon(Icons.refresh),
+                onPressed: () async {
+                  await birthdaysController.updateContent(
+                      board.id,
+                      BirthdayBoardFactory().toJson(
+                          board.copyWith(viewingId: board.viewingId.isNotEmpty ? board.generateViewId() : viewId)));
+                },
+                loadStateKey: FeedbackSpinKeys.appWide,
+                isTextButton: true,
+                label: "${board.viewingId.isEmpty ? 'G' : 'Reg'}enerate link",
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -299,7 +272,6 @@ class CopyShareLinkButton extends StatelessWidget {
           FeedbackService.clearErrorNotification();
         }
       },
-      key: UniqueKey(),
       isTextButton: true,
       child: Text(GetPlatform.isWeb ? "Copy Link" : "Share Link"),
     );
@@ -322,7 +294,10 @@ class NotificationSelection extends AdaptiveUI {
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TitleWidget(image:  "assets/intro/notification.png", title: "How do you want to be reminded",),
+            const TitleWidget(
+              image: "assets/intro/notification.png",
+              title: "How do you want to be reminded",
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: AppToggleButton(
@@ -376,14 +351,14 @@ class NotificationSelection extends AdaptiveUI {
                 children: [
                   const Text("Remind Me : "),
                   NotifyWhen(
-                    disabled:authService.userLive.value.silencedBirthdayLists.contains(board.id),
+                    disabled: authService.userLive.value.silencedBirthdayLists.contains(board.id),
                     values: List.generate(
                       7,
                       (index) => '${index + 1}',
                     ),
                     defaultValue: board.startReminding.toString(),
                     onSelect: (String value) {
-                      birthdaysController.updateListsStartReminding(board,int.parse(value));
+                      birthdaysController.updateListsStartReminding(board, int.parse(value));
                     },
                   ),
                   const Text("before a birthday."),
@@ -401,21 +376,6 @@ class NotificationSelection extends AdaptiveUI {
                 },
               );
             }),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AppButton(
-                      isTextButton: true,
-                      minWidth: 60,
-                      label: "close",
-                      onPressed: () {
-                        birthdaysController.currentSettingBox(SettingBox.none);
-                      }),
-                ),
-              ],
-            )
           ],
         ),
       ),
@@ -428,22 +388,21 @@ class TitleWidget extends AdaptiveUI {
   final String title;
 
   const TitleWidget({
-    Key? key, required this.image, required this.title,
+    Key? key,
+    required this.image,
+    required this.title,
   }) : super(key: key);
-
-
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Row(
-
       children: [
         FittedBox(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
               image,
-              width: 100,
+              width:80,
             ),
           ),
         ),
@@ -468,23 +427,50 @@ class ListSettingsUi extends AdaptiveUI {
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return SizedBox(
-      width: adapter.adapt(phone: Get.width-100, tablet: null, desktop: null),
-      child: Obx(
-        () {
-          if (birthdaysController.showNotificationSettings.value) {}
-          switch (birthdaysController.currentSettingBox.value) {
-            case SettingBox.none:
-              return const SizedBox();
-            case SettingBox.shareList:
-              return ShareListView(board: board);
-            case SettingBox.invite:
-              return InviteOthersView(board: board);
-            case SettingBox.notifications:
-              return NotificationSelection(board: board);
-          }
-        },
-      ),
+    return Obx(
+      () {
+        if (birthdaysController.currentSettingBox.value == SettingBox.none) {
+          return const SizedBox();
+        }
+        return Container(
+          padding: const EdgeInsets.all(12),
+          width: adapter.adapt(phone: Get.width - 100, tablet: null, desktop: null),
+          child: Card(
+            shape: AppTheme.shape,
+            elevation: 0,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AppButton(
+                      isTextButton: true,
+                      minWidth: adapter.width,
+                      label: "close",
+                      onPressed: () async{
+                        birthdaysController.currentSettingBox(SettingBox.none);
+                      }),
+                ),
+                ShareListView(board: board),
+                InviteOthersView(board: board),
+                NotificationSelection(board: board),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Widget get uiToShow {
+    switch (birthdaysController.currentSettingBox.value) {
+      case SettingBox.none:
+        return const SizedBox();
+      case SettingBox.shareList:
+        return ShareListView(board: board);
+      case SettingBox.invite:
+        return InviteOthersView(board: board);
+      case SettingBox.notifications:
+        return NotificationSelection(board: board);
+    }
   }
 }

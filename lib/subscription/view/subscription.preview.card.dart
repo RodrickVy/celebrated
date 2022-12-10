@@ -64,7 +64,7 @@ class SubscriptionPreviewCard extends AdaptiveUI {
 
   AppButton get button{
     return AppButton(
-      key: UniqueKey(),
+      
       child: Text(
         "Upgrade",
         style: GoogleFonts.poppins(fontSize: 16),
@@ -79,9 +79,9 @@ class SubscriptionPreviewCard extends AdaptiveUI {
 
   AppButton get cancelButton{
     return AppButton(
-      key: UniqueKey(),
+      
       isTextButton: true,
-      onPressed: (){},
+      onPressed: ()async{},
 
       child: Text(
         "cancel",

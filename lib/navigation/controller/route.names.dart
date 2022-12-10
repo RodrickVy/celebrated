@@ -20,8 +20,8 @@ class AppRoutes {
 
   // static const String profile = "/profile";
   static const String privacy = "/privacy";
-  static const String shareBoard = '/shared';
-  static const String openListEdit = '/open_edit';
+  static const String shareList = '/share_list';
+  static const String addBirthdayInvite = '/add_birthday';
   static const String birthday = '/birthday';
   static const String support = "/support";
 
@@ -38,9 +38,11 @@ class AppRoutes {
   static const String notFound = "/notfound";
   static const String docs = '/docs/:id';
 
-  static List<String> noAppBarRoutes = [lists, splash, privacy];
+  static List<String> noAppBarRoutes = [lists,list, splash, privacy];
 
-  static var authEmailSignInForm = '/email_sign_in';
+  static String authEmailSignInForm = '/email_sign_in';
+  static String list = '/lists/:id';
+  static String createCard = '/cards/create';
 
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),

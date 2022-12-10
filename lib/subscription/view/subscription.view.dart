@@ -61,7 +61,7 @@ class SubscriptionsPage extends AdaptiveUI {
                     },
                     hint: 'BD-##-##-###',
                     autoFillHints: const [AutofillHints.password],
-                    key: UniqueKey(),
+                    
                   ),
                   const SizedBox(
                     height: 10,
@@ -74,7 +74,7 @@ class SubscriptionsPage extends AdaptiveUI {
                     height: 10,
                   ),
                   AppButton(
-                    key: UniqueKey(),
+                    
                     child: Text(
                       "Checkout",
                       style: GoogleFonts.poppins(fontSize: 16),

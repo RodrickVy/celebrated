@@ -1,6 +1,7 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
+import 'package:celebrated/domain/view/pages/task.stage.pages.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
-import 'package:celebrated/domain/view/components/app.text.field.dart';
 
 
 class CompleteEmailSignIn extends AdaptiveUI {
@@ -47,7 +47,7 @@ class CompleteEmailSignIn extends AdaptiveUI {
           width: adapter.width,
           color: Colors.white,
           child: SizedBox(
-            width: 320,
+            width: 340,
             height: Get.height,
             child: ListView(padding: const EdgeInsets.all(12), children: [
               if(snapshot.hasData && snapshot.data == true)
@@ -60,14 +60,7 @@ class CompleteEmailSignIn extends AdaptiveUI {
                 ),
               ),
               if((snapshot.hasData && snapshot.data != true )|| snapshot.hasError)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Sorry, something went wrong",
-                    style: adapter.textTheme.headlineSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                const TaskFailed(title: "Oops! No luck , try another sign in method",image: "assets/intro/server_error.png",),
               if(!snapshot.hasData && !snapshot.hasError)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -83,21 +76,7 @@ class CompleteEmailSignIn extends AdaptiveUI {
               const NotificationsView(),
               const SizedBox(
                 height: 10,
-              ),
-              AppButton(
-                key: UniqueKey(),
-                child: Text(
-                  "Continue",
-                  style: GoogleFonts.poppins(fontSize: 16),
-                ),
-                onPressed: () async {
-                  if(!navService.nextRouteExists){
-                    navService.toNextRoute();
-                  }else{
-                    navService.to(AppRoutes.authSignIn);
-                  }
-                },
-              ),
+              )
             ]),
           ),
         ),
@@ -139,19 +118,7 @@ class InitiateEmailSignIn extends AdaptiveUI {
 
   int get currentIndex => int.parse(Get.parameters['stage'] ?? '0');
 
-  AppTextField get emailField => AppTextField(
-    fieldIcon: Icons.email,
-    label: "Email",
-    hint: "eg. example@gmail.com",
-    autoFocus: true,
-    controller: TextEditingController(text: UIFormState.signInFormData.email),
-    onChanged: (data) {
-      UIFormState.email(data.trim());
-    },
-    key: UniqueKey(),
-    keyboardType: TextInputType.emailAddress,
-    autoFillHints: const [AutofillHints.email, AutofillHints.username],
-  );
+
 
 
   Column stageView(Adaptive adapter) {
@@ -192,25 +159,27 @@ class InitiateEmailSignIn extends AdaptiveUI {
                 height: 20,
               ),
               AppButton(
-                key: UniqueKey(),
+                
+                isTextButton:true,
+                onPressed: () async {
+                  navService.back();
+                },
+
                 child: Text(
                   "back",
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
-                onPressed: () async {
-                  navService.back();
-                },
               ),
               const SizedBox(
                 height: 20,
               ),
               AppButton(
-                key: UniqueKey(),
+                loadStateKey:FeedbackSpinKeys.auth ,
                 isTextButton: true,
                 onPressed: () async {
-                  FeedbackService.spinnerDefineState(key: FeedbackSpinKeys.auth, isOn: true);
+
                   await authService.sendSignInLink(UIFormState.email.value);
-                  FeedbackService.spinnerDefineState(key: FeedbackSpinKeys.auth, isOn: false);
+
                 },
                 child: Text(
                   "Resend Link it",
@@ -254,19 +223,18 @@ class InitiateEmailSignIn extends AdaptiveUI {
               const SizedBox(
                 height: 10,
               ),
-              emailField,
+              UIFormState.emailField,
               const NotificationsView(),
               const SizedBox(
                 height: 10,
               ),
               AppButton(
-                key: UniqueKey(),
+                minWidth: Get.width,
+                loadStateKey: FeedbackSpinKeys.auth,
                 onPressed: () async {
-                  FeedbackService.spinnerDefineState(key: FeedbackSpinKeys.auth, isOn: true);
                   bool success = await authService.sendSignInLink(UIFormState.email.value);
-                  FeedbackService.spinnerDefineState(key: FeedbackSpinKeys.auth, isOn: false);
                   if(success){
-                    navService.withParam('stage', '1');
+                    navService.routeToParameter('stage', '1');
                   }
                 },
                 child: Text(
@@ -278,10 +246,11 @@ class InitiateEmailSignIn extends AdaptiveUI {
                 height: 10,
               ),
               AppButton(
-                key: UniqueKey(),
+                minWidth: Get.width,
                 onPressed: () async {
-                  navService.back();
+                  navService.routeKeepNext(AppRoutes.authSignIn);
                 },
+                isTextButton: true,
                 child: Text(
                   "Back",
                   style: GoogleFonts.poppins(fontSize: 16),
@@ -295,7 +264,7 @@ class InitiateEmailSignIn extends AdaptiveUI {
     return Padding(
       padding: const EdgeInsets.only(top: 18.0),
       child: AppButton(
-        key: UniqueKey(),
+        minWidth: Get.width,
         isTextButton: true,
         onPressed: () async {
           authService.logout();

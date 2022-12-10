@@ -26,10 +26,10 @@ class SupportController extends GetxController {
               title: "Oops! Looks like we can't open this url, copy  this link instead",
               appWide: true,
               child: AppButton(
-                  key: UniqueKey(),
+                  
                   child: const Text(suggestFeatureFormUrl),
-                  onPressed: () {
-                    Clipboard.setData(const ClipboardData(text: suggestFeatureFormUrl)).then((value) {
+                  onPressed: () async{
+                    await Clipboard.setData(const ClipboardData(text: suggestFeatureFormUrl)).then((value) {
                       FeedbackService.successAlertSnack("Link Copied!");
                     });
                   })));
@@ -43,10 +43,10 @@ class SupportController extends GetxController {
               title: "Oops! Looks like we can't open this url, copy  this link instead",
               appWide: true,
               child: AppButton(
-                  key: UniqueKey(),
+                  
                   child: const Text(privacyPolicySiteUrl),
-                  onPressed: () {
-                    Clipboard.setData(const ClipboardData(text: privacyPolicySiteUrl)).then((value) {
+                  onPressed: ()async {
+                   await Clipboard.setData(const ClipboardData(text: privacyPolicySiteUrl)).then((value) {
                       FeedbackService.successAlertSnack("Link Copied!");
                     });
                   })));

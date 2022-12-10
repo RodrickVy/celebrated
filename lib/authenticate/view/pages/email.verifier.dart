@@ -58,7 +58,7 @@ class EmailVerifier extends AdaptiveUI {
         onChanged: (data) {
           UIFormState.authCode(data.trim());
         },
-        key: UniqueKey(),
+        
         keyboardType: TextInputType.visiblePassword,
         autoFillHints: const [AutofillHints.oneTimeCode],
       );
@@ -103,7 +103,7 @@ class EmailVerifier extends AdaptiveUI {
                 height: 20,
               ),
               AppButton(
-                key: UniqueKey(),
+                
                 child: Text(
                   "Confirm",
                   style: GoogleFonts.poppins(fontSize: 16),
@@ -118,10 +118,10 @@ class EmailVerifier extends AdaptiveUI {
                 height: 20,
               ),
               AppButton(
-                key: UniqueKey(),
+                
                 isTextButton: true,
                 onPressed: () async {
-                  navService.withParameter('stage','0');
+                  navService.routeToParameter('stage','0');
                 },
                 child: Text(
                   "Resend it",
@@ -166,13 +166,11 @@ class EmailVerifier extends AdaptiveUI {
                 height: 10,
               ),
               AppButton(
-                key: UniqueKey(),
+                loadStateKey: FeedbackSpinKeys.auth,
                 onPressed: () async {
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
                   bool success = await authService.sendVerificationCode();
-                  FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                   if (success) {
-                    navService.withParameter('stage','1');
+                    navService.routeToParameter('stage','1');
                   }
                 },
                 child: Text(
@@ -189,7 +187,7 @@ class EmailVerifier extends AdaptiveUI {
     return Padding(
       padding: const EdgeInsets.only(top: 18.0),
       child: AppButton(
-        key: UniqueKey(),
+        
         isTextButton: true,
         onPressed: () async {
           authService.logout();

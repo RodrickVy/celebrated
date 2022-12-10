@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NavService extends GetxController {
-   AppRouteObservers routeObservers = AppRouteObservers.configure([
+  AppRouteObservers routeObservers = AppRouteObservers.configure([
     OnRouteObserver(
         when: (route, _) => navService.routeIs(AppRoutes.splash, route),
         run: (_, __, ___) {
@@ -20,11 +20,12 @@ class NavService extends GetxController {
     OnRouteObserver(
       when: RUN_AlWAYS,
       run: (String route, Map<String, String?> parameters, _) {
+        Get.log("BAse route in rout e=observe dfhdkjf :::: ${navService.baseRoute(route)}");
         switch (navService.baseRoute(route)) {
           case AppRoutes.lists:
-          case AppRoutes.openListEdit:
+          case AppRoutes.addBirthdayInvite:
           case AppRoutes.birthday:
-          case AppRoutes.shareBoard:
+          case AppRoutes.shareList:
             navService.currentBottomBarIndex(1);
             break;
           case AppRoutes.gifts:
@@ -50,7 +51,7 @@ class NavService extends GetxController {
       },
     ),
   ]);
-   List<RouteGuard> guards = [
+  List<RouteGuard> guards = [
     RouteGuard(
       runOn: [AppRoutes.profile],
       run: () {
@@ -107,7 +108,8 @@ class NavService extends GetxController {
         AppRoutes.authSignUp,
         AppRoutes.authPasswordReset,
         AppRoutes.authEmailSignInForm,
-        AppRoutes.authEmailSignInComplete
+        AppRoutes.authEmailSignInComplete,
+        AppRoutes.verifyEmail,
       ];
 
   /// all the routes that require to know the users current subscription
@@ -152,7 +154,7 @@ class NavService extends GetxController {
     return route;
   }
 
-  void withParameter(String key, String value) {
+  void routeToParameter(String key, String value) {
     Map<String, String> parameters = Get.parameters.entries
         .where((element) => element.value != null)
         .fold({}, (previousValue, element) => {...previousValue, element.key: element.value!});
@@ -184,10 +186,10 @@ class NavService extends GetxController {
     Get.log("opening");
   }
 
-  void withParam(String key, String value) {
-    Get.log("Adding $key with $value");
-    navService.to(currentRouteWithParams({...Get.parameters, key: value}));
-  }
+  // void withParam(String key, String value) {
+  //   Get.log("Adding $key with $value");
+  //   navService.to(currentRouteWithParams({...Get.parameters, key: value}));
+  // }
 
   String currentRouteWithParams(Map<String, String?> parameters) {
     String route = Get.currentRoute.split("?").first + paramsRouteSectionFromParams(parameters);
@@ -251,6 +253,14 @@ class NavService extends GetxController {
   /// checks the opposite of [routeIs]
   bool routeIsNot(String route, [String? currentRoute]) {
     return routeIs(route, currentRoute) == false;
+  }
+
+  void reload() {
+    Get.to(Get.currentRoute);
+  }
+
+  Future<String> createDynamicLink(String route)async{
+  return  (await DynamicLinksHandler.instance.createDynamicLink(route)).toString();
   }
 }
 

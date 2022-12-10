@@ -24,7 +24,6 @@ class SignOutView  extends AdaptiveUI {
         child: SizedBox(
           width: Get.width,
           child:AppButton(
-            key: UniqueKey(),
             child: const Text(
               "Sign Out",
             ),

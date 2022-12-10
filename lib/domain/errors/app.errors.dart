@@ -18,7 +18,7 @@ class AnnounceErrors {
             SupportController.suggestFeature();
           },
           label: "Report Bug",
-          key: UniqueKey(),
+          
         ),
         canDismiss: true,
         type: NotificationType.error,
@@ -35,7 +35,7 @@ class AnnounceErrors {
             SupportController.suggestFeature();
           },
           label: "Report Bug",
-          key: UniqueKey(),
+          
         ),
         canDismiss: true,
         type: NotificationType.error,

@@ -19,7 +19,7 @@ class ListNameFormField extends StatelessWidget {
              borderSide: const BorderSide(width: 0.5))),
      controller: TextEditingController(),
      hint: 'organization name',
-     key: UniqueKey(),
+     
    );
   }
 

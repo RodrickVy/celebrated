@@ -47,55 +47,11 @@ class NotificationsView extends StatelessWidget {
                       icon: const Icon(Icons.clear)),
               ],
             ),
-
-            Row(
-              // alignment: WrapAlignment.start,
-              // crossAxisAlignment: WrapCrossAlignment.center,
-              // direction: Axis.horizontal,
-              // spacing: 5,
-              // runSpacing: 5,
-              children: [
-
-
-
-
-
-              ],
-            ),
             Theme(
               data: AppTheme.themeData,
               child: FeedbackService.appNotification.value!.child ??
                   const Text(""),
             )
-            // ListTile(
-            //   isThreeLine: false,
-            //   tileColor: Colors.white,
-            //   dense: true,
-            //   trailing: IconButton(
-            //       onPressed: () {
-            //         FeedbackService.clearErrorNotification();
-            //       },
-            //       icon: const Icon(Icons.clear)),
-            //   leading:FeedbackService.appNotification.value!.icon??iconByType,
-            //   title: Wrap(
-            //     alignment: WrapAlignment.start,
-            //     crossAxisAlignment: WrapCrossAlignment.center,
-            //     direction: Axis.horizontal,
-            //     spacing: 5,
-            //     runSpacing: 5,
-            //     children: [
-            //       Text(
-            //         FeedbackService.appNotification.value!.title,
-            //         style: Get.theme.textTheme.bodyText2,
-            //       ),
-            //       Theme(
-            //         data: AppTheme.themeData,
-            //         child: FeedbackService.appNotification.value!.child ??
-            //             const Text(""),
-            //       )
-            //     ],
-            //   ),
-            // ),
           ],
         );
       } else {

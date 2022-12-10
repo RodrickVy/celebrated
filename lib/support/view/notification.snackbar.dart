@@ -26,7 +26,7 @@ class NotificationSnackBar extends StatelessWidget {
         return Container(
           width: Adaptive(context).width,
           height: Adaptive(context).height,
-          color: Colors.black12,
+          color: Colors.black12.withAlpha(4),
           alignment: Alignment.topCenter,
           padding: EdgeInsets.only(top: Adaptive(context).height/5),
           child: Container(
@@ -38,7 +38,7 @@ class NotificationSnackBar extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               // height: Get.height / 3,
               margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              decoration: AppTheme.boxDecoration.copyWith(
                 borderRadius: AppTheme.shape.borderRadius,
                 color: bgColor,
               ),
@@ -113,7 +113,7 @@ class NotificationSnackBar extends StatelessWidget {
               //         SpinnerView(
               //           spinnerKey: AfroSpinKeys.bugSubmitForm,
               //           child: FormSubmitButton(
-              //             key: UniqueKey(),
+              //             
               //             elevation: 0,
               //             style: ElevatedButton.styleFrom(
               //               side: const BorderSide(color: Colors.transparent, width: 0),

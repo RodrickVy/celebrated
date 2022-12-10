@@ -16,4 +16,9 @@ class DynamicLinksHandler {
     throw UnsupportedError(
         'This is not implemented');
   }
+
+  Future<Uri> createDynamicLink(String route)async{
+    throw UnsupportedError(
+        'This is not implemented');
+  }
 }

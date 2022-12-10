@@ -2,10 +2,12 @@ import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
+import 'package:celebrated/lists/adapter/birthdays.factory.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/domain/model/drop.down.action.dart';
-import 'package:celebrated/domain/view/components/drop.context.menu.dart';
+import 'package:celebrated/lists/model/birthday.list.dart';
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/date.dart';
 import 'package:flutter/material.dart';
@@ -14,33 +16,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'birthday.editor.dart';
 
 class BirthdayTile extends AdaptiveUI {
+  final BirthdayBoard board;
   final ABirthday birthday;
-  final double? width;
-  final double? height;
-  final Function(ABirthday birthday) onEdit;
-  final Function(ABirthday birthday) onDelete;
-  final VoidCallback? onSelect;
 
-  const BirthdayTile(
-      {Key? key,
-      this.width = 160,
-      this.onSelect,
-      this.height = 260,
-      required this.onDelete,
-      required this.birthday,
-      required this.onEdit})
-      : super(key: key);
+  const BirthdayTile({Key? key, required this.board, required this.birthday}) : super(key: key);
 
-  List<DropDownAction> get actions => [
-        DropDownAction("Delete", Icons.delete, () {
-          onDelete(birthday);
+  List<OptionAction> get actions => [
+        OptionAction("Delete", Icons.delete, () async {
+          await birthdaysController.deleteBirthday(board, birthday);
         }),
-        DropDownAction("Edit", Icons.edit, () {
-          onEdit(birthday);
-          birthdaysController.editBirthday(birthday.id);
+        OptionAction("Edit", Icons.edit, () async {
+           birthdaysController.setBirthdayInEditMode(birthday.id);
         }),
-        DropDownAction("Countdown", Icons.share, () {
-          onSelect != null ? onSelect!() : () {};
+        OptionAction("Countdown", Icons.share, () {
+          navService.to(birthdaysController.getBirthdayShareRoute(board.id, birthday.id));
         })
       ];
 
@@ -56,12 +45,12 @@ class BirthdayTile extends AdaptiveUI {
           },
           child: birthdaysController.currentBirthdayInEdit.value == birthday.id
               ? BirthdayEditor(
-                  onSave: (ABirthday birthday) {
-                    birthdaysController.closeBirthdayEditor();
-                    onEdit(birthday);
+                  onSave: (ABirthday birthday)async {
+             
+                    await birthdaysController.saveBirthdayDetails(board, birthday);
                   },
-                  onDelete: () {
-                    onDelete(birthday);
+                  onDelete: () async{
+                    await birthdaysController.deleteBirthday(board, birthday);
                   },
                   birthdayValue: birthday,
                   onCancel: () {
@@ -73,34 +62,29 @@ class BirthdayTile extends AdaptiveUI {
                   shape: AppTheme.shape,
                   child: ListTile(
                     onTap: () {
-                      onEdit(birthday);
-                      birthdaysController.editBirthday(birthday.id);
+
+                      birthdaysController.setBirthdayInEditMode(birthday.id);
                     },
                     title: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all( 10.0),
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                             color: AppSwatch.primary.withAlpha(20),
-                           ),
-                            child: Text(
-                              "${birthday.name.capitalizeFirst} ",
-                              style: Adaptive(ctx).textTheme.headline6?.copyWith(
-                                  fontWeight: FontWeight.w400, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
-                            ),
+                          Text(
+                            "${birthday.name.capitalizeFirst} ",
+                            style: Adaptive(ctx).textTheme.headline6?.copyWith(
+                                fontWeight: FontWeight.w600, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
                           ),
-                          const SizedBox(width: 10,),
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
                               birthday.date.readable,
                               style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400,
-                              ),
+                                    fontWeight: FontWeight.w400,
+                                  ),
                             ),
                           ),
                           Text(birthday.formattedBirthday(ctx)),
@@ -113,35 +97,10 @@ class BirthdayTile extends AdaptiveUI {
                       padding: const EdgeInsets.all(6),
                       child: Row(
                         children: [
-                          ...actions.map((e) => AppButton(
-                                onPressed: e.action,
-                                label: e.name,
-                            isTextButton:true
-                              ))
+                          ...actions.map((e) => IconButton(onPressed: e.action, icon: Icon(e.icon),))
                         ],
                       ),
                     ),
-                    // trailing: Container(
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius: BorderRadius.circular(0),
-                    //   ),
-                    //   padding: const EdgeInsets.all(6),
-                    //   child: Row(
-                    //     children: [
-                    //       Padding(
-                    //         padding: const EdgeInsets.only(right: 8.0),
-                    //         child: Text(
-                    //           birthday.date.readable,
-                    //           style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
-                    //                 fontWeight: FontWeight.w400,
-                    //               ),
-                    //         ),
-                    //       ),
-                    //       Text(birthday.formattedBirthday(ctx)),
-                    //     ],
-                    //   ),
-                    // ),
                   )),
         ),
       ),

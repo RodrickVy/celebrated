@@ -7,6 +7,12 @@ service cloud.firestore {
     match /lists/{list} {
       allow read: if true;
       allow write: if request.auth.uid != null;
+      allow update: if true;
+    }
+   match /cards/{card} {
+      allow read: if true;
+      allow write: if request.auth.uid != null;
+      allow update: if true;
     }
   }
 }

@@ -1,3 +1,4 @@
+// Keep order of this enum unchanged as some app logic depends on it.
 enum SubscriptionPlan {
   none,
   test,

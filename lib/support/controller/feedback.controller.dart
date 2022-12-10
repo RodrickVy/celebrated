@@ -1,4 +1,5 @@
 
+import 'package:celebrated/domain/model/drop.down.action.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
@@ -153,13 +154,10 @@ class FeedbackService extends GetxController
   static void announceSignUpPromo() {
     FeedbackService.announce(
         notification: AppNotification.empty().copyWith(
-            title:
-                "Make 'Happy belated birthdays' a thing of the past. 100% Free & Privacy Guaranteed.  ",
+            title: "Make 'Happy belated birthdays' a thing of the past. 100% Free & Privacy Guaranteed.  ",
             type: NotificationType.neutral,
             appWide: false,
-            icon: const Icon(
-              Icons.cake,
-            ),
+
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Wrap(
@@ -168,15 +166,15 @@ class FeedbackService extends GetxController
                 runSpacing: 5,
                 children: [
                   AppButton(
-                      key: UniqueKey(),
+                      
                       child: const Text("Signup"),
-                      onPressed: () {
+                      onPressed: () async{
                        navService.to(AppRoutes.authSignUp);
                       }),
                   AppButton(
-                      key: UniqueKey(),
+                      
                       child: const Text("more-info"),
-                      onPressed: () {
+                      onPressed: () async{
                        navService.to(AppRoutes.splash);
                       }),
                 ],
@@ -192,7 +190,7 @@ class FeedbackService extends GetxController
             title: title,
             appWide: true,
             canDismiss: false,
-            child: AppButton(key: UniqueKey(),isTextButton:true,label: "Ok", onPressed: (){
+            child: AppButton(isTextButton:true,label: "Ok", onPressed: ()async{
               clearErrorNotification();
             }),
             aliveFor:  Duration(milliseconds: time)));
@@ -201,10 +199,28 @@ class FeedbackService extends GetxController
   static void blockPrompt({required String title, required Widget child}) {
     FeedbackService.announce(
         notification: AppNotification.empty().copyWith(
-            icon: const Icon(
-              Icons.cake,
-            ),
           appWide: true,
             type: NotificationType.neutral, title: title,child: child, canDismiss: true));
+  }
+
+  static void prompt({required String title, required List<OptionAction> actions}) {
+    FeedbackService.announce(
+        notification: AppNotification.empty().copyWith(
+            appWide: true,
+            type: NotificationType.neutral, title: title,child: SizedBox(height: 60,child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ...actions.map((e) {
+              return AppButton(
+                onPressed: () async {
+                   e.action();
+                },
+                isTextButton: true,
+
+                label:e.name,
+              );
+            })
+          ],
+        ),), canDismiss: true));
   }
 }

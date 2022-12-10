@@ -51,9 +51,16 @@ class UserAccount implements IModel {
   /// birthday lists whose notifications have been paused
   final BirthdayReminderType defaultReminderType;
 
+  final List<String> watchers;
+
+  /// the groups this user is a part of
+  final List<String> groups;
+
   UserAccount({
     this.subscriptionPlan = SubscriptionPlan.none,
     required this.bio,
+    required this.groups,
+    required this.watchers,
     required this.birthdate,
     this.platforms = const [],
     this.deviceToken = '',
@@ -181,7 +188,8 @@ class UserAccount implements IModel {
         email: "",
         phone: "",
         birthdate: DateTime.now(),
-        settings: {});
+        settings: {},
+        watchers: [], groups: []);
   }
 
   bool get isAuthenticated {
@@ -241,7 +249,8 @@ class UserAccount implements IModel {
       settings: settings ?? this.settings,
       silencedBirthdayLists: silencedBirthdayLists ?? this.silencedBirthdayLists,
       defaultReminderType: defaultReminderType ?? this.defaultReminderType,
-      uid: this.uid,
+      uid: uid,
+      watchers: [], groups: [],
     );
   }
 
@@ -319,6 +328,8 @@ class UserAccount implements IModel {
         email: request.email,
         phone: request.phoneNumber,
         birthdate: request.birthdate,
-        settings: {});
+        settings: {},
+        watchers: [],
+        groups: []);
   }
 }

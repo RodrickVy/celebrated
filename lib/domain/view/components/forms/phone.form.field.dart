@@ -18,6 +18,7 @@ class FormPhoneField extends AdaptiveUI {
   final String? initialValue;
 
 
+
   const FormPhoneField({
     Key? key,
     this.autoFocus = false,
@@ -47,20 +48,32 @@ class FormPhoneField extends AdaptiveUI {
                 icon: const Icon(Icons.save))
             : null,
       ),
-      validator: (PhoneNumber? number) {
-        return Validators.phoneValidator.validate(number?.international ?? "");
-      },
       countrySelectorNavigator:
           CountrySelectorNavigator.dialog(width: adapter.adapt(phone: Get.width - 50, tablet: 300, desktop: 400)),
       autofillHints: const [AutofillHints.telephoneNumber],
       selectionWidthStyle: BoxWidthStyle.tight,
       onChanged: (PhoneNumber? p) {
+        FeedbackService.clearErrorNotification();
         onChanged != null ? onChanged!(p) : () {}();
         if(onSaved != null && p != null){
           UIFormState.phoneNumber(p.international);
         }
-        FeedbackService.clearErrorNotification();
+
       }, // default null
+    );
+  }
+
+  FormPhoneField copyWith({
+    Function(PhoneNumber? phoneNumber)? onChanged,
+    Function(PhoneNumber? phoneNumber)? onSaved,
+    bool? autoFocus,
+    String? initialValue,
+  }) {
+    return FormPhoneField(
+      onChanged: onChanged ?? this.onChanged,
+      onSaved: onSaved ?? this.onSaved,
+      autoFocus: autoFocus ?? this.autoFocus,
+      initialValue: initialValue ?? this.initialValue,
     );
   }
 }

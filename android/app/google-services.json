@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "690288905141",
+    "firebase_url": "https://celebrated-app-default-rtdb.firebaseio.com",
     "project_id": "celebrated-app",
     "storage_bucket": "celebrated-app.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "690288905141-fqgbihqv4srtsh0hllhu6u07a3bvbunu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rodrickvy.celebrated",
+            "certificate_hash": "320deece8c20a867704fa8d166f3f69b2041e1de"
+          }
+        },
         {
           "client_id": "690288905141-89fnm63g3q9r2df0s2883oktkb5jp3gb.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +38,13 @@
             {
               "client_id": "690288905141-89fnm63g3q9r2df0s2883oktkb5jp3gb.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "690288905141-21qb4stvboau0oe29l59anne9u50rv41.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rodrickvy.celebrated"
+              }
             }
           ]
         }

@@ -33,7 +33,7 @@ class HomePage extends AppPageView{
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: AppButton(
-                  key: UniqueKey(),
+                  
                   isTextButton: true,
                   label: "Give Us Feedback",
                   onPressed: () async {
@@ -61,7 +61,7 @@ class HomePage extends AppPageView{
                           padding: const EdgeInsets.all(8.0),
                           child: ChoiceChip(
                             elevation: 0,
-                            label: const Text("🎥 intro video"),
+                            label: const Text("intro video"),
                             onSelected: (bool value) {
                               navService.to(AppRoutes.splash);
                               introScreenController.videoPlaying(true);
@@ -75,7 +75,7 @@ class HomePage extends AppPageView{
                           padding: const EdgeInsets.all(8.0),
                           child: ChoiceChip(
                             elevation: 0,
-                            label: const Text("👉🏿 progress"),
+                            label: const Text("progress"),
                             onSelected: (bool value) {
                              navService.to(AppRoutes.support);
                             },
@@ -132,7 +132,6 @@ class HomePage extends AppPageView{
                 ),
               ),
             ),
-
             const SizedBox(height: 50,),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -223,7 +222,6 @@ class HomePage extends AppPageView{
               ),
             ),
             const SizedBox(height: 50,),
-
             Text(
               "Transforming Organizations!",
               style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold),
@@ -322,41 +320,6 @@ class HomePage extends AppPageView{
                 // ),
               ],
             )
-
-/*
-*
-*
-*  - the value of time is measured by the memories around it, we make them count.
- - .
-  -
-Novelty - we are all about new and different.
-Authentic - we do it, say it and sell it like it is
-Fun -  we find fun and joy in what we do.
-* */
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     controller.homeItem.title,
-            //     style: adapter.textTheme.headline3,
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     controller.homeItem.description,
-            //     style: adapter.textTheme.bodyLarge,
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     "Get started, create your first Account!",
-            //     style: adapter.textTheme.bodyLarge,
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
           ],
         ),
       ),

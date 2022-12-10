@@ -36,10 +36,7 @@ class Validators {
   ]);
 
   static Validator<String> get phoneValidator => Validator<String>("phone", [
-
-    Validation((value) => value.isNotEmpty, errorMessage: "Phone number cannot be empty"),
-    Validation((value) => value.length >= 5, errorMessage: "Invalid phone number"),
-    Validation((value) => PhoneNumber.parse(value).isValid() !=  false,errorMessage: "Invalid phone number.")
+    Validation((value) =>( value.length >= 5 && PhoneNumber.parse(value).isValid() !=  false) || (value.isEmpty), errorMessage: "Invalid phone number"),
   ]);
 
 

@@ -3,7 +3,7 @@ import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/app.page.view.dart';
-import 'package:celebrated/domain/view/components/app.wide.loader.dart';
+import 'package:celebrated/domain/view/pages/loading.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -110,7 +110,7 @@ class BirthdayCountDown extends AppPageView {
                           FeedbackService.clearErrorNotification();
                         }
                       },
-                      key: UniqueKey(),
+                      
                       child: const Text("Share Reminder to others"),
                     ),
                   ),
@@ -176,7 +176,7 @@ class BirthdayCountDown extends AppPageView {
 //                             borderSide: BorderSide(width: 0.5))),
 //                     controller: _nameEditorController,
 //                     hint: 'full name',
-//                     key: UniqueKey(),
+//                     
 //                   ),
 //                 ),
 //                 const SizedBox(
@@ -202,7 +202,7 @@ class BirthdayCountDown extends AppPageView {
 //                 Row(
 //                   children: [
 //                     FormSubmitButton(
-//                       key: UniqueKey(),
+//                       
 //                       child: Text(
 //                         "Cancel",
 //                         style: GoogleFonts.poppins(fontSize: 16),
@@ -215,7 +215,7 @@ class BirthdayCountDown extends AppPageView {
 //                       width: 10,
 //                     ),
 //                     FormSubmitButton(
-//                       key: UniqueKey(),
+//                       
 //                       child: Text(
 //                         "Save",
 //                         style: GoogleFonts.poppins(fontSize: 16),

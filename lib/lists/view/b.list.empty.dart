@@ -24,76 +24,73 @@ class BListInfo extends AdaptiveUI {
         padding: EdgeInsets.zero,
         width: adapter.width,
         child: Center(
-          child: SizedBox(
+          child: Container(padding: const EdgeInsets.all(12),
             width: adapter.adapt(phone: adapter.width, tablet: 600, desktop: 600),
-            child: ListView(padding: const EdgeInsets.all(12), children: [
-              SizedBox(
-                height: adapter.height / 5,
-              ),
+            child: Column(children: [
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
-                  "assets/intro/cake_time.png",
+                  "assets/intro/calender.png",
                   width: 200,
                 ),
               ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Organize Birthdays!",
-                  style: adapter.textTheme.headline5,
-                  textAlign: TextAlign.left,
+              if(authService.user.isUnauthenticated)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Organize Birthdays!",
+                    style: adapter.textTheme.headline5,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "You can choose to organize birthdays in different lists! Click the +add button at the top.",
-                  style: adapter.textTheme.headline6,
-                  textAlign: TextAlign.center,
+              if(authService.user.isUnauthenticated)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text(
+                    "You can choose to organize birthdays in different lists! Click the +add button at the top.",
+                    // style: adapter.textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              if (birthdaysController.birthdayBoards.isEmpty && authService.user.isAuthenticated)
-                 SizedBox(
-                  width: 100,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        birthdaysController.createNewList();
+              if(birthdaysController.birthdayLists.isEmpty)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text(
+                    "You have no lists, create one",
+                    // style: adapter.textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              if (authService.user.isAuthenticated)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: AppButtonIcon(
+                    onPressed: () {
+                      birthdaysController.createNewList();
+                    },
+                    // minWidth: Get.width,
+                    isTextButton: true,
+                    icon: const Icon(Icons.add),
+                    label: "Create List",
+                  ),
+                ),
+              if (authService.user.isUnauthenticated)
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: AppButton(
+                      onPressed: () async{
+                        navService.to(AppRoutes.authSignIn);
                       },
-                      style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          foregroundColor: Colors.black87,
-                          minimumSize: const Size(90, 50)
-                      ),
+                      isTextButton: true,
 
-                      icon: const Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: Icon(Icons.add),
-                      ),
-                      label: const Text(
-                        "Create List",
-                      ),
-                    ),
-                  ),
+                      child: const Text(
+                        "SignIn",
+                      )),
                 ),
-                if (authService.user.isUnauthenticated)
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: AppButton(
-                        onPressed: () {
-                          navService.to(AppRoutes.authSignIn);
-                        },
-                        isTextButton: true,
-                        key: UniqueKey(),
-                        child: const Text(
-                          "SignIn",
-                        )),
-                  ),
               if (authService.user.isUnauthenticated)
                 const Padding(
                   padding: EdgeInsets.only(left: 4.0, right: 4),
@@ -106,24 +103,15 @@ class BListInfo extends AdaptiveUI {
                 Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: AppButton(
-                      onPressed: () {
+                      onPressed: () async{
                         navService.to(AppRoutes.authSignUp);
                       },
                       isTextButton: true,
-                      key: UniqueKey(),
                       child: const Text(
-                        "SignUp",
+                        "create account",
                       )),
                 ),
-              if (authService.user.isUnauthenticated)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "to create a list",
-                    style: adapter.textTheme.subtitle1,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+
             ]),
           ),
         ),

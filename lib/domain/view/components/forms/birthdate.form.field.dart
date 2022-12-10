@@ -40,7 +40,7 @@ class BirthdayDateForm extends AdaptiveUI {
                 controller: nameTextController,
                 hint: 'name',
                 autoFillHints: const [AutofillHints.name],
-                key: UniqueKey(),
+                
               ),
             ),
           if (showName)

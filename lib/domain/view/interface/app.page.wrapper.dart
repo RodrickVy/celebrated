@@ -1,3 +1,4 @@
+import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/views/app.bar.dart';
 import 'package:celebrated/navigation/views/app.bottom.nav.bar.dart';
@@ -13,16 +14,18 @@ class AppPageWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Adaptive(context).adaptScreens(
-        small: smallScreen(context),
-        big: bigScreen(context)
+    return SafeArea(
+      child: Adaptive(context).adaptScreens(
+          small: smallScreen(context),
+          big: bigScreen(context)
+      ),
     );
   }
 
 
   Scaffold smallScreen(BuildContext context) {
     return Scaffold(
-      appBar: AppRoutes.noAppBarRoutes.contains(Get.currentRoute)? null : const AppTopBar(),
+      appBar: AppRoutes.noAppBarRoutes.contains(navService.baseRoute(Get.currentRoute))? null : const AppTopBar(),
       drawer: null,
       backgroundColor: Colors.white,
       body: body,
@@ -37,7 +40,7 @@ class AppPageWrapper extends StatelessWidget {
         color: Colors.white,
         child: Row(
           children: [const AppDesktopDrawer(), Expanded(child: Scaffold(
-            appBar: AppRoutes.noAppBarRoutes.contains(Get.currentRoute)? null : const AppTopBar(),
+            appBar: AppRoutes.noAppBarRoutes.contains(navService.baseRoute(Get.currentRoute))? null : const AppTopBar(),
             drawer: null,
             body: body,
             backgroundColor: Colors.white,

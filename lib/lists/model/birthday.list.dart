@@ -3,10 +3,12 @@ import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/watcher.dart';
 import 'package:celebrated/domain/model/imodel.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/util/id.generator.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-enum BirthdayReminderType { email, phoneNotification, sms, whatsapp, whatsappGroup }
+// , whatsapp, whatsappGroup
+enum BirthdayReminderType { email, phoneNotification, sms }
 
 class BirthdayBoard extends IModel {
   final String name;
@@ -19,7 +21,7 @@ class BirthdayBoard extends IModel {
   final String authorId;
   final String authorName;
   final BirthdayReminderType notificationType;
-  final List<BirthdaysWatcher> watchers;
+  final List<String> watchers;
 
   const BirthdayBoard(
       {required this.name,
@@ -29,7 +31,7 @@ class BirthdayBoard extends IModel {
       required this.hex,
       required this.authorName,
       required this.authorId,
-       this.startReminding = 2,
+      this.startReminding = 2,
       required final String id,
       required this.sharedTo,
       this.watchers = const [],
@@ -88,7 +90,6 @@ class BirthdayBoard extends IModel {
     return _birthdays;
   }
 
-
   static BirthdayBoard empty() {
     return BirthdayBoard(
         name: "",
@@ -110,36 +111,17 @@ class BirthdayBoard extends IModel {
 
   List<ABirthday> get birthdaysList => birthdays.values.toList();
 
-  BirthdayBoard copyWith(
-      {String? name,
-      Map<String, ABirthday>? birthdays,
-      int? hex,
-      List<String>? sharedTo,
-      String? viewingId,
-      String? addingId,
-      String? authorId,
-      String? authorName,
-      String? id}) {
-    return BirthdayBoard(
-        name: name ?? this.name,
-        birthdays: birthdays ?? this.birthdays,
-        hex: hex ?? this.hex,
-        sharedTo: sharedTo ?? this.sharedTo,
-        viewingId: viewingId ?? this.viewingId,
-        addingId: addingId ?? this.addingId,
-        authorId: authorId ?? this.authorId,
-        id: id ?? this.id,
-        authorName: authorName ?? this.authorName);
-  }
 
-  String generateViewId() =>
-      "${authService.userLive.value.uid.substring(0, 3)}${const Uuid().v4()}${DateTime.now().millisecondsSinceEpoch}";
 
-  String generateInviteId() => "${DateTime.now().millisecondsSinceEpoch}${const Uuid().v4()}";
+  String generateViewId() => IDGenerator.generateId(10, name);
 
-  String viewUrl([String? viewingId]) => "${AppRoutes.domainUrlBase}/shared?link=${viewingId ?? this.viewingId}";
+  String generateInviteId() => IDGenerator.generateId(10, name);
 
-  String addInviteUrl([String? addingId]) => "${AppRoutes.domainUrlBase}/open_edit?link=${addingId ?? this.addingId}";
+  String viewUrl([String? viewingId]) =>
+      "${AppRoutes.domainUrlBase}${AppRoutes.shareList}?code=${viewingId ?? this.viewingId}";
+
+  String addInviteUrl([String? addingId]) =>
+      "${AppRoutes.domainUrlBase}${AppRoutes.addBirthdayInvite}?code=${addingId ?? this.addingId}";
 
   bool birthdayAlreadyExists(ABirthday birthday) {
     return birthdays.values
@@ -148,5 +130,38 @@ class BirthdayBoard extends IModel {
             element.date.month == birthday.date.month &&
             element.date.day == birthday.date.day)
         .isNotEmpty;
+  }
+
+  bool isWatcher(String id) {
+    return watchers.contains(id) || id == authorId;
+  }
+
+  BirthdayBoard copyWith({
+    String? name,
+    Map<String, ABirthday>? birthdays,
+    int? hex,
+    List<String>? sharedTo,
+    int? startReminding,
+    String? viewingId,
+    String? addingId,
+    String? authorId,
+    String? id,
+    String? authorName,
+    BirthdayReminderType? notificationType,
+    List<String>? watchers,
+  }) {
+    return BirthdayBoard(
+      name: name ?? this.name,
+      birthdays: birthdays ?? this.birthdays,
+      hex: hex ?? this.hex,
+      sharedTo: sharedTo ?? this.sharedTo,
+      startReminding: startReminding ?? this.startReminding,
+      viewingId: viewingId ?? this.viewingId,
+      addingId: addingId ?? this.addingId,
+      authorId: authorId ?? this.authorId,
+      authorName: authorName ?? this.authorName,
+      notificationType: notificationType ?? this.notificationType,
+      watchers: watchers ?? this.watchers, id: id?? this.id,
+    );
   }
 }

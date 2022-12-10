@@ -38,7 +38,7 @@ class BirthdayDateForm extends StatelessWidget {
                 controller: nameTextController,
                 hint: 'name',
                 autoFillHints: const [AutofillHints.name],
-                key: UniqueKey(),
+                
               ),
             ),
           if (showName)

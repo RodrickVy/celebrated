@@ -25,14 +25,19 @@ class SignUpEmailRequest extends Request {
   bool validate() {
     return Request.validateField(Validators.userNameValidator, name) &&
         Request.validateField(Validators.emailFormValidator, email) &&
-        Request.validateField(Validators.phoneValidator, phoneNumber) &&
         Request.validateField(Validators.passwordValidator, password) &&
+        Request.validateField(Validators.phoneValidator, phoneNumber.length > 5 ? phoneNumber: '+17782393874') &&
         Request.validateField(Validators.birthdayValidator, birthdate);
   }
 
   static SignUpEmailRequest empty() {
     return SignUpEmailRequest(
-        phoneNumber: '', name: "", email: "", password: "", birthdate: DateTime.now(), plan: SubscriptionPlan.none);
+        phoneNumber: '',
+        name: "",
+        email: "",
+        password: "",
+        birthdate: DateTime.now(),
+        plan: SubscriptionPlan.none);
   }
 
   SignUpEmailRequest copyWith({

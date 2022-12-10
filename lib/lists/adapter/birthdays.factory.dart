@@ -7,7 +7,6 @@ class BirthdayFactory extends IModelFactory<ABirthday> {
     return ABirthday(
       name: (json['name'] as String).toString().trim(),
       date: DateTime.fromMillisecondsSinceEpoch(json['date']),
-      remindMeWhen: DateTime.fromMillisecondsSinceEpoch(json['remindMeWhen']),
       id: json['id'] as String,
 
     );
@@ -17,7 +16,6 @@ class BirthdayFactory extends IModelFactory<ABirthday> {
   Map<String, dynamic> toJson(model) => {
         'name': model.name.trim(),
         'date': model.date.millisecondsSinceEpoch,
-        'remindMeWhen': model.remindMeWhen.millisecondsSinceEpoch,
         'id': model.id,
       };
 

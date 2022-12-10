@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -7,7 +8,7 @@ import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final Map<Key,RxBool>  states = <Key,RxBool>{};
+
 
 /// A view that simplifies editing text values with a simple expansionTile view that opens textField to edit and closes to save and display the data.
 class EditableTextView extends StatelessWidget {
@@ -22,7 +23,9 @@ class EditableTextView extends StatelessWidget {
   final bool autoFocus;
   final Function? onIconPressed;
   final Key _key;
-
+  final RxBool  needsToSave = RxBool(false);
+  final bool asText;
+  final TextStyle? textStyle;
 
   EditableTextView(
       {Key? key,
@@ -31,9 +34,11 @@ class EditableTextView extends StatelessWidget {
       // required this.spinnerKey,
       this.background,
       required this.onSave,
+        this.textStyle,
       this.onIconPressed,
       required this.icon,
       this.autoFocus = false,
+        this.asText = false,
       this.maxLines,
       this.minLines})
       : _key = key?? UniqueKey(), super(key: key) {
@@ -47,26 +52,38 @@ class EditableTextView extends StatelessWidget {
     return FeedbackSpinner(
       spinnerKey: _key,
       child: AppTextField(
-          key: UniqueKey(),
+          
           controller: _textEditingController,
-          label: label,
-          decoration: AppTheme.inputDecoration.copyWith(
-            hintText: label,
-            prefixIcon: Icon(icon),
-            labelText: label,
-            suffixIcon: IconButton(
-                onPressed: () {
-                  FeedbackService.spinnerDefineState(key: _key, isOn: true);
-                  onSave(_textEditingController.text);
-                  FeedbackService.spinnerDefineState(key: _key, isOn: false);
-                },
-                icon: const Icon(Icons.save)),
+          label: asText ? '':label,
+          decoration: (asText ? AppTheme.inputDecorationNoBorder:AppTheme.inputDecoration).copyWith(
+            prefixIcon: asText ? null:Icon(icon),
+            prefixIconConstraints: asText ? const BoxConstraints(maxWidth:0 ):null,
+            suffixIcon: Obx(
+                ()=> IconButton(
+                  onPressed: () {
+                    FeedbackService.spinnerDefineState(key: _key, isOn: true);
+                    onSave(_textEditingController.text);
+                    needsToSave(false);
+                    FeedbackService.spinnerDefineState(key: _key, isOn: false);
+                  },
+                  icon:  Icon( needsToSave.isTrue ? Icons.save :Icons.edit,color: needsToSave.isTrue ? AppSwatch.primary:Colors.black38,)),
+            ),
           ),
+          style: textStyle,
           minLines: minLines,
+          onChanged: (String val){
+            if(val != textValue){
+              needsToSave(true);
+            }else{
+              needsToSave(false);
+            }
+
+          },
           maxLines: maxLines ?? 1,
           // maxLength: 200,
           autoFocus: autoFocus,
-          hint: textValue),
+
+          hint: label),
     );
     // return Obx(
     //   () => AnimatedSwitcher(
@@ -91,7 +108,7 @@ class EditableTextView extends StatelessWidget {
     //               Flexible(
     //                 flex: 3,
     //                 child: AppTextField(
-    //                     key: UniqueKey(),
+    //                     
     //                     controller: _textEditingController,
     //                     label: label,
     //                     minLines: minLines,

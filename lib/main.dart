@@ -8,6 +8,8 @@ import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
+import 'package:celebrated/cards/view/card.creator.dart';
+import 'package:celebrated/cards/view/cards.list.dart';
 import 'package:celebrated/lists/view/birthday.adds.dart';
 import 'package:celebrated/lists/view/birthday.leader.board.dart';
 import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
@@ -22,12 +24,15 @@ import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
 import 'package:celebrated/subscription/view/subscription.view.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
+import 'package:celebrated/support/controller/notification.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
+import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/not.found.dart';
 import 'package:celebrated/support/view/notification.snackbar.dart';
 import 'package:celebrated/support/view/support.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
@@ -35,13 +40,29 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'authenticate/view/pages/password.reset.dart';
 import 'domain/view/interface/app.page.wrapper.dart';
-
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message.notification != null) {
+    await notificationService.sendNotification(message.data['message']??'', '');
+  }
+}
 void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await notificationService.init();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("Got message ::: ----------------  ${message.data}");
+    if (message.notification != null) {
+      FeedbackService.announce(
+          notification: AppNotification(
+            appWide: true,
+            title: "${message.data['message']}",
+          ));
+    }
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const App());
 }
@@ -57,30 +78,31 @@ class App extends StatelessWidget {
                   key: Key(AppRoutes.home),
                 )),
         GetPage(name: AppRoutes.birthday, page: () => BirthdayCountDown(key: const Key(AppRoutes.birthday))),
-        GetPage(name: AppRoutes.shareBoard, page: () => const BoardViewOnly(key: Key(AppRoutes.shareBoard))),
-        GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareBoard))),
-        GetPage(name: AppRoutes.lists, page: () => const BirthdayListsPage(key: Key(AppRoutes.lists))),
-        GetPage(name: AppRoutes.openListEdit, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
-        GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
-        GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.openListEdit))),
+        GetPage(name: AppRoutes.shareList, page: () =>  BoardViewOnly(key: Key(AppRoutes.shareList))),
+        GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareList))),
+        GetPage(name: AppRoutes.lists, page: () => const ListsPage(key: Key(AppRoutes.lists))),
+    GetPage(name: AppRoutes.list, page: () => const BirthdayListPage()),
+        GetPage(name: AppRoutes.addBirthdayInvite, page: () => const BirthdaysOpenEditor(key: Key(AppRoutes.addBirthdayInvite))),
+        // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
+        // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
         GetPage(
             name: AppRoutes.docs,
             page: () => DocumentViewer(
                   key: const Key(AppRoutes.docs),
                 )),
-        GetPage(name: AppRoutes.profile, page: () => ProfilePage(key: const Key(AppRoutes.profile))),
+        GetPage(name: AppRoutes.profile, page: () => const ProfilePage(key: Key(AppRoutes.profile))),
         GetPage(name: AppRoutes.authSignUp, page: () => const SignUpPage()),
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
         GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
         GetPage(
-            name: AppRoutes.cards,
-            page: () => const ComingSoon(
-                  image: 'assets/intro/card.png',
-                  title: 'Cards',
-                  description:
-                      'Create unique birthday cards that you can invite others to sign.  Ad image/video etc on card and easily share via link.',
-                )),
+        name: AppRoutes.cards,
+        page: () => const ComingSoon(
+          image: 'assets/intro/card.png',
+          title: 'Cards',
+          description:
+          'Choose from templates, to create a unique birthday cards that others can sign with notes,images,video etc.',
+        )),
         GetPage(
             name: AppRoutes.parties,
             page: () => const ComingSoon(
@@ -123,7 +145,7 @@ class App extends StatelessWidget {
       routingCallback: (Routing? routing) {
         if (routing != null) {
           FeedbackService.listenToRoute(routing);
-          // navService.callOnRoute(Get.currentRoute.split("?").first, Get.parameters);
+          navService.routeObservers.run(Get.currentRoute.split("?").first, Get.parameters);
         }
       },
       debugShowCheckedModeBanner: false,

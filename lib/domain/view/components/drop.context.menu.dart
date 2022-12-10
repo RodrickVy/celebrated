@@ -6,13 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// used to filer birthdays
 class DropContextMenu extends AdaptiveUI {
-  static final DropDownAction _empty = DropDownAction("    ",Icons.circle, (){});
-   late List<DropDownAction> _actions;
+  static final OptionAction _empty = OptionAction("    ",Icons.circle, (){});
+   late List<OptionAction> _actions;
 
 
 
    DropContextMenu(
-      {Key? key, required final List<DropDownAction> actions})
+      {Key? key, required final List<OptionAction> actions})
       : super(key: key){
      _actions = [...actions,_empty];
 
@@ -24,7 +24,7 @@ class DropContextMenu extends AdaptiveUI {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return SizedBox(
       width: 100,
-      child: DropdownButton<DropDownAction>(
+      child: DropdownButton<OptionAction>(
         value: _empty,
         icon: Row(mainAxisAlignment: MainAxisAlignment.end,children: const [Icon(Icons.more_vert)],),
         elevation: 16,
@@ -37,14 +37,14 @@ class DropContextMenu extends AdaptiveUI {
         underline: Container(
           height: 2,
         ),
-        onChanged: (DropDownAction? newValue) {
+        onChanged: (OptionAction? newValue) {
           newValue?.action();
         },
-        items: _actions.map<DropdownMenuItem<DropDownAction>>((DropDownAction value) {
+        items: _actions.map<DropdownMenuItem<OptionAction>>((OptionAction value) {
           if(value.name.isEmpty){
-            return DropdownMenuItem<DropDownAction>(value:value,child:const SizedBox(width: 50,));
+            return DropdownMenuItem<OptionAction>(value:value,child:const SizedBox(width: 50,));
           }
-          return DropdownMenuItem<DropDownAction>(
+          return DropdownMenuItem<OptionAction>(
             value: value,
             child: Row(
               children: [

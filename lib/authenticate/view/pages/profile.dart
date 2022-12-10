@@ -1,7 +1,6 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/authenticate/view/components/user.avatar.dart';
 import 'package:celebrated/authenticate/view/components/signout.button.dart';
-import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/forms/phone.form.field.dart';
 import 'package:celebrated/lists/view/birthday.date.name.dart';
@@ -20,16 +19,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
-/// simple UI for showing user profile, needs any class that impliments of [IAuthController]
 class ProfilePage extends AppPageView {
-  late Rx<String> phoneNumber;
 
-  ProfilePage({Key? key}) : super(key: key) {
+  const ProfilePage({Key? key}) : super(key: key);
 
-  }
-
-  final RxBool showBirthdayEditor = false.obs;
-  final RxBool showPhoneEditor = false.obs;
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -71,7 +64,6 @@ class ProfilePage extends AppPageView {
                         authService.userLive.value.email,
                         textAlign: TextAlign.center,
                       ),
-
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -90,20 +82,18 @@ class ProfilePage extends AppPageView {
                         ),
                       if (authService.userLive.value.subscription == null)
                         AppButton(
-                          key: UniqueKey(),
+                          
                           isTextButton: true,
                           child: const Text(
                             "Select a plan",
                           ),
                           onPressed: () async {
-                            navService.to(AppRoutes.subscriptions);
+                            navService.routeKeepNext(AppRoutes.subscriptions);
                           },
                         ),
-
                       const SizedBox(
                         height: 20,
                       ),
-
                       EditableTextView(
                         key: const Key("_display_name_editor"),
                         icon: Icons.account_circle,
@@ -139,7 +129,6 @@ class ProfilePage extends AppPageView {
                         },
                       ),
                       const NotificationsView(),
-
                       // Card(
                       //   clipBehavior: Clip.hardEdge,
                       //   elevation: 0,

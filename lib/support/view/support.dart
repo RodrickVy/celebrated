@@ -84,7 +84,7 @@ class SupportView extends AppPageView {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AppButton(
-                    key: UniqueKey(),
+                    
                     isTextButton: true,
                     label: "Give Us Feedback",
                     onPressed: () async {
@@ -94,7 +94,7 @@ class SupportView extends AppPageView {
               // Padding(
               //   padding: const EdgeInsets.all(8.0),
               //   child: AppButton(
-              //       key: UniqueKey(),
+              //       
               //       isTextButton: true,
               //       label: "Report an Issue",
               //       onPressed: () async {
@@ -104,10 +104,10 @@ class SupportView extends AppPageView {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AppButton(
-                    key: UniqueKey(),
+
                     isTextButton: true,
                     label: "Privacy Policy",
-                    onPressed: () {
+                    onPressed: () async{
                       DocumentsController.goToDocument('privacy');
                     }),
               )

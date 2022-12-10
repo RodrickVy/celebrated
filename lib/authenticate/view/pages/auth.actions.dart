@@ -106,7 +106,7 @@ class PasswordResetHandler extends AdaptiveUI {
   }
 
   Widget loading(adapter) {
-    return FeedbackSpinner(defaultState: true, spinnerKey: const Key('reset-password'), child: success(adapter));
+    return FeedbackSpinner(defaultState: true, spinnerKey: FeedbackSpinKeys.auth, child: success(adapter));
   }
 
   ListView error(adapter) {
@@ -135,13 +135,13 @@ class PasswordResetHandler extends AdaptiveUI {
         height: 20,
       ),
       AppButton(
-        key: UniqueKey(),
+        
         child: Text(
           "Resend reset link",
           style: GoogleFonts.poppins(fontSize: 16),
         ),
         onPressed: () async {
-          Get.toNamed(AppRoutes.authPasswordReset);
+          navService.to(AppRoutes.authPasswordReset);
         },
       ),
     ]);
@@ -149,7 +149,7 @@ class PasswordResetHandler extends AdaptiveUI {
 
   Widget form(adapter) {
     return FeedbackSpinner(
-      spinnerKey: FeedbackSpinKeys.passResetForm,
+      spinnerKey: FeedbackSpinKeys.auth,
       child: ListView(padding: const EdgeInsets.all(12), children: [
         const SizedBox(
           height: 20,
@@ -182,7 +182,7 @@ class PasswordResetHandler extends AdaptiveUI {
             UIFormState.password(data);
           },
           obscureOption: true,
-          key: UniqueKey(),
+          
           keyboardType: TextInputType.visiblePassword,
           autoFillHints: const [AutofillHints.password],
         ),
@@ -190,13 +190,9 @@ class PasswordResetHandler extends AdaptiveUI {
           height: 20,
         ),
         AppButton(
-          key: UniqueKey(),
-          child: Text(
-            "Reset ",
-            style: GoogleFonts.poppins(fontSize: 16),
-          ),
+          
+          loadStateKey:FeedbackSpinKeys.auth ,
           onPressed: () async {
-            FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.passResetForm, isOn: true);
 
             bool result = await authService.handlePasswordReset(code, continueUrl, UIFormState.password.value);
             if (result) {
@@ -204,8 +200,13 @@ class PasswordResetHandler extends AdaptiveUI {
             } else {
               passResetState(PassResetState.error);
             }
-            FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.passResetForm, isOn: false);
+
           },
+
+          child: Text(
+            "Reset ",
+            style: GoogleFonts.poppins(fontSize: 16),
+          ),
         ),
       ]),
     );
@@ -236,7 +237,7 @@ class PasswordResetHandler extends AdaptiveUI {
         ),
       ),
       AppButton(
-        key: UniqueKey(),
+        
         child: Text(
           "Continue",
           style: GoogleFonts.poppins(fontSize: 16),

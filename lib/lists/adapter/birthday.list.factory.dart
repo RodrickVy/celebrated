@@ -27,7 +27,7 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
           startReminding: json['startReminding']??2,
           notificationType: BirthdayReminderType.values.byName(json['notificationType']??'sms'),
           authorName: (json["authorName"]??'').toString().trim(),
-          watchers: List.from(json['watchers']??[]).map((e) => BirthdaysWatcher.fromMap(e)).toList()
+          watchers: List.from(json['watchers']??[])
       );
     }catch(_){
       Get.log("Error in serializing BirthdayBoard from json");
@@ -52,7 +52,7 @@ class BirthdayBoardFactory extends IModelFactory<BirthdayBoard> {
       'authorId': model.authorId,
       'startReminding': model.startReminding,
       'authorName':model.authorName,
-      'watchers':model.watchers.map((e) => e.toMap()).toList()
+      'watchers':model.watchers
     };
   }
 }

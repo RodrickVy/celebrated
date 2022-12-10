@@ -1,9 +1,13 @@
+import 'package:celebrated/app.swatch.dart';
+import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
-import 'package:celebrated/domain/view/components/heading.dart';
+import 'package:celebrated/domain/view/components/text.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
+import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
@@ -52,13 +56,14 @@ class SignUpPage extends AdaptiveUI {
       case 0:
         return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-              // AuthProviderButtons(key: UniqueKey()),
-              const Heading("Lets sign up, Whats ur name?"),
               const SizedBox(
-                height: 10,
+                height: 15,
+              ),
+              const Heading("Lets sign you up",textAlign: TextAlign.center,),
+              const SizedBox(
+                height: 40,
               ),
               UIFormState.nameField,
               const SizedBox(
@@ -69,18 +74,36 @@ class SignUpPage extends AdaptiveUI {
                 height: 10,
               ),
               nextButton,
-              UIFormState.signInButton,
-
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Container(
+                    margin: const EdgeInsets.only(top: 20,bottom: 20),
+                    width: 200,
+                    height: 0.5,
+                    color: Colors.black12,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              signInButton,
+              const SizedBox(
+                height: 10,
+              ),
             ]);
       case 1:
         return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text("  Hey  ${UIFormState.signUpFormData.name}"),
-              const Heading("What's ur email?"),
+               Heading(" Hey  ${UIFormState.signUpFormData.name} \n What's ur email?",textAlign: TextAlign.center,),
               const SizedBox(
-                height: 10,
+                height: 40,
               ),
               UIFormState.emailField,
               const SizedBox(
@@ -92,16 +115,36 @@ class SignUpPage extends AdaptiveUI {
               ),
               nextButton,
               backButton,
-              UIFormState.signInButton
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Container(
+                    margin: const EdgeInsets.only(top: 20,bottom: 20),
+                    width: 200,
+                    height: 0.5,
+                    color: Colors.black12,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              signInButton,
+              const SizedBox(
+                height: 10,
+              ),
             ]);
       case 2:
         return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const Heading("Set a password"),
+              const Heading("Set a password",textAlign: TextAlign.center,),
               const SizedBox(
-                height: 10,
+                height: 40,
               ),
               UIFormState.passwordField,
               const SizedBox(
@@ -113,18 +156,56 @@ class SignUpPage extends AdaptiveUI {
               ),
               nextButton,
               backButton,
-              UIFormState.signInButton
-            ]);
-      case 3:
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Heading("When's your birthday?"),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Container(
+                    margin: const EdgeInsets.only(top: 20,bottom: 20),
+                    width: 200,
+                    height: 0.5,
+                    color: Colors.black12,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              signInButton,
               const SizedBox(
                 height: 10,
               ),
+            ]);
+      case 3:
+      default:
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+
+              const Heading("Almost done!",textAlign: TextAlign.center,),
+              const SizedBox(
+                height: 40,
+              ),
+              const BodyText("when's your birthday",textAlign: TextAlign.center,),
               UIFormState.dateField,
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: const [
+                  BodyText("(optional)",textAlign: TextAlign.start,),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              UIFormState.phoneField,
+              const SizedBox(
+                height: 10,
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -132,32 +213,66 @@ class SignUpPage extends AdaptiveUI {
               const SizedBox(
                 height: 10,
               ),
-              nextButton,
+              signUpButton,
               backButton,
-              UIFormState.signInButton
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  Container(
+                    margin: const EdgeInsets.only(top: 20,bottom: 20),
+                    width: 200,
+                    height: 0.5,
+                    color: Colors.black12,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              signInButton,
+              const SizedBox(
+                height: 10,
+              ),
             ]);
-      case 4:
-      default:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Heading("Set your phone number"),
-            const SizedBox(
-              height: 10,
-            ),
-            UIFormState.phoneField,
-            const SizedBox(
-              height: 10,
-            ),
-            const NotificationsView(),
-            const SizedBox(
-              height: 10,
-            ),
-            UIFormState.signUpButton,
-            backButton,
-            UIFormState.signInButton,
-          ]);
+      // case 4:
+      // default:
+      //   return Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     children: <Widget>[
+      //       const Heading("Set your phone number (optional)"),
+      //
+      //       const NotificationsView(),
+      //       const SizedBox(
+      //         height: 10,
+      //       ),
+      //       signUpButton,
+      //       backButton,
+      //       const SizedBox(
+      //         height: 20,
+      //       ),
+      //       Row(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children:  [
+      //           Container(
+      //             margin: const EdgeInsets.only(top: 20,bottom: 20),
+      //             width: 200,
+      //             height: 0.5,
+      //             color: Colors.black12,
+      //           ),
+      //         ],
+      //       ),
+      //       const SizedBox(
+      //         height: 15,
+      //       ),
+      //       signInButton,
+      //       const SizedBox(
+      //         height: 10,
+      //       ),
+      //     ]);
 
     }
   }
@@ -168,11 +283,11 @@ class SignUpPage extends AdaptiveUI {
   AppButton get nextButton {
 
     return AppButton(
-      key: UniqueKey(),
+      minWidth: Get.width,
       onPressed: () async {
         if (currentIndex < 4) {
           if(validateCurrentStage() == null){
-            navService.withParameter('stage','${currentIndex + 1}');
+            navService.routeToParameter('stage','${currentIndex + 1}');
           }else{
 
           }
@@ -188,7 +303,7 @@ class SignUpPage extends AdaptiveUI {
 
   AppButton get backButton {
     return AppButton(
-      key: UniqueKey(),
+      minWidth: Get.width,
       isTextButton: true,
       child: Text(
         "Back",
@@ -196,7 +311,7 @@ class SignUpPage extends AdaptiveUI {
       ),
       onPressed: () async {
         if (currentIndex > 0) {
-          navService.withParameter('stage','${currentIndex - 1}');
+          navService.routeToParameter('stage','${currentIndex - 1}');
         }
       },
     );
@@ -225,6 +340,32 @@ class SignUpPage extends AdaptiveUI {
   }
 
 
+  static AppButton get signInButton {
+    return AppButton(
+      minWidth: Get.width,
+      isTextButton: true,
+      onPressed: () async {
+        navService.routeKeepNext(AppRoutes.authSignIn);
+      },
+      child: Text(
+        "Have an account? sign in",
+        style: GoogleFonts.poppins(fontSize: 16),
+      ),
+    );
+  }
+
+  static AppButton get signUpButton {
+    return AppButton(
+      minWidth: Get.width,
+      loadStateKey: FeedbackSpinKeys.auth,
+      onPressed: () async {
+        await authService.signUp(UIFormState.signUpFormData);
+      },
+      child: const Text(
+        "Sign Up",
+      ),
+    );
+  }
 
 
 }

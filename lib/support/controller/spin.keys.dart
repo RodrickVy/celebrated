@@ -8,7 +8,7 @@ class FeedbackSpinKeys {
   
   /// all the loading indication related to authentication
   static Key auth = const Key("authSpinner");
-  
+  static Key loadState = const Key('loadState');
 
   static Key updateNameForm = const Key("updateNameForm");
   static Key updateBioForm = const Key("updateBioForm");
