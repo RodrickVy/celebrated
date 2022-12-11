@@ -94,7 +94,6 @@ class BirthdayCard extends AdaptiveUI{
         shape: AppTheme.shape,
         child: ListTile(
           onTap: () {
-
             birthdaysController.setBirthdayInEditMode(birthday.id);
           },
           title: Padding(
@@ -103,7 +102,7 @@ class BirthdayCard extends AdaptiveUI{
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
-                  "${birthday.name.capitalizeFirst} ",
+                  "${birthday.name.capitalizeFirst}",
                   style: Adaptive(ctx).textTheme.headline6?.copyWith(
                       fontWeight: FontWeight.w600, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
                 ),

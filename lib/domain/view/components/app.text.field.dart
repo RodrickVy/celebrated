@@ -1,6 +1,7 @@
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 int i = 0;
@@ -29,14 +30,16 @@ class AppTextField extends StatelessWidget {
   final GestureTapCallback? onTap;
   final RxBool showPass = false.obs;
   final Function(String value)? onChanged;
+  final List<TextInputFormatter> inputFormatters;
 
   AppTextField(
-      { Key? key,
+      {Key? key,
       required this.label,
       required this.hint,
       this.onTap,
       this.controller,
-        this.focusNode,
+      this.focusNode,
+      this.inputFormatters = const [],
       this.fieldIcon,
       this.enabled = true,
       this.keyboardType = TextInputType.text,
@@ -68,15 +71,13 @@ class AppTextField extends StatelessWidget {
                   onPressed: () {
                     showPass.toggle();
                   },
-                  icon: Icon(showPass.value
-                      ? Icons.visibility_off
-                      : Icons.visibility))),
+                  icon: Icon(showPass.value ? Icons.visibility_off : Icons.visibility))),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
           cursorColor: Colors.black,
           onTap: onTap,
           key: key,
-
+          inputFormatters: inputFormatters,
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureOption == true ? !showPass.value : false,
@@ -108,6 +109,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       style: style,
+      inputFormatters: inputFormatters,
       autofillHints: autoFillHints,
       autocorrect: autoCorrect,
       enabled: enabled,
@@ -123,15 +125,11 @@ class AppTextField extends StatelessWidget {
     );
   }
 
-
-
   InputDecoration get _decoration {
-    InputDecoration defaultDecoration = AppTheme.inputDecoration.copyWith(
-      labelText: label,
-      hintText: hint,
-      prefixIcon: Icon(fieldIcon)
-      //fillColor: Colors.green
-    );
+    InputDecoration defaultDecoration =
+        AppTheme.inputDecoration.copyWith(labelText: label, hintText: hint, prefixIcon: Icon(fieldIcon)
+            //fillColor: Colors.green
+            );
 
     return InputDecoration(
       icon: decoration?.icon ?? defaultDecoration.icon,
@@ -139,26 +137,20 @@ class AppTextField extends StatelessWidget {
       labelStyle: decoration?.labelStyle ?? defaultDecoration.labelStyle,
       helperText: decoration?.helperText ?? defaultDecoration.helperText,
       helperStyle: decoration?.helperStyle ?? defaultDecoration.helperStyle,
-      helperMaxLines:
-          decoration?.helperMaxLines ?? defaultDecoration.helperMaxLines,
+      helperMaxLines: decoration?.helperMaxLines ?? defaultDecoration.helperMaxLines,
       hintText: decoration?.hintText ?? defaultDecoration.hintText,
       hintStyle: decoration?.hintStyle ?? defaultDecoration.hintStyle,
-      hintTextDirection:
-          decoration?.hintTextDirection ?? defaultDecoration.hintTextDirection,
+      hintTextDirection: decoration?.hintTextDirection ?? defaultDecoration.hintTextDirection,
       hintMaxLines: decoration?.hintMaxLines ?? defaultDecoration.hintMaxLines,
       errorText: decoration?.errorText ?? defaultDecoration.errorText,
       errorStyle: decoration?.errorStyle ?? defaultDecoration.errorStyle,
-      errorMaxLines:
-          decoration?.errorMaxLines ?? defaultDecoration.errorMaxLines,
-      floatingLabelBehavior: decoration?.floatingLabelBehavior ??
-          defaultDecoration.floatingLabelBehavior,
+      errorMaxLines: decoration?.errorMaxLines ?? defaultDecoration.errorMaxLines,
+      floatingLabelBehavior: decoration?.floatingLabelBehavior ?? defaultDecoration.floatingLabelBehavior,
       isCollapsed: decoration?.isCollapsed ?? defaultDecoration.isCollapsed,
       isDense: decoration?.isDense ?? defaultDecoration.isDense,
-      contentPadding:
-          decoration?.contentPadding ?? defaultDecoration.contentPadding,
+      contentPadding: decoration?.contentPadding ?? defaultDecoration.contentPadding,
       prefixIcon: decoration?.prefixIcon ?? defaultDecoration.prefixIcon,
-      prefixIconConstraints: decoration?.prefixIconConstraints ??
-          defaultDecoration.prefixIconConstraints,
+      prefixIconConstraints: decoration?.prefixIconConstraints ?? defaultDecoration.prefixIconConstraints,
       prefix: decoration?.prefix ?? defaultDecoration.prefix,
       prefixText: decoration?.prefixText ?? defaultDecoration.prefixText,
       prefixStyle: decoration?.prefixStyle ?? defaultDecoration.prefixStyle,
@@ -166,8 +158,7 @@ class AppTextField extends StatelessWidget {
       suffix: decoration?.suffix ?? defaultDecoration.suffix,
       suffixText: decoration?.suffixText ?? defaultDecoration.suffixText,
       suffixStyle: decoration?.suffixStyle ?? defaultDecoration.suffixStyle,
-      suffixIconConstraints: decoration?.suffixIconConstraints ??
-          defaultDecoration.suffixIconConstraints,
+      suffixIconConstraints: decoration?.suffixIconConstraints ?? defaultDecoration.suffixIconConstraints,
       counter: decoration?.counter ?? defaultDecoration.counter,
       counterText: decoration?.counterText ?? defaultDecoration.counterText,
       counterStyle: decoration?.counterStyle ?? defaultDecoration.counterStyle,
@@ -176,18 +167,13 @@ class AppTextField extends StatelessWidget {
       focusColor: decoration?.focusColor ?? defaultDecoration.focusColor,
       hoverColor: decoration?.hoverColor ?? defaultDecoration.hoverColor,
       errorBorder: decoration?.errorBorder ?? defaultDecoration.errorBorder,
-      focusedBorder:
-          decoration?.focusedBorder ?? defaultDecoration.focusedBorder,
-      focusedErrorBorder: decoration?.focusedErrorBorder ??
-          defaultDecoration.focusedErrorBorder,
-      disabledBorder:
-          decoration?.disabledBorder ?? defaultDecoration.disabledBorder,
-      enabledBorder:
-          decoration?.enabledBorder ?? defaultDecoration.enabledBorder,
+      focusedBorder: decoration?.focusedBorder ?? defaultDecoration.focusedBorder,
+      focusedErrorBorder: decoration?.focusedErrorBorder ?? defaultDecoration.focusedErrorBorder,
+      disabledBorder: decoration?.disabledBorder ?? defaultDecoration.disabledBorder,
+      enabledBorder: decoration?.enabledBorder ?? defaultDecoration.enabledBorder,
       border: decoration?.border ?? defaultDecoration.border,
       enabled: decoration?.enabled ?? defaultDecoration.enabled,
-      semanticCounterText: decoration?.semanticCounterText ??
-          defaultDecoration.semanticCounterText,
+      semanticCounterText: decoration?.semanticCounterText ?? defaultDecoration.semanticCounterText,
     );
   }
 }

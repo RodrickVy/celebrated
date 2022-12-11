@@ -9,6 +9,7 @@ import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/lists/view/components/birthday.card.dart';
+import 'package:celebrated/lists/view/components/birthday.editor.dart';
 import 'package:celebrated/lists/view/components/birthdays.list.actions.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
@@ -342,6 +343,17 @@ class BirthdayListPage extends AdaptiveUI {
                   height: 40,
                 ),
                 ...board!.bds.map((ABirthday birthday) {
+                  if(birthdaysController.currentBirthdayInEdit.value == birthday.id){
+                    return BirthdayEditor(
+                      birthdayValue: birthday,
+                        onSave: (ABirthday birthday){
+                      birthdaysController.saveBirthdayDetails(board!, birthday);
+                    }, onDelete: (){
+                      birthdaysController.deleteBirthday(board!, birthday);
+                    }, onCancel: (){
+                      birthdaysController.currentBirthdayInEdit("");
+                    });
+                  }
                   return BirthdayCard(
                     list: board!,
                     birthday: birthday,

@@ -190,7 +190,7 @@ class SignUpPage extends AdaptiveUI {
                 height: 40,
               ),
               const BodyText("when's your birthday",textAlign: TextAlign.center,),
-              UIFormState.dateField,
+              UIFormState.dateField(UIFormState.birthdate.value),
               const SizedBox(
                 height: 5,
               ),

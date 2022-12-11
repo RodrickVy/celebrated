@@ -26,8 +26,7 @@ class SignUpEmailRequest extends Request {
     return Request.validateField(Validators.userNameValidator, name) &&
         Request.validateField(Validators.emailFormValidator, email) &&
         Request.validateField(Validators.passwordValidator, password) &&
-        Request.validateField(Validators.phoneValidator, phoneNumber.length > 5 ? phoneNumber: '+17782393874') &&
-        Request.validateField(Validators.birthdayValidator, birthdate);
+        Request.validateField(Validators.phoneValidator, phoneNumber.length > 5 ? phoneNumber: '+17782393874');
   }
 
   static SignUpEmailRequest empty() {

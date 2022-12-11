@@ -202,7 +202,7 @@ class _AddBirthdayEditor extends AdaptiveUI {
                   const SizedBox(
                     height: 10,
                   ),
-                  UIFormState.dateField,
+                  UIFormState.dateField(UIFormState.birthdate.value),
                   const NotificationsView(),
                   const SizedBox(
                     height: 10,

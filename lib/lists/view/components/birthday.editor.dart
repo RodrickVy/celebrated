@@ -1,12 +1,14 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:celebrated/app.theme.dart';
+import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
+import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -63,16 +65,37 @@ class BirthdayEditor extends AdaptiveUI {
               const SizedBox(
                 height: 5,
               ),
-              UIFormState.dateFieldWith(
-                initialValue: birthday.value.date,
-                onSave: (){
-                  Get.log(birthday.value.toString());
-                  onSave(birthday.value.copyWith(date: UIFormState.birthdate.value));
-                },
-                onCancel: () {
-                  birthdaysController.currentBirthdayInEdit('');
-                },
-              ),
+              Obx(()=> UIFormState.dateField(birthday.value.date)),
+              //   (
+              //   initialValue: birthday.value.date,
+              //   onSave: (){
+              //     Get.log(birthday.value.toString());
+              //
+              //   },
+              //   onCancel: () {
+              //
+              //   },
+              // ),
+              const NotificationsView(),
+              Row(mainAxisAlignment:MainAxisAlignment.end,children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AppButton(
+                    isTextButton: true,
+                    onPressed: (){
+                      birthdaysController.currentBirthdayInEdit('');
+                  },label: "Close",),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AppButton(onPressed: (){
+                    if(Validators.birthdayValidator.announceValidation(UIFormState.birthdateString.value) == null){
+                      onSave(birthday.value.copyWith(date: UIFormState.birthdate.value));
+                    }
+
+                  },label: "Save",),
+                ),
+              ],)
             ],
           ),
         ),

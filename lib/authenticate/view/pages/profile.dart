@@ -118,17 +118,12 @@ class ProfilePage extends AppPageView {
                       const SizedBox(
                         height: 15,
                       ),
-                      UIFormState.dateFieldWith(
-                        // showName: false,
-                        // birthdateController:
-                        //     TextEditingController(text: authService.userLive.value.birthdate.toString()),
-
-                        onSave: (String? date) {
-                          if (date != null) {
-                            authService.updateBirthdate(date: DateTime.parse(date));
-                          }
-                        },
-                      ),
+                      UIFormState.dateField(authService.userLive.value.birthdate),
+                      ///    onSave: (String? date) {
+                      //                           if (date != null) {
+                      //                             authService.updateBirthdate(date: DateTime.parse(date));
+                      //                           }
+                      //                         },
                       const NotificationsView(),
                       // Card(
                       //   clipBehavior: Clip.hardEdge,
