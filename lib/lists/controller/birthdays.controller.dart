@@ -15,7 +15,7 @@ import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/lists/model/settings.ui.dart';
-import 'package:celebrated/lists/view/board.view.only.dart';
+import 'package:celebrated/lists/view/pages/list.shared.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -30,8 +30,8 @@ import 'package:get/get.dart';
 import 'package:celebrated/domain/services/instances.dart';
 
 class BirthdaysController extends GetxController with ContentStore<BirthdayBoard, BirthdayBoardFactory> {
-  RxMap<String, BirthdayBoard> birthdayLists = RxMap<String, BirthdayBoard>({});
-  RxMap<String, BirthdayBoard> trackedLists = RxMap<String, BirthdayBoard>({});
+  final RxMap<String, BirthdayBoard> birthdayLists = RxMap<String, BirthdayBoard>({});
+  final RxMap<String, BirthdayBoard> trackedLists = RxMap<String, BirthdayBoard>({});
 
   static final BirthdaysController __instance = BirthdaysController._();
 

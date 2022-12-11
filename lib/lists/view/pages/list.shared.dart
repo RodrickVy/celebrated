@@ -5,17 +5,11 @@ import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
-import 'package:celebrated/lists/model/birthday.view.mode.dart';
-import 'package:celebrated/lists/view/birthday.tile.view.only.dart';
-import 'package:celebrated/domain/model/enum.dart';
-import 'package:celebrated/lists/view/birthday.card.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
-import 'package:celebrated/domain/view/interface/app.page.view.dart';
+import 'package:celebrated/lists/view/components/birthday.card.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/models/app.notification.dart';
-import 'package:celebrated/support/models/notification.type.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
@@ -24,14 +18,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// page showing the users birthdays , and enables the user to update the lists.
-class BoardViewOnly extends AdaptiveUI {
-   BoardViewOnly({Key? key}) : super(key: key){
-     birthdaysController.loadBoardFromShareUrl();
-   }
+class SharedList extends AdaptiveUI {
+  SharedList({Key? key}) : super(key: key) {
+    birthdaysController.loadBoardFromShareUrl();
+  }
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-
     return Obx(() {
       if (authService.userLive.value.isAuthenticated) {
         FeedbackService.announceSignUpPromo();
@@ -81,8 +74,7 @@ class BoardViewOnly extends AdaptiveUI {
                       ),
                       TextSpan(
                         text: board.authorName,
-                        style:
-                        adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.w900, color: Colors.red),
+                        style: adapter.textTheme.headline6?.copyWith(fontWeight: FontWeight.w900, color: Colors.red),
                       ),
                       TextSpan(
                         style: adapter.textTheme.headline6,
@@ -128,26 +120,24 @@ class BoardViewOnly extends AdaptiveUI {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if (!board.isWatcher(authService.user.uid))
-                         const BodyText("Get auto reminders from this list"),
+                    if (!board.isWatcher(authService.user.uid)) const BodyText("Get auto reminders from this list"),
                     if (board.isWatcher(authService.user.uid) && authService.userLive.value.uid != board.authorId)
-                       const BodyText("You are now tracking this list"),
-                    if(authService.userLive.value.uid == board.authorId)
-                      const BodyText("This is your own list"),
-                    if( authService.userLive.value.uid != board.authorId)
-                       AppButtonIcon(
-                      icon: const Icon(Icons.notifications),
-                      label: !board.isWatcher(authService.user.uid) ? "Track List" : "Stop Tracking",
-                      onPressed: () {
-                        if (board.isWatcher(authService.user.uid)) {
-                          birthdaysController.stopTrackingList(board);
-                        } else {
-                          birthdaysController.trackList(board);
-                        }
-                      },
-                      isTextButton: board.isWatcher(authService.user.id),
-                    ),
-                    if( authService.userLive.value.uid == board.authorId)
+                      const BodyText("You are now tracking this list"),
+                    if (authService.userLive.value.uid == board.authorId) const BodyText("This is your own list"),
+                    if (authService.userLive.value.uid != board.authorId)
+                      AppButtonIcon(
+                        icon: const Icon(Icons.notifications),
+                        label: !board.isWatcher(authService.user.uid) ? "Track List" : "Stop Tracking",
+                        onPressed: () {
+                          if (board.isWatcher(authService.user.uid)) {
+                            birthdaysController.stopTrackingList(board);
+                          } else {
+                            birthdaysController.trackList(board);
+                          }
+                        },
+                        isTextButton: board.isWatcher(authService.user.id),
+                      ),
+                    if (authService.userLive.value.uid == board.authorId)
                       AppButtonIcon(
                         icon: const Icon(Icons.notifications),
                         label: "Edit List",
@@ -159,16 +149,9 @@ class BoardViewOnly extends AdaptiveUI {
                 ),
               ),
               ...board.birthdaysList.map((ABirthday birthday) {
-                switch (viewMode) {
-                  case BirthdayViewMode.tiles:
-                    return BirthdayCard1ViewOnly(
-                      birthday: birthday,
-                    );
-                  case BirthdayViewMode.cards:
-                    return BirthdayCard2ViewOnly(
-                      birthday: birthday,
-                    );
-                }
+                return BirthdayPreviewCard(
+                  birthday: birthday,
+                );
               }),
             ]),
           ),
@@ -212,18 +195,5 @@ class BoardViewOnly extends AdaptiveUI {
         ],
       );
     });
-  }
-
-  BirthdayViewMode get viewMode {
-
-    if (Get.parameters["viewMode"] == null || Get.parameters["viewMode"]!.isEmpty) {
-      return BirthdayViewMode.tiles;
-    } else {
-      return AnEnum.fromJson(BirthdayViewMode.values, Get.parameters["viewMode"]!);
-    }
-  }
-
-  goToViewMode(BirthdayViewMode mode) {
-    navService.routeToParameter("viewMode", mode.name);
   }
 }

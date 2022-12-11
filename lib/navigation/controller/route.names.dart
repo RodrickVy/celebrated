@@ -49,7 +49,7 @@ class AppRoutes {
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),
         AppPage(name: "Gifts", route: gifts, icon: Icons.card_giftcard),
         AppPage(name: "Cards", route: cards, icon: Icons.email_sharp),
-        AppPage(name: "Parties", route: parties, icon: Icons.cake),
+        // AppPage(name: "Parties", route: parties, icon: Icons.cake),
         // AppPage(name: "Account", route: profile, icon: Icons.account_circle),
       ];
   static AppPage homePage = AppPage(name: "Home", route: home, icon: Icons.home);

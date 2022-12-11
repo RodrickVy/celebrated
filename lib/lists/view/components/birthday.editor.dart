@@ -73,67 +73,6 @@ class BirthdayEditor extends AdaptiveUI {
                   birthdaysController.currentBirthdayInEdit('');
                 },
               ),
-              // DateTimePicker(
-              //   type: DateTimePickerType.date,
-              //   fieldLabelText: 'birthdate',
-              //   onChanged: (String? date) {
-              //
-              //   },
-              //   // controller: TextEditingController(text:  birthday.value.date.toIso8601String()),
-              //   firstDate: DateTime(1200),
-              //   style: const TextStyle(fontSize: 12),
-              //   decoration: AppTheme.inputDecoration.copyWith(
-              //     contentPadding: const EdgeInsets.only(left: 6),
-              //     prefixIcon: const Icon(Icons.date_range),
-              //     labelText: "Birthdate",
-              //     hintText: 'click to change',
-              //   ),
-              //   lastDate: DateTime(9090),
-              //   icon: const Icon(Icons.event),
-              //   dateLabelText: 'birthdate',
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 18.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.end,
-              //     children: [
-              //       AppButton(
-              //         isTextButton: true,
-              //         child: const Text(
-              //           "Cancel",
-              //         ),
-              //         onPressed: () async {
-              //           onCancel();
-              //         },
-              //       ),
-              //       const SizedBox(
-              //         width: 10,
-              //       ),
-              //       AppButton(
-              //         isTextButton: true,
-              //         child: const Text(
-              //           "Delete",
-              //         ),
-              //         onPressed: () async {
-              //           onDelete();
-              //         },
-              //       ),
-              //       const SizedBox(
-              //         width: 10,
-              //       ),
-              //       AppButton(
-              //         isTextButton: true,
-              //         child: const Text(
-              //           "Save",
-              //         ),
-              //         onPressed: () async {
-              //           Get.log(birthday.value.toString());
-              //           onSave(birthday.value.copyWith(date: UIFormState.birthdate.value));
-              //         },
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         ),

@@ -8,13 +8,10 @@ import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
-import 'package:celebrated/cards/view/card.creator.dart';
-import 'package:celebrated/cards/view/cards.list.dart';
-import 'package:celebrated/lists/view/birthday.adds.dart';
-import 'package:celebrated/lists/view/birthday.leader.board.dart';
+import 'package:celebrated/lists/view/pages/birthday.collector.dart';
 import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
-import 'package:celebrated/lists/view/birthdays.list.dart';
-import 'package:celebrated/lists/view/board.view.only.dart';
+import 'package:celebrated/lists/view/pages/lists.dart';
+import 'package:celebrated/lists/view/pages/list.shared.dart';
 import 'package:celebrated/document/view/document.viewer.dart';
 import 'package:celebrated/domain/view/pages/coming.soon.view.dart';
 import 'package:celebrated/firebase_options.dart';
@@ -78,11 +75,10 @@ class App extends StatelessWidget {
                   key: Key(AppRoutes.home),
                 )),
         GetPage(name: AppRoutes.birthday, page: () => BirthdayCountDown(key: const Key(AppRoutes.birthday))),
-        GetPage(name: AppRoutes.shareList, page: () =>  BoardViewOnly(key: Key(AppRoutes.shareList))),
-        GetPage(name: AppRoutes.bBoard, page: () => const BirthdaysLeaderBoard(key: Key(AppRoutes.shareList))),
+        GetPage(name: AppRoutes.shareList, page: () =>  SharedList(key: const Key(AppRoutes.shareList))),
         GetPage(name: AppRoutes.lists, page: () => const ListsPage(key: Key(AppRoutes.lists))),
     GetPage(name: AppRoutes.list, page: () => const BirthdayListPage()),
-        GetPage(name: AppRoutes.addBirthdayInvite, page: () => const BirthdaysOpenEditor(key: Key(AppRoutes.addBirthdayInvite))),
+        GetPage(name: AppRoutes.addBirthdayInvite, page: () => const BirthdayCollectionForm(key: Key(AppRoutes.addBirthdayInvite))),
         // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
         // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
         GetPage(

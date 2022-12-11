@@ -1,9 +1,9 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/authenticate/view/components/user.avatar.dart';
 import 'package:celebrated/authenticate/view/components/signout.button.dart';
+import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/forms/phone.form.field.dart';
-import 'package:celebrated/lists/view/birthday.date.name.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/model/request.dart';
 import 'package:celebrated/domain/view/interface/app.page.view.dart';
@@ -118,11 +118,12 @@ class ProfilePage extends AppPageView {
                       const SizedBox(
                         height: 15,
                       ),
-                      BirthdayDateForm(
-                        showName: false,
-                        birthdateController:
-                            TextEditingController(text: authService.userLive.value.birthdate.toString()),
-                        onDateFieldSubmitted: (String? date) {
+                      UIFormState.dateFieldWith(
+                        // showName: false,
+                        // birthdateController:
+                        //     TextEditingController(text: authService.userLive.value.birthdate.toString()),
+
+                        onSave: (String? date) {
                           if (date != null) {
                             authService.updateBirthdate(date: DateTime.parse(date));
                           }

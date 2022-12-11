@@ -64,8 +64,8 @@ Future<BirthdayBoard> getBoard() {
 }
 
 /// page showing the users birthdays , and enables the user to update the lists.
-class BirthdaysOpenEditor extends AppPageView {
-  const BirthdaysOpenEditor({Key? key}) : super(key: key);
+class BirthdayCollectionForm extends AppPageView {
+  const BirthdayCollectionForm({Key? key}) : super(key: key);
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

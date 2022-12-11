@@ -1,46 +1,25 @@
-import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/domain/model/toggle.option.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/editable.text.field.dart';
 import 'package:celebrated/domain/view/components/text.dart';
-import 'package:celebrated/domain/view/components/toogle.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/pages/task.stage.pages.dart';
 import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
-import 'package:celebrated/lists/view/b.list.empty.dart';
-import 'package:celebrated/lists/view/b.list.view.dart';
-import 'package:celebrated/domain/view/interface/app.page.view.dart';
-import 'package:celebrated/lists/view/birthday.tile.dart';
-import 'package:celebrated/lists/view/birthday.tile.view.only.dart';
+import 'package:celebrated/lists/view/components/birthday.card.dart';
 import 'package:celebrated/lists/view/components/birthdays.list.actions.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/navigation/views/app.bar.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
-import 'package:celebrated/support/view/not.found.dart';
 import 'package:celebrated/util/adaptive.dart';
-import 'package:celebrated/util/list.extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:celebrated/app.swatch.dart';
-import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/lists/controller/birthdays.controller.dart';
-import 'package:celebrated/lists/model/birthday.list.dart';
-import 'package:celebrated/lists/view/b.list.empty.dart';
-import 'package:celebrated/lists/view/b.list.view.dart';
-import 'package:celebrated/domain/view/interface/app.page.view.dart';
-import 'package:celebrated/navigation/views/app.bar.dart';
-import 'package:celebrated/util/adaptive.dart';
-import 'package:celebrated/util/list.extension.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 
 class ListsPage extends AdaptiveUI {
   const ListsPage({super.key});
@@ -196,7 +175,7 @@ class ListsPage extends AdaptiveUI {
                                 ),
                                 BodyText("by @${board.authorName}"),
                                 ...board.birthdays.values.map((birthday) {
-                                  return BirthdayCard1ViewOnly(
+                                  return BirthdayPreviewCard(
                                     birthday: birthday,
                                   );
                                 })
@@ -363,8 +342,8 @@ class BirthdayListPage extends AdaptiveUI {
                   height: 40,
                 ),
                 ...board!.bds.map((ABirthday birthday) {
-                  return BirthdayTile(
-                    board: board!,
+                  return BirthdayCard(
+                    list: board!,
                     birthday: birthday,
                   );
                 }),
