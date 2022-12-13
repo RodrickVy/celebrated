@@ -4,44 +4,53 @@ import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/cards/adapter/card.factory.dart';
 import 'package:celebrated/cards/model/card.dart';
-import 'package:celebrated/cards/model/card.template.dart';
-import 'package:celebrated/domain/services/app.initializing.state.dart';
 import 'package:celebrated/domain/services/content.store/model/query.dart';
 import 'package:celebrated/domain/services/content.store/model/query.methods.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
+import 'package:celebrated/domain/services/instances.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/subscription/models/subscription.plan.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/util/id.generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CardsController extends GetxController with ContentStore<BirthdayCard, BirthdayCardFactory> {
+class CardsController  with ContentStore<BirthdayCard, BirthdayCardFactory> {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseStorage storage = FirebaseStorage.instance;
 
-  RxMap<String, BirthdayCard> birthdayCards = RxMap<String, BirthdayCard>({});
+  final RxMap<String, BirthdayCard> birthdayCards = RxMap<String, BirthdayCard>({});
 
-  Rx<BirthdayCard> cardInCreation = BirthdayCard.empty().obs;
+  BirthdayCard? get currentCard {
+    if(Get.parameters['id'] != null  &&  birthdayCards[Get.parameters['id']] != null){
+      return birthdayCards[Get.parameters['id']]!;
+    }
+    return null;
+  }
 
-  final List<CardTemplate> templates = [
-    GifCardTemplate(
-        id: "",
-        image: '',
-        name: '',
-        keywords: [],
-        topGift: '',
-        bottomGif: '',
-        backGift: '',
-        availableIn: SubscriptionPlan.test),
-  ];
 
-  static CardsController instance = Get.find<CardsController>();
+  static final CardsController  _instance = CardsController._();
 
+  CardsController._(){
+
+    auth.authStateChanges().listen((User? authUser) async {
+      if (authUser != null) {
+        // FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
+        final Map<String, BirthdayCard> list =
+        Map.fromIterable(await getCollectionAsList(null), key: (e) => e.id, value: (e) => e);
+        birthdayCards.value = list;
+        // FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
+      }
+    });
+  }
+
+  factory CardsController(){
+    return _instance;
+  }
   @override
   BirthdayCard get empty => BirthdayCard.empty();
 
@@ -52,21 +61,9 @@ class CardsController extends GetxController with ContentStore<BirthdayCard, Bir
   CollectionReference<Map<String, dynamic>> get collectionReference => firestore.collection('cards');
 
   @override
-  void onInit() {
-    super.onInit();
-    authService.userLive.listen((UserAccount user) async {
-      if (user.isAuthenticated) {
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
-        birthdayCards({for (var e in await getCollectionAsList(null)) e.id: e});
-        FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
-      }
-    });
-  }
-
-  @override
   Future<List<BirthdayCard>> getCollectionAsList(ContentQuery? query) async {
     return await queryCollection(
-        query ?? ContentQuery("authorId", QueryMethods.isEqualTo, authService.userLive.value.uid));
+        query ?? ContentQuery("authorId", QueryMethods.isEqualTo, authService.user.uid));
   }
 
   @override
@@ -95,10 +92,9 @@ class CardsController extends GetxController with ContentStore<BirthdayCard, Bir
     FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
     if (authService.user.isAuthenticated) {
       final String id = IDGenerator.generateId(10, authService.user.uid);
-      final BirthdayCard newCard = BirthdayCard.empty().copyWith(id: id, authorId: authService.user.uid);
+      final BirthdayCard newCard = BirthdayCard.empty().copyWith(id: id, title: "New Card", image: "1", authorId: authService.user.uid);
       await setContent(newCard);
-      cardInCreation(newCard);
-      navService.to(AppRoutes.createCard);
+      navService.to("${AppRoutes.cardEditor}?id=${id}");
     }
     FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
   }

@@ -2,6 +2,7 @@ import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/requests/signin.request.dart';
 import 'package:celebrated/authenticate/requests/signup.request.dart';
+import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/components/forms/phone.form.field.dart';
@@ -20,28 +21,29 @@ import 'package:phone_form_field/phone_form_field.dart';
 ///  This functionality is across different features, but context is considered when reusing data to avoid mismatching data.
 
 class UIFormState {
-  static RxString name = ''.obs;
-  static RxString email = ''.obs;
-  static RxString password = ''.obs;
+  static String name = '';
+  static String email = '';
+  static String password = '';
   static String birthdate = '';
-  static RxString phoneNumber = ''.obs;
-  static RxString promoCode = ''.obs;
-  static RxString authCode = ''.obs;
+  static String phoneNumber = '';
+  static String promoCode = '';
+  static String authCode = '';
+  static String recipientName = '';
 
   /// using text input instead of calender for inputing dates
   static RxBool textDateInput = true.obs;
   static Rx<SubscriptionPlan> subscriptionPlan = SubscriptionPlan.free.obs;
   static RxBool signInLinkSent = false.obs;
 
-  static SignInEmailRequest get signInFormData => SignInEmailRequest(email: email.value, password: password.value);
+  static SignInEmailRequest get signInFormData => SignInEmailRequest(email: email, password: password);
 
   static SignUpEmailRequest get signUpFormData => SignUpEmailRequest(
-      email: email.value,
-      password: password.value,
-      phoneNumber: phoneNumber.value,
+      email: email,
+      password: password,
+      phoneNumber: phoneNumber,
       plan: subscriptionPlan.value,
-      promotionCode: promoCode.value,
-      name: name.value,
+      promotionCode: promoCode,
+      name: name,
       birthdate: birthdate);
 
   const UIFormState();
@@ -51,14 +53,27 @@ class UIFormState {
         autoFocus: GetPlatform.isDesktop,
         fieldIcon: Icons.account_circle_sharp,
         decoration: AppTheme.inputDecoration,
-        controller: TextEditingController(text: UIFormState.name.value),
+        controller: TextEditingController(text: UIFormState.name),
         onChanged: (data) {
-          UIFormState.name(data);
+          UIFormState.name =data;
         },
         hint: 'enter your name',
         autoFillHints: const [AutofillHints.name],
       );
 
+  static AppTextField get sendToRecipientField => AppTextField(
+    label: "Recipient ",
+    autoFocus: GetPlatform.isDesktop,
+    fieldIcon: Icons.account_circle_sharp,
+    decoration: AppTheme.inputDecoration,
+    controller: TextEditingController(text: UIFormState.recipientName),
+    onChanged: (data) {
+      UIFormState.recipientName =data;
+    },
+    hint: 'enter recipients name',
+    autoFillHints: const [AutofillHints.name],
+  );
+  
   static AppTextField get emailField => AppTextField(
         fieldIcon: Icons.email,
         label: "Email",
@@ -66,7 +81,7 @@ class UIFormState {
         autoFocus: GetPlatform.isDesktop,
         controller: TextEditingController(text: UIFormState.signUpFormData.email),
         onChanged: (data) {
-          UIFormState.email(data.trim());
+          UIFormState.email =data.trim();
         },
         keyboardType: TextInputType.emailAddress,
         autoFillHints: const [AutofillHints.email, AutofillHints.username],
@@ -79,7 +94,7 @@ class UIFormState {
         hint: "minimum 6 characters",
         controller: TextEditingController(text: UIFormState.signUpFormData.password),
         onChanged: (data) {
-          UIFormState.password(data);
+          UIFormState.password =data;
         },
         obscureOption: true,
         keyboardType: TextInputType.visiblePassword,
@@ -91,7 +106,7 @@ class UIFormState {
         initialValue: UIFormState.signUpFormData.phoneNumber,
         onChanged: (PhoneNumber? p) {
           if (p != null) {
-            UIFormState.phoneNumber(p.international);
+            UIFormState.phoneNumber =p.international;
           }
         },
       );
@@ -118,7 +133,7 @@ class UIFormState {
     return date.split('T').first.split('-').reversed.join('/');
   }
 
-  static Widget dateField({DateTime? initialValue, Function(DateTime data)? onChanged}) {
+  static Widget dateField({DateTime? initialValue, Function(DateTime? data)? onChanged}) {
     //
 
     return AppTextField(
@@ -130,14 +145,20 @@ class UIFormState {
       controller: TextEditingController(text: startValue(initialValue)),
       onChanged: (data) {
         UIFormState.birthdate = data;
-        onChanged != null ? onChanged(parsedDate) : () {}();
+        onChanged != null  && data.length == DateTextFormatter.maxChars+2 ? onChanged(parsedDate) : () {}();
       },
       keyboardType: TextInputType.datetime,
       autoFillHints: const [AutofillHints.birthday],
     );
   }
 
-  static DateTime get parsedDate => DateTime.parse(birthdate.split("/").reversed.join('-'));
+  static DateTime? get parsedDate {
+    if(Validators.birthdayValidator.announceValidation(birthdate) == null){
+      return DateTime.parse(birthdate.split("/").reversed.join('-'));
+    }
+    return null;
+
+  }
 
   static AppButton get emailLinkButton {
     return AppButton(

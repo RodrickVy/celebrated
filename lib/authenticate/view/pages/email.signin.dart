@@ -144,8 +144,7 @@ class InitiateEmailSignIn extends AdaptiveUI {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "A link has been sent to ${UIFormState.email
-                      .value}, Check spam folder if you can't find it. Click that link to sign in. ",
+                  "A link has been sent to ${UIFormState.email}, Check spam folder if you can't find it. Click that link to sign in. ",
                   style: adapter.textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -178,7 +177,7 @@ class InitiateEmailSignIn extends AdaptiveUI {
                 isTextButton: true,
                 onPressed: () async {
 
-                  await authService.sendSignInLink(UIFormState.email.value);
+                  await authService.sendSignInLink(UIFormState.email);
 
                 },
                 child: Text(
@@ -232,7 +231,7 @@ class InitiateEmailSignIn extends AdaptiveUI {
                 minWidth: Get.width,
                 loadStateKey: FeedbackSpinKeys.auth,
                 onPressed: () async {
-                  bool success = await authService.sendSignInLink(UIFormState.email.value);
+                  bool success = await authService.sendSignInLink(UIFormState.email);
                   if(success){
                     navService.routeToParameter('stage', '1');
                   }

@@ -138,6 +138,8 @@ import 'package:flutter/services.dart';
 class DateTextFormatter extends TextInputFormatter {
   static const _maxChars = 8;
 
+  static int get maxChars => _maxChars;
+
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     var text = _format(newValue.text, '/');
     return newValue.copyWith(text: text, selection: updateCursorPosition(text));

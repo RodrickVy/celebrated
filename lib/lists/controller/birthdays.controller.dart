@@ -78,6 +78,9 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
         //     await updateContent(e.id,{"authorName":AuthController.instance.accountUser.value.displayName});
         //   }
         // });
+      }else{
+        birthdayLists.assignAll({});
+        trackedLists.assignAll({});
       }
     });
   }

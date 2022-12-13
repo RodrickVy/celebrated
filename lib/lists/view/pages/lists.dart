@@ -30,6 +30,7 @@ class ListsPage extends AdaptiveUI {
     return Obx(
       () {
         birthdaysController.trackedLists.values;
+        authService.user.isUnauthenticated;
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -128,7 +129,38 @@ class ListsPage extends AdaptiveUI {
                                 label: "Create List",
                               ),
                             ),
-                          ...AuthOptions.view(ctx: ctx, adapter: adapter)
+                          if (authService.user.isUnauthenticated)
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: AppButton(
+                                  onPressed: () async {
+                                    navService.to(AppRoutes.authSignIn);
+                                  },
+                                  isTextButton: true,
+                                  child: const Text(
+                                    "SignIn",
+                                  )),
+                            ),
+                          if (authService.user.isUnauthenticated)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 4.0, right: 4),
+                              child: Text(
+                                "or",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          if (authService.user.isUnauthenticated)
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: AppButton(
+                                  onPressed: () async {
+                                    navService.to(AppRoutes.authSignUp);
+                                  },
+                                  isTextButton: true,
+                                  child: const Text(
+                                    "create account",
+                                  )),
+                            ),
                         ],
                         if (birthdaysController.birthdayLists.isNotEmpty)
                           AppButtonIcon(
@@ -222,7 +254,38 @@ class ListsPage extends AdaptiveUI {
                               ),
                             ),
                         ],
-                        ...AuthOptions.view(ctx: ctx, adapter: adapter)
+                        if (authService.user.isUnauthenticated)
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: AppButton(
+                                onPressed: () async {
+                                  navService.to(AppRoutes.authSignIn);
+                                },
+                                isTextButton: true,
+                                child: const Text(
+                                  "SignIn",
+                                )),
+                          ),
+                        if (authService.user.isUnauthenticated)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4.0, right: 4),
+                            child: Text(
+                              "or",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        if (authService.user.isUnauthenticated)
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: AppButton(
+                                onPressed: () async {
+                                  navService.to(AppRoutes.authSignUp);
+                                },
+                                isTextButton: true,
+                                child: const Text(
+                                  "create account",
+                                )),
+                          ),
                       ],
                     ),
                   ),
@@ -252,44 +315,7 @@ class ListsPage extends AdaptiveUI {
   }
 }
 
-class AuthOptions {
-  static List<Widget> view({required BuildContext ctx, required Adaptive adapter}) {
-    return [
-      if (authService.user.isUnauthenticated)
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: AppButton(
-              onPressed: () async {
-                navService.to(AppRoutes.authSignIn);
-              },
-              isTextButton: true,
-              child: const Text(
-                "SignIn",
-              )),
-        ),
-      if (authService.user.isUnauthenticated)
-        const Padding(
-          padding: EdgeInsets.only(left: 4.0, right: 4),
-          child: Text(
-            "or",
-            textAlign: TextAlign.center,
-          ),
-        ),
-      if (authService.user.isUnauthenticated)
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: AppButton(
-              onPressed: () async {
-                navService.to(AppRoutes.authSignUp);
-              },
-              isTextButton: true,
-              child: const Text(
-                "create account",
-              )),
-        ),
-    ];
-  }
-}
+
 
 enum BirthdayListPageUI { noList, birthdays, settings }
 

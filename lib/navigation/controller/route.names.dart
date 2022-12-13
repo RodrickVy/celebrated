@@ -42,7 +42,7 @@ class AppRoutes {
 
   static String authEmailSignInForm = '/email_sign_in';
   static String list = '/lists/:id';
-  static String createCard = '/cards/create';
+  static String cardEditor = '/cards/edit';
 
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),

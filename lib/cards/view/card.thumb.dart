@@ -1,6 +1,8 @@
 
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/cards/model/card.dart';
+import 'package:celebrated/domain/model/drop.down.action.dart';
+import 'package:celebrated/domain/view/components/text.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
@@ -12,7 +14,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CardPreview extends AdaptiveUI {
   final BirthdayCard card;
+  List<OptionAction> get actions => [
+    OptionAction("Delete", Icons.delete, () async {
 
+    }),
+    OptionAction("Edit", Icons.edit, () async {
+
+    }),
+    OptionAction("Preview", Icons.remove_red_eye_sharp, () {
+
+    })
+  ];
   const CardPreview(
       {Key? key,
       required this.card,
@@ -22,8 +34,8 @@ class CardPreview extends AdaptiveUI {
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return SizedBox(
-      width: adapter.adapt(phone: 200, tablet: 180, desktop:400),
-      height:  adapter.adapt(phone: 300, tablet: 220, desktop: 600),
+      width: adapter.adapt(phone: 200, tablet: 180, desktop:200),
+      height:  adapter.adapt(phone: 300, tablet: 220, desktop: 300),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
         transitionBuilder: (Widget child, Animation<double> animation) {
@@ -32,40 +44,38 @@ class CardPreview extends AdaptiveUI {
         child:  Card(
             elevation: 0,
             shape: AppTheme.shape,
-            child: ListTile(
-              onTap: () {
-                navService.to("${AppRoutes.cards}/edit/${card.id}");
-              },
-              title: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:   Text(
-                  card.title,
-                  style: Adaptive(ctx).textTheme.headline6?.copyWith(
-                      fontWeight: FontWeight.w600, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
-                ),
-              ),
-              subtitle:  Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
+            child:  Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Heading(
                     card.title,
-                    style: Adaptive(ctx).textTheme.headline6?.copyWith(
-                        fontWeight: FontWeight.w600, fontFamily: GoogleFonts.playfairDisplay().fontFamily),
                   ),
-                  const SizedBox(width: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(
-                      card.from,
-                      style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w400,
-                      ),
+                ),
+                const SizedBox(width: 10,),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    card.from,
+                    style: Adaptive(ctx).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Text(card.to),
-                ],
-              ),
-
+                ),
+                Text(card.to),
+                const Spacer(),
+                Container(
+                  width: 300,
+                  height: 60,
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    children: [
+                      ...actions.map((e) => IconButton(onPressed: e.action, icon: Icon(e.icon),))
+                    ],
+                  ),
+                ),
+              ],
             )),
       ),
     );

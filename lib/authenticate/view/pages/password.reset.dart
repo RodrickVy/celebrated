@@ -5,7 +5,6 @@ import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
@@ -44,10 +43,10 @@ class PasswordResetPage extends AdaptiveUI{
                         fieldIcon: Icons.email,
                         label: "Email",
                         hint: "eg. john@email.com",
-                        controller: TextEditingController(text: UIFormState.email.value),
+                        controller: TextEditingController(text: UIFormState.email),
                         onChanged: (data) {
 
-                          UIFormState.email(data.trim());
+                          UIFormState.email =data.trim();
                         },
                         autoFocus: true,
                         keyboardType: TextInputType.emailAddress,
@@ -61,7 +60,7 @@ class PasswordResetPage extends AdaptiveUI{
                         onPressed: () async {
 
                           await authService.sendPasswordResetEmail(
-                            email: UIFormState.email.value,
+                            email: UIFormState.email,
                           );
                         },
 

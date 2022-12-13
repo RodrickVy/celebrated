@@ -11,17 +11,14 @@ class Validators {
               value.split("/").last.length == 4;
         }, errorMessage: "Invalid date format use dd/mm/yyyy"),
         Validation((value) {
-          return value.replaceAll('/', '').split('').any((element) {
-            try{
-              int.parse('element');
-              return false;
-            }catch (e){
-              return true;
-            }
-
-          });
+          try{
+            int.parse(value.replaceAll('/', '').split('').join(''));
+            return true;
+          }catch (e){
+            return false;
+          }
         },
-            errorMessage: "Invalid date format use dd-mm-yyyy"),
+            errorMessage: "Invalid date format used, only number and / are allowed."),
       ]);
 
   /// validators

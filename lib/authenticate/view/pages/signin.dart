@@ -1,6 +1,4 @@
-import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/authenticate/view/components/provider.buttons.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
@@ -184,10 +182,10 @@ class SignInPage extends AdaptiveUI {
   String? validateCurrentStage() {
     switch (currentIndex) {
       case 0:
-        return Validators.emailFormValidator.announceValidation(UIFormState.email.value);
+        return Validators.emailFormValidator.announceValidation(UIFormState.email);
 
       case 1:
-        return Validators.passwordValidator.announceValidation(UIFormState.password.value);
+        return Validators.passwordValidator.announceValidation(UIFormState.password);
     }
     return null;
   }

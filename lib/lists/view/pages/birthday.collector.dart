@@ -16,18 +16,13 @@ import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/app.page.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
-import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
-import 'package:celebrated/support/models/app.notification.dart';
-import 'package:celebrated/support/models/notification.type.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/id.generator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
 final Rx<BirthdayAddStage> _stage = Rx<BirthdayAddStage>(BirthdayAddStage.adding);
 final Future<BirthdayBoard> board = getBoard();
@@ -112,7 +107,7 @@ class BirthdayCollectionForm extends AppPageView {
 class _AddBirthdayEditor extends AdaptiveUI {
   final BirthdayBoard board;
 
-  _AddBirthdayEditor(this.board, {super.key});
+  const _AddBirthdayEditor(this.board, {super.key});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -209,10 +204,10 @@ class _AddBirthdayEditor extends AdaptiveUI {
                   ),
                   AppButton(
                     onPressed: () async {
-                      if (Validators.userNameValidator.announceValidation(UIFormState.name.value) == null) {
+                      if (Validators.userNameValidator.announceValidation(UIFormState.name) == null) {
                         try {
                           FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
-                          await addBirthday(board, UIFormState.name.value, UIFormState.parsedDate);
+                          await addBirthday(board, UIFormState.name, UIFormState.parsedDate!);
 
                           FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
                         } catch (_) {

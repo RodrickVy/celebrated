@@ -54,9 +54,9 @@ class EmailVerifier extends AdaptiveUI {
         label: "Code",
         hint: "f43hkl",
         autoFocus: true,
-        controller: TextEditingController(text: UIFormState.authCode.value),
+        controller: TextEditingController(text: UIFormState.authCode),
         onChanged: (data) {
-          UIFormState.authCode(data.trim());
+          UIFormState.authCode = data.trim();
         },
         
         keyboardType: TextInputType.visiblePassword,
@@ -86,7 +86,7 @@ class EmailVerifier extends AdaptiveUI {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "A code has been sent to ${UIFormState.email.value}, Check spam folder if you can't find it. Paste that code below to verify your email. ",
+                  "A code has been sent to ${UIFormState.email}, Check spam folder if you can't find it. Paste that code below to verify your email. ",
                   style: adapter.textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -110,7 +110,7 @@ class EmailVerifier extends AdaptiveUI {
                 ),
                 onPressed: () async {
                   FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
-                  await  authService.verifyEmailCode(UIFormState.authCode.value);
+                  await  authService.verifyEmailCode(UIFormState.authCode);
                   FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                 },
               ),

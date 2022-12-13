@@ -8,6 +8,8 @@ import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
+import 'package:celebrated/cards/view/card.editor.dart';
+import 'package:celebrated/cards/view/cards.list.dart';
 import 'package:celebrated/lists/view/pages/birthday.collector.dart';
 import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
 import 'package:celebrated/lists/view/pages/lists.dart';
@@ -37,11 +39,13 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'authenticate/view/pages/password.reset.dart';
 import 'domain/view/interface/app.page.wrapper.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
-    await notificationService.sendNotification(message.data['message']??'', '');
+    await notificationService.sendNotification(message.data['message'] ?? '', '');
   }
 }
+
 void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,9 +58,9 @@ void main() async {
     if (message.notification != null) {
       FeedbackService.announce(
           notification: AppNotification(
-            appWide: true,
-            title: "${message.data['message']}",
-          ));
+        appWide: true,
+        title: "${message.data['message']}",
+      ));
     }
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -75,10 +79,12 @@ class App extends StatelessWidget {
                   key: Key(AppRoutes.home),
                 )),
         GetPage(name: AppRoutes.birthday, page: () => BirthdayCountDown(key: const Key(AppRoutes.birthday))),
-        GetPage(name: AppRoutes.shareList, page: () =>  SharedList(key: const Key(AppRoutes.shareList))),
+        GetPage(name: AppRoutes.shareList, page: () => SharedList(key: const Key(AppRoutes.shareList))),
         GetPage(name: AppRoutes.lists, page: () => const ListsPage(key: Key(AppRoutes.lists))),
-    GetPage(name: AppRoutes.list, page: () => const BirthdayListPage()),
-        GetPage(name: AppRoutes.addBirthdayInvite, page: () => const BirthdayCollectionForm(key: Key(AppRoutes.addBirthdayInvite))),
+        GetPage(name: AppRoutes.list, page: () => const BirthdayListPage()),
+        GetPage(
+            name: AppRoutes.addBirthdayInvite,
+            page: () => const BirthdayCollectionForm(key: Key(AppRoutes.addBirthdayInvite))),
         // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
         // GetPage(name: AppRoutes.about, page: () => BirthdaysOpenEditor(key: const Key(AppRoutes.addBirthdayInvite))),
         GetPage(
@@ -91,14 +97,16 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
         GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
-        GetPage(
-        name: AppRoutes.cards,
-        page: () => const ComingSoon(
-          image: 'assets/intro/card.png',
-          title: 'Cards',
-          description:
-          'Choose from templates, to create a unique birthday cards that others can sign with notes,images,video etc.',
-        )),
+        GetPage(name: AppRoutes.cards, page: () => const CardsListPage()),
+    GetPage(name: AppRoutes.cardEditor, page: () => const CardEditor()),
+        // GetPage(
+        // name: AppRoutes.cards,
+        // page: () => const ComingSoon(
+        //   image: 'assets/intro/card.png',
+        //   title: 'Cards',
+        //   description:
+        //   'Choose from templates, to create a unique birthday cards that others can sign with notes,images,video etc.',
+        // )),
         GetPage(
             name: AppRoutes.parties,
             page: () => const ComingSoon(
@@ -115,7 +123,7 @@ class App extends StatelessWidget {
                   description:
                       'Create and share virtual gifts of any online product with personal note and packaging.Share Gift cards,subscriptions or any gift. ',
                 )),
-        GetPage(name: AppRoutes.authPasswordReset, page: () => PasswordResetPage()),
+        GetPage(name: AppRoutes.authPasswordReset, page: () => const PasswordResetPage()),
         GetPage(name: AppRoutes.authEmailSignInComplete, page: () => CompleteEmailSignIn()),
         GetPage(name: AppRoutes.authEmailSignInForm, page: () => const InitiateEmailSignIn()),
         GetPage(name: AppRoutes.support, page: () => const SupportView(key: Key(AppRoutes.support))),
@@ -147,7 +155,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: getPages.map((e) {
         return e.copy(
-          middlewares: navService.guards.guardsInPage(e.name),
+            middlewares: navService.guards.guardsInPage(e.name),
             page: () => SizedBox(
                   width: Get.width,
                   height: Get.height,

@@ -11,6 +11,7 @@ import 'package:phone_form_field/phone_form_field.dart';
 
 ///
 class FormPhoneField extends AdaptiveUI {
+  static Rx<String?> phoneChanges = ''.obs;
   final Function(PhoneNumber? phoneNumber)? onChanged;
   final Function(PhoneNumber? phoneNumber)? onSaved;
   final bool autoFocus;
@@ -43,9 +44,9 @@ class FormPhoneField extends AdaptiveUI {
             ? Obx(
             ()=> IconButton(
                   onPressed: () {
-                    onSaved!(PhoneNumber.parse(UIFormState.phoneNumber.value));
+                    onSaved!(PhoneNumber.parse(UIFormState.phoneNumber));
                   },
-                  icon:  Icon(Icons.save,color: UIFormState.phoneNumber.value != initialValue?Colors.orange: Colors.black38,)),
+                  icon:  Icon(Icons.save,color: phoneChanges.value != initialValue?Colors.orange: Colors.black38,)),
             )
             : null,
       ),
@@ -54,9 +55,10 @@ class FormPhoneField extends AdaptiveUI {
       selectionWidthStyle: BoxWidthStyle.tight,
       onChanged: (PhoneNumber? p) {
         FeedbackService.clearErrorNotification();
+        phoneChanges(p?.international);
         onChanged != null ? onChanged!(p) : () {}();
         if(p != null){
-          UIFormState.phoneNumber(p.international);
+          UIFormState.phoneNumber = p.international;
         }
       }, // default null
     );

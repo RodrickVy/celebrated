@@ -37,7 +37,7 @@ class SubscriptionsPage extends AdaptiveUI {
                     padding: const EdgeInsets.all(8.0),
                     child: Text("Select a plan", style: adapter.textTheme.headlineSmall),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   ...subscriptionService.subscriptions.map((Subscription subscription) {
                     return GestureDetector(
                       onTap: (){
@@ -57,7 +57,7 @@ class SubscriptionsPage extends AdaptiveUI {
                     decoration: AppTheme.inputDecoration,
                     controller: TextEditingController(text: UIFormState.signUpFormData.promotionCode),
                     onChanged: (data) {
-                      UIFormState.promoCode(data);
+                      UIFormState.promoCode =data;
                     },
                     hint: 'BD-##-##-###',
                     autoFillHints: const [AutofillHints.password],
@@ -81,7 +81,7 @@ class SubscriptionsPage extends AdaptiveUI {
                     ),
                     onPressed: () async {
                       FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: true);
-                      await authService.setSubscriptionPlan(UIFormState.subscriptionPlan.value,UIFormState.promoCode.value);
+                      await authService.setSubscriptionPlan(UIFormState.subscriptionPlan.value,UIFormState.promoCode);
                       FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.auth, isOn: false);
                     },
                   ),

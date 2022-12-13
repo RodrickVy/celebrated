@@ -3,10 +3,8 @@ import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
-import 'package:celebrated/domain/view/pages/coming.soon.view.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/not.found.dart';
@@ -16,7 +14,6 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 enum ActionsMode { resetPassword, unknown }
 final Rx<bool?> doneState = Rx<bool?>(null);
@@ -179,7 +176,7 @@ class PasswordResetHandler extends AdaptiveUI {
           autoFocus: true,
           hint: "minimum 6 characters",
           onChanged: (data) {
-            UIFormState.password(data);
+            UIFormState.password =data;
           },
           obscureOption: true,
           
@@ -194,7 +191,7 @@ class PasswordResetHandler extends AdaptiveUI {
           loadStateKey:FeedbackSpinKeys.auth ,
           onPressed: () async {
 
-            bool result = await authService.handlePasswordReset(code, continueUrl, UIFormState.password.value);
+            bool result = await authService.handlePasswordReset(code, continueUrl, UIFormState.password);
             if (result) {
               passResetState(PassResetState.success);
             } else {

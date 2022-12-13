@@ -1,4 +1,3 @@
-import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
@@ -7,7 +6,6 @@ import 'package:celebrated/domain/view/components/text.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
@@ -321,20 +319,20 @@ class SignUpPage extends AdaptiveUI {
   String? validateCurrentStage() {
     switch (currentIndex) {
       case 0:
-        return Validators.userNameValidator.announceValidation(UIFormState.name.value);
+        return Validators.userNameValidator.announceValidation(UIFormState.name);
 
       case 1:
 
-        return Validators.emailFormValidator.announceValidation(UIFormState.email.value);
+        return Validators.emailFormValidator.announceValidation(UIFormState.email);
 
       case 2:
-        return Validators.passwordValidator.announceValidation(UIFormState.password.value);
+        return Validators.passwordValidator.announceValidation(UIFormState.password);
 
       case 3:
         return Validators.birthdayValidator.announceValidation(UIFormState.birthdate);
 
       case 4:
-        return Validators.phoneValidator.announceValidation(UIFormState.phoneNumber.value);
+        return Validators.phoneValidator.announceValidation(UIFormState.phoneNumber);
     }
     return null;
   }

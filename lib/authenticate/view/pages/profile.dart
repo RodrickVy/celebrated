@@ -1,3 +1,4 @@
+import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
 import 'package:celebrated/authenticate/view/components/user.avatar.dart';
 import 'package:celebrated/authenticate/view/components/signout.button.dart';
@@ -103,6 +104,7 @@ class ProfilePage extends AppPageView {
                   Obx(
                     () => UIFormState.nameField.copyWith(
                         onChanged: (d) {
+                          UIFormState.name = d;
                           nameChanges(d);
                         },
                         controller: TextEditingController(text: authService.userLive.value.name)),
@@ -125,10 +127,14 @@ class ProfilePage extends AppPageView {
                     () => UIFormState.dateField(
                       initialValue: authService.userLive.value.birthdate,
                       onChanged: (d) {
-                        dateChanges(d);
+
+                          dateChanges(d);
+
+
                       },
                     ),
                   ),
+                  const NotificationsView(),
                   Obx(
                     () {
 
@@ -139,16 +145,20 @@ class ProfilePage extends AppPageView {
                           isTextButton:nameChanges.value == null &&  phoneChanges.value == null && dateChanges.value == null,
                           onPressed: () async {
                             if (dateChanges.value != null) {
-                              authService.updateBirthdate(date: UIFormState.parsedDate);
+                              authService.updateBirthdate(date: UIFormState.parsedDate!);
                             }
                             if (phoneChanges.value != null) {
-                              if (Request.validateField(Validators.phoneValidator, UIFormState.phoneNumber.value)) {
-                                await authService.updatePhoneNumber(newPhone: UIFormState.phoneNumber.value);
+                              if (Request.validateField(Validators.phoneValidator, UIFormState.phoneNumber)) {
+                                await authService.updatePhoneNumber(newPhone: UIFormState.phoneNumber);
                               }
                             }
                             if (nameChanges.value != null) {
-                              await authService.updateUserName(name: nameChanges.value!);
+                              await authService.updateUserName(name: UIFormState.name);
                             }
+
+                            nameChanges.value = null;
+                            dateChanges.value = null;
+                            phoneChanges.value = null;
                             print("rerun   ${nameChanges.value}  ");
                           },
                           label: "Save Changes",
@@ -156,7 +166,7 @@ class ProfilePage extends AppPageView {
                       );
                     },
                   ),
-                  const NotificationsView(),
+
                   const SizedBox(
                     height: 28,
                   ),
