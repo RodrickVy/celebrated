@@ -2,26 +2,17 @@ import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/requests/signin.request.dart';
 import 'package:celebrated/authenticate/requests/signup.request.dart';
-import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/domain/view/components/forms/phone.form.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/subscription/models/subscription.plan.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/controller/spin.keys.dart';
-import 'package:celebrated/util/date.dart';
 import 'package:celebrated/util/fomatters.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:phone_form_field/phone_form_field.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 /// A service to keep track of  all app's forms ephemeral state, this also helps us avoid request the user data twice, as it it can use data
 /// from a form previously field.
@@ -32,7 +23,7 @@ class UIFormState {
   static RxString name = ''.obs;
   static RxString email = ''.obs;
   static RxString password = ''.obs;
-  static Rx<DateTime> birthdate = DateTime.now().obs;
+  static String birthdate = '';
   static RxString phoneNumber = ''.obs;
   static RxString promoCode = ''.obs;
   static RxString authCode = ''.obs;
@@ -41,8 +32,6 @@ class UIFormState {
   static RxBool textDateInput = true.obs;
   static Rx<SubscriptionPlan> subscriptionPlan = SubscriptionPlan.free.obs;
   static RxBool signInLinkSent = false.obs;
-
-  static RxString birthdateString = ''.obs;
 
   static SignInEmailRequest get signInFormData => SignInEmailRequest(email: email.value, password: password.value);
 
@@ -53,7 +42,7 @@ class UIFormState {
       plan: subscriptionPlan.value,
       promotionCode: promoCode.value,
       name: name.value,
-      birthdate: birthdate.value);
+      birthdate: birthdate);
 
   const UIFormState();
 
@@ -62,7 +51,7 @@ class UIFormState {
         autoFocus: GetPlatform.isDesktop,
         fieldIcon: Icons.account_circle_sharp,
         decoration: AppTheme.inputDecoration,
-        controller: TextEditingController(text: UIFormState.signUpFormData.name),
+        controller: TextEditingController(text: UIFormState.name.value),
         onChanged: (data) {
           UIFormState.name(data);
         },
@@ -118,72 +107,37 @@ class UIFormState {
   //       maxDate: DateTime.now(),
   //     );
 
-  static Widget dateField([DateTime? initialValue]) {
-    if(initialValue != null){
-      UIFormState.birthdate(initialValue);
-
+  static String startValue(DateTime? initialVal) {
+    if (initialVal != null) {
+      UIFormState.birthdate = isoStringToDMYFormat(initialVal.toIso8601String());
     }
+    return isoStringToDMYFormat(initialVal?.toIso8601String() ?? UIFormState.birthdate);
+  }
+
+  static String isoStringToDMYFormat(String date) {
+    return date.split('T').first.split('-').reversed.join('/');
+  }
+
+  static Widget dateField({DateTime? initialValue, Function(DateTime data)? onChanged}) {
+    //
+
     return AppTextField(
-      fieldIcon: Icons.email,
+      fieldIcon: Icons.cake,
       label: "Date (dd-mm-yyyy)",
       hint: "dd-mm-yyyy",
       autoFocus: GetPlatform.isDesktop,
       inputFormatters: [DateTextFormatter()],
-      controller:
-          TextEditingController(text: (initialValue??UIFormState.birthdate.value).toIso8601String().split('T').first.split('-').reversed.join('/')),
+      controller: TextEditingController(text: startValue(initialValue)),
       onChanged: (data) {
-        birthdateString(data);
-       if(data.length == 10){
-          DateTime date = DateTime.parse(data.split("/").reversed.join('-'));
-          UIFormState.birthdate(date);
-        }
-
+        UIFormState.birthdate = data;
+        onChanged != null ? onChanged(parsedDate) : () {}();
       },
       keyboardType: TextInputType.datetime,
-      autoFillHints: const [AutofillHints.email, AutofillHints.username],
+      autoFillHints: const [AutofillHints.birthday],
     );
-
-    // return SfDateRangePicker(
-    //   selectionMode: DateRangePickerSelectionMode.single,
-    //   onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-    //     UIFormState.birthdate(args.value);
-    //   },
-    //   selectionColor: AppSwatch.primary,
-    //   selectionRadius: 12,
-    //   showNavigationArrow: true,
-    //   onSubmit: (d) {
-    //     onSave != null ? onSave() : () {};
-    //   },
-    //   onCancel: () {
-    //     onCancel != null ? onCancel() : () {};
-    //   },
-    //   showActionButtons: true,
-    //   initialDisplayDate: initialValue,
-    //   maxDate: DateTime.now(),
-    // );
   }
 
-  //
-  //     DateTimePicker(
-  //   type: DateTimePickerType.date,
-  //   // dateMask: 'DD,MM, yyyy',
-  //   fieldLabelText: 'birthdate',
-  //   autofocus: GetPlatform.isDesktop,
-  //   initialDate: UIFormState.signUpFormData.birthdate,
-  //
-  //   firstDate: DateTime(1200),
-  //   style: const TextStyle(fontSize: 12),
-  //   decoration: AppTheme.inputDecoration.copyWith(
-  //     contentPadding: const EdgeInsets.only(left: 6),
-  //     prefixIcon: const Icon(Icons.date_range),
-  //     labelText: "Birthdate",
-  //     hintStyle: AppTheme.themeData.textTheme.bodySmall,
-  //     hintText: UIFormState.signUpFormData.birthdate.readable,
-  //   ),
-  //   lastDate: DateTime.now(),
-  //   icon: const Icon(Icons.event),
-  //   dateLabelText: 'birthdate',
-  // );
+  static DateTime get parsedDate => DateTime.parse(birthdate.split("/").reversed.join('-'));
 
   static AppButton get emailLinkButton {
     return AppButton(
@@ -200,5 +154,3 @@ class UIFormState {
     );
   }
 }
-
-

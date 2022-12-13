@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:celebrated/app.theme.dart';
-import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
@@ -41,24 +40,24 @@ class FormPhoneField extends AdaptiveUI {
         hintText: "Phone number",
         labelText: "Phone number",
         suffixIcon: onSaved != null
-            ? IconButton(
-                onPressed: () {
-                  onSaved!(PhoneNumber.parse(UIFormState.phoneNumber.value));
-                },
-                icon: const Icon(Icons.save))
+            ? Obx(
+            ()=> IconButton(
+                  onPressed: () {
+                    onSaved!(PhoneNumber.parse(UIFormState.phoneNumber.value));
+                  },
+                  icon:  Icon(Icons.save,color: UIFormState.phoneNumber.value != initialValue?Colors.orange: Colors.black38,)),
+            )
             : null,
       ),
-      countrySelectorNavigator:
-          CountrySelectorNavigator.dialog(width: adapter.adapt(phone: Get.width - 50, tablet: 300, desktop: 400)),
+      countrySelectorNavigator: CountrySelectorNavigator.dialog(width: adapter.adapt(phone: Get.width - 50, tablet: 300, desktop: 400)),
       autofillHints: const [AutofillHints.telephoneNumber],
       selectionWidthStyle: BoxWidthStyle.tight,
       onChanged: (PhoneNumber? p) {
         FeedbackService.clearErrorNotification();
         onChanged != null ? onChanged!(p) : () {}();
-        if(onSaved != null && p != null){
+        if(p != null){
           UIFormState.phoneNumber(p.international);
         }
-
       }, // default null
     );
   }

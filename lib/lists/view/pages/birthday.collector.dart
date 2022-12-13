@@ -202,7 +202,7 @@ class _AddBirthdayEditor extends AdaptiveUI {
                   const SizedBox(
                     height: 10,
                   ),
-                  UIFormState.dateField(UIFormState.birthdate.value),
+                  UIFormState.dateField(),
                   const NotificationsView(),
                   const SizedBox(
                     height: 10,
@@ -212,7 +212,7 @@ class _AddBirthdayEditor extends AdaptiveUI {
                       if (Validators.userNameValidator.announceValidation(UIFormState.name.value) == null) {
                         try {
                           FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: true);
-                          await addBirthday(board, UIFormState.name.value, UIFormState.birthdate.value);
+                          await addBirthday(board, UIFormState.name.value, UIFormState.parsedDate);
 
                           FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
                         } catch (_) {

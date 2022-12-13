@@ -6,19 +6,15 @@ import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/text.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
-import 'package:celebrated/domain/view/components/app.text.field.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
-import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 
 /// a login form , for authentication
 /// Uses the feedback spinner for actions as well as local [NotificationsView] for errors,warning.

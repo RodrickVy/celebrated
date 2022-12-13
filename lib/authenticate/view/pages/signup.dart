@@ -190,7 +190,7 @@ class SignUpPage extends AdaptiveUI {
                 height: 40,
               ),
               const BodyText("when's your birthday",textAlign: TextAlign.center,),
-              UIFormState.dateField(UIFormState.birthdate.value),
+              UIFormState.dateField(),
               const SizedBox(
                 height: 5,
               ),
@@ -331,7 +331,7 @@ class SignUpPage extends AdaptiveUI {
         return Validators.passwordValidator.announceValidation(UIFormState.password.value);
 
       case 3:
-        return Validators.birthdayValidator.announceValidation(UIFormState.birthdate.value);
+        return Validators.birthdayValidator.announceValidation(UIFormState.birthdate);
 
       case 4:
         return Validators.phoneValidator.announceValidation(UIFormState.phoneNumber.value);

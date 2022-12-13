@@ -65,7 +65,7 @@ class BirthdayEditor extends AdaptiveUI {
               const SizedBox(
                 height: 5,
               ),
-              Obx(()=> UIFormState.dateField(birthday.value.date)),
+               UIFormState.dateField(initialValue:birthday.value.date),
               //   (
               //   initialValue: birthday.value.date,
               //   onSave: (){
@@ -89,10 +89,9 @@ class BirthdayEditor extends AdaptiveUI {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: AppButton(onPressed: (){
-                    if(Validators.birthdayValidator.announceValidation(UIFormState.birthdateString.value) == null){
-                      onSave(birthday.value.copyWith(date: UIFormState.birthdate.value));
+                    if(Validators.birthdayValidator.announceValidation(UIFormState.birthdate) == null){
+                      onSave(birthday.value.copyWith(date: UIFormState.parsedDate));
                     }
-
                   },label: "Save",),
                 ),
               ],)

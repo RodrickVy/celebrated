@@ -7,7 +7,7 @@ class SignUpEmailRequest extends Request {
   final String email;
   final String phoneNumber;
   final String password;
-  final DateTime birthdate;
+  final   birthdate;
   final SubscriptionPlan plan;
   final String promotionCode;
 
