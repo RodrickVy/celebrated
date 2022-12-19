@@ -2,12 +2,14 @@ import 'package:celebrated/authenticate/adapter/user.acount.factory.dart';
 import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/models/verify.email.response.dart';
 import 'package:celebrated/authenticate/requests/signin.request.dart';
+import 'package:celebrated/cards/controller/cards.service.dart';
 import 'package:celebrated/domain/services/content.store/model/content.interaction.dart';
 import 'package:celebrated/authenticate/requests/signup.request.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/errors/app.errors.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
 import 'package:celebrated/domain/services/instances.dart';
+import 'package:celebrated/lists/controller/birthdays.controller.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/subscription/models/subscription.plan.dart';
@@ -46,11 +48,13 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
     auth.authStateChanges().listen((User? authUser) async {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         if (authUser != null) {
-          await syncOnAuthentication(authUser);
-          await saveDeviceTokenToDB();
-          await addDeviceToUsersPlatforms();
+          await updateFromStore(authUser);
+          await cardsController.updateDataFromStore();
+          await birthdaysController.updateDataFromStore();
         } else {
           userLive(UserAccount.unAuthenticated());
+          cardsController.clearData();
+          birthdaysController.clearData();
         }
       });
 
@@ -61,6 +65,14 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
         }
       });
     });
+  }
+
+  Future<void> updateFromStore(User authUser) async {
+    try {
+      await syncOnAuthentication(authUser);
+      await saveDeviceTokenToDB();
+      await addDeviceToUsersPlatforms();
+    } catch (_) {}
   }
 
   Future<void> saveDeviceTokenToDB() async {
@@ -338,9 +350,6 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
     });
   }
 
-  // Field Validators
-
-  // Helper Methods
 
   /// method that adds an interaction to the database and returns a boolean whereas the interaction was added or removed.
   Future<bool> addInteraction({required UserContentInteraction interaction}) async {
@@ -502,6 +511,7 @@ class AuthService extends GetxController with ContentStore<UserAccount, AccountU
 
         if (response.succeeded) {
           await auth.currentUser?.reload();
+          syncOnAuthentication(auth.currentUser!);
           return true;
         } else {
           response.announceError();

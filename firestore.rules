@@ -14,5 +14,11 @@ service cloud.firestore {
       allow write: if request.auth.uid != null;
       allow update: if true;
     }
+
+   match /cards_themes/{theme} {
+      allow read: if true;
+      allow write: if request.auth.uid != null;
+      allow update: if true;
+    }
   }
 }

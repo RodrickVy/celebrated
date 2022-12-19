@@ -1,8 +1,8 @@
 import 'package:celebrated/appIntro/controller/intro.controller.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/navigation/controller/links.handler/dynamic.links.stub.dart'
-    if (dart.library.io) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.io.dart'
-    if (dart.library.js) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.web.dart';
+// import 'package:celebrated/navigation/controller/links.handler/dynamic.links.stub.dart'
+//     if (dart.library.io) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.io.dart'
+//     if (dart.library.js) 'package:celebrated/navigation/controller/links.handler/dyanimiclinks.service.web.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/navigation/model/route.dart';
 import 'package:celebrated/navigation/model/route.guard.dart';
@@ -155,19 +155,33 @@ class NavService extends GetxController {
   }
 
   void routeToParameter(String key, String value) {
-    Map<String, String> parameters = Get.parameters.entries
-        .where((element) => element.value != null)
-        .fold({}, (previousValue, element) => {...previousValue, element.key: element.value!});
-    parameters[key] = value;
+    int paramsCount = Get.currentRoute
+        .split("?").length;
+    Map<String?, String?> parameters = paramsCount > 1 ? Get.currentRoute
+          .split("?")
+          .last
+          .split('&')
+          .map((e) {
+            String? paramKey = e.split('=')[0];
+            String? paramValue = e.split('=')[1];
+            return MapEntry<String?, String?>(paramKey, paramValue);
+          })
+          .where((element) => element.value != null && element.key != null)
+          .fold({}, (previousValue, element) => {...previousValue, element.key: element.value!}) :{};
+
+    String route = baseRoute(Get.currentRoute);
+    print(    '$route/?${{...parameters, key: value}.entries.map((e) => '${e.key}=${e.value}').join('&')}',);
     Get.toNamed(
-      '${Get.currentRoute.split('/?').first}/?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}',
+      '$route/?${{...parameters, key: value}.entries.map((e) => '${e.key}=${e.value}').join('&')}',
     );
   }
 
   /// route to a given route.
   to(String route) {
-    Get.toNamed(route);
+    Get.toNamed(route,);
   }
+
+
 
   int get currentItemIndex => currentBottomBarIndex.value;
 
@@ -218,7 +232,11 @@ class NavService extends GetxController {
   }
 
   void back() {
-    Get.back();
+    if (Get.previousRoute.isEmpty) {
+      Get.toNamed(AppRoutes.home);
+    } else {
+      Get.back();
+    }
   }
 
   void toggleDrawerExpansion() {
@@ -229,15 +247,15 @@ class NavService extends GetxController {
 
   @override
   onReady() {
-    DynamicLinksHandler.instance.listen();
+    // DynamicLinksHandler.instance.listen();
   }
 
   String baseRoute([String? route]) {
-    String routePath = (route ?? Get.currentRoute).split('/?').first;
-    if (routePath.replaceAll("/", '').trim().isNotEmpty) {
-      print('/${routePath}');
-      List<String> routeSegments = routePath.split("/").where((element) => element.trim().isNotEmpty).toList();
+    String routePath = (route ?? Get.currentRoute).split(RegExp(r'[?]')).first;
 
+    if (routePath.replaceAll("/", '').trim().isNotEmpty) {
+      List<String> routeSegments = routePath.split("/").where((element) => element.trim().isNotEmpty).toList();
+      print('$routePath Route segment is : ${routeSegments.first}');
       return '/${routeSegments.first}';
     } else {
       return '/';
@@ -259,8 +277,9 @@ class NavService extends GetxController {
     Get.to(Get.currentRoute);
   }
 
-  Future<String> createDynamicLink(String route)async{
-  return  (await DynamicLinksHandler.instance.createDynamicLink(route)).toString();
+  Future<String> createDynamicLink(String route) async {
+    // return (await DynamicLinksHandler.instance.createDynamicLink(route)).toString();
+    return '';
   }
 }
 

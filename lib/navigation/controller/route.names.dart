@@ -38,17 +38,20 @@ class AppRoutes {
   static const String notFound = "/notfound";
   static const String docs = '/docs/:id';
 
-  static List<String> noAppBarRoutes = [lists,list, splash, privacy];
+  static List<String> noAppBarRoutes = [lists,list, splash, privacy,cards,signCard,cardEditor];
 
   static String authEmailSignInForm = '/email_sign_in';
   static String list = '/lists/:id';
   static String cardEditor = '/cards/edit';
 
+  static String signCard ="/signCard";
+  static String cardPreview ="/cardPreview";
   static List<AppPage> get items => [
         AppPage(name: "Home", route: home, icon: Icons.home),
         AppPage(name: "Lists", route: lists, icon: Icons.calendar_today),
         AppPage(name: "Gifts", route: gifts, icon: Icons.card_giftcard),
         AppPage(name: "Cards", route: cards, icon: Icons.email_sharp),
+
         // AppPage(name: "Parties", route: parties, icon: Icons.cake),
         // AppPage(name: "Account", route: profile, icon: Icons.account_circle),
       ];

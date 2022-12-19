@@ -24,16 +24,20 @@ class UIFormState {
   static String name = '';
   static String email = '';
   static String password = '';
-  static String birthdate = '';
+  static String birthdate = '03/04/2004';
   static String phoneNumber = '';
   static String promoCode = '';
   static String authCode = '';
-  static String recipientName = '';
 
   /// using text input instead of calender for inputing dates
   static RxBool textDateInput = true.obs;
   static Rx<SubscriptionPlan> subscriptionPlan = SubscriptionPlan.free.obs;
   static RxBool signInLinkSent = false.obs;
+
+  static String cardSenderName = '';
+  static String cardRecipientName = '';
+  static String cardRecipientEmail = '';
+  static String cardSendDate = '';
 
   static SignInEmailRequest get signInFormData => SignInEmailRequest(email: email, password: password);
 
@@ -44,44 +48,30 @@ class UIFormState {
       plan: subscriptionPlan.value,
       promotionCode: promoCode,
       name: name,
-      birthdate: birthdate);
+      birthdate: parsedDate??DateTime.now());
 
   const UIFormState();
 
   static AppTextField get nameField => AppTextField(
         label: "name",
-        autoFocus: GetPlatform.isDesktop,
         fieldIcon: Icons.account_circle_sharp,
         decoration: AppTheme.inputDecoration,
         controller: TextEditingController(text: UIFormState.name),
         onChanged: (data) {
-          UIFormState.name =data;
+          UIFormState.name = data;
         },
         hint: 'enter your name',
+        keyboardType: TextInputType.name,
         autoFillHints: const [AutofillHints.name],
       );
 
-  static AppTextField get sendToRecipientField => AppTextField(
-    label: "Recipient ",
-    autoFocus: GetPlatform.isDesktop,
-    fieldIcon: Icons.account_circle_sharp,
-    decoration: AppTheme.inputDecoration,
-    controller: TextEditingController(text: UIFormState.recipientName),
-    onChanged: (data) {
-      UIFormState.recipientName =data;
-    },
-    hint: 'enter recipients name',
-    autoFillHints: const [AutofillHints.name],
-  );
-  
   static AppTextField get emailField => AppTextField(
         fieldIcon: Icons.email,
         label: "Email",
         hint: "eg. example@gmail.com",
-        autoFocus: GetPlatform.isDesktop,
         controller: TextEditingController(text: UIFormState.signUpFormData.email),
         onChanged: (data) {
-          UIFormState.email =data.trim();
+          UIFormState.email = data.trim();
         },
         keyboardType: TextInputType.emailAddress,
         autoFillHints: const [AutofillHints.email, AutofillHints.username],
@@ -90,11 +80,10 @@ class UIFormState {
   static AppTextField get passwordField => AppTextField(
         fieldIcon: Icons.vpn_key,
         label: "Password",
-        autoFocus: GetPlatform.isDesktop,
         hint: "minimum 6 characters",
         controller: TextEditingController(text: UIFormState.signUpFormData.password),
         onChanged: (data) {
-          UIFormState.password =data;
+          UIFormState.password = data;
         },
         obscureOption: true,
         keyboardType: TextInputType.visiblePassword,
@@ -102,11 +91,10 @@ class UIFormState {
       );
 
   static FormPhoneField get phoneField => FormPhoneField(
-        autoFocus: GetPlatform.isDesktop,
         initialValue: UIFormState.signUpFormData.phoneNumber,
         onChanged: (PhoneNumber? p) {
           if (p != null) {
-            UIFormState.phoneNumber =p.international;
+            UIFormState.phoneNumber = p.international;
           }
         },
       );
@@ -140,12 +128,11 @@ class UIFormState {
       fieldIcon: Icons.cake,
       label: "Date (dd-mm-yyyy)",
       hint: "dd-mm-yyyy",
-      autoFocus: GetPlatform.isDesktop,
       inputFormatters: [DateTextFormatter()],
       controller: TextEditingController(text: startValue(initialValue)),
       onChanged: (data) {
         UIFormState.birthdate = data;
-        onChanged != null  && data.length == DateTextFormatter.maxChars+2 ? onChanged(parsedDate) : () {}();
+        onChanged != null && data.length == DateTextFormatter.maxChars + 2 ? onChanged(parsedDate) : () {}();
       },
       keyboardType: TextInputType.datetime,
       autoFillHints: const [AutofillHints.birthday],
@@ -153,11 +140,10 @@ class UIFormState {
   }
 
   static DateTime? get parsedDate {
-    if(Validators.birthdayValidator.announceValidation(birthdate) == null){
+    if (Validators.birthdayValidator.announceValidation(birthdate) == null) {
       return DateTime.parse(birthdate.split("/").reversed.join('-'));
     }
     return null;
-
   }
 
   static AppButton get emailLinkButton {

@@ -10,7 +10,6 @@ import 'package:celebrated/support/view/feedback.spinner.dart';
 import 'package:celebrated/support/view/not.found.dart';
 import 'package:celebrated/support/view/notification.view.dart';
 import 'package:celebrated/util/adaptive.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,16 +32,7 @@ class AuthActionsHandler extends AdaptiveUI {
 
   String get code => Get.parameters['oobCode'] ?? '';
 
-  // (Optional) Get the continue URL from the query parameter if available.
-  static const String continueUrl = 'https://celebratedapp.com/sign_in';
-  static final dynamicLinkParams = DynamicLinkParameters(
-    link: Uri.parse("https://celebratedapp.com/sign_in"),
-    uriPrefix: "https://celebratedapp.com/link",
-    androidParameters: const AndroidParameters(packageName: "com.rodrickvy.celebrated"),
-    iosParameters: const IOSParameters(bundleId: "com.rodrickvy.celebrated"),
-  );
 
-  static Future<Uri> get dynamicLink async => Uri.parse('https://celebratedapp.com/sign_in');
 
   //
   // await FirebaseDynamicLinks.instance.buildLink(dynamicLinkParams);
@@ -50,7 +40,7 @@ class AuthActionsHandler extends AdaptiveUI {
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
     switch (mode) {
       case ActionsMode.resetPassword:
-        return PasswordResetHandler(code: code, continueUrl: continueUrl);
+        return PasswordResetHandler(code: code);
       case ActionsMode.unknown:
         return const NotFoundView();
     }
@@ -65,12 +55,10 @@ enum PassResetState { loading, form, success, error }
 class PasswordResetHandler extends AdaptiveUI {
   final String code;
 
-  // (Optional) Get the continue URL from the query parameter if available.
-  final String continueUrl;
 
   final Rx<PassResetState> passResetState = PassResetState.loading.obs;
 
-  PasswordResetHandler({required this.code, required this.continueUrl, super.key});
+  PasswordResetHandler({required this.code,  super.key});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -191,7 +179,7 @@ class PasswordResetHandler extends AdaptiveUI {
           loadStateKey:FeedbackSpinKeys.auth ,
           onPressed: () async {
 
-            bool result = await authService.handlePasswordReset(code, continueUrl, UIFormState.password);
+            bool result = await authService.handlePasswordReset(code,'',UIFormState.password);
             if (result) {
               passResetState(PassResetState.success);
             } else {

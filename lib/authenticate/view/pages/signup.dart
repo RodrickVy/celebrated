@@ -1,4 +1,5 @@
 import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/authenticate/view/components/provider.buttons.dart';
 import 'package:celebrated/domain/errors/validators.dart';
 import 'package:celebrated/domain/services/ui.forms.state/ui.form.state.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
@@ -90,6 +91,10 @@ class SignUpPage extends AdaptiveUI {
                 height: 15,
               ),
               signInButton,
+              const SizedBox(
+                height: 10,
+              ),
+              // AuthProviderButtons(key: UniqueKey()),
               const SizedBox(
                 height: 10,
               ),

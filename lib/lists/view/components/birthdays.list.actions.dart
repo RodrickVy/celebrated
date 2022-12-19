@@ -36,51 +36,7 @@ List<OptionAction> birthdaysListActions(BirthdayBoard board) {
   ];
 }
 
-class DeleteListView extends StatelessWidget {
-  const DeleteListView({
-    Key? key,
-    required this.controller,
-    required this.board,
-  }) : super(key: key);
 
-  final BirthdaysController controller;
-  final BirthdayBoard board;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: AppTheme.themeData,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AppButton(
-              onPressed: () async{
-                await  controller.deleteList(board.id);
-                FeedbackService.clearErrorNotification();
-              },
-
-              isTextButton: true,
-              child: const Text("Delete"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AppButton(
-              onPressed: () async{
-                FeedbackService.clearErrorNotification();
-
-              },
-              isTextButton: true,
-              child: const Text("Cancel"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class InviteOthersView extends AdaptiveUI {
   final RxBool shareOn = false.obs;
@@ -120,7 +76,7 @@ class InviteOthersView extends AdaptiveUI {
                 if (board.addingId.isNotEmpty)
                   AppButtonIcon(
                     icon: const Icon(Icons.delete),
-                    onPressed: () async{
+                    onPressed: () async {
                       await birthdaysController.updateContent(
                           board.id, BirthdayBoardFactory().toJson(board.copyWith(addingId: "")));
                     },
@@ -220,7 +176,7 @@ class ShareListView extends AdaptiveUI {
               if (board.viewingId.isNotEmpty)
                 AppButtonIcon(
                   icon: const Icon(Icons.delete),
-                  onPressed: () async{
+                  onPressed: () async {
                     birthdaysController.updateContent(
                         board.id, BirthdayBoardFactory().toJson(board.copyWith(viewingId: "")));
                   },
@@ -399,7 +355,7 @@ class TitleWidget extends AdaptiveUI {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
               image,
-              width:80,
+              width: 80,
             ),
           ),
         ),
@@ -443,7 +399,7 @@ class ListSettingsUi extends AdaptiveUI {
                       isTextButton: true,
                       minWidth: adapter.width,
                       label: "close",
-                      onPressed: () async{
+                      onPressed: () async {
                         birthdaysController.currentSettingBox(SettingBox.none);
                       }),
                 ),
@@ -472,8 +428,6 @@ class ListSettingsUi extends AdaptiveUI {
   }
 }
 
-
-
 /// used in birthday editor to select the time to be notified.
 class NotifyWhen extends AdaptiveUI {
   final List<String> values;
@@ -483,11 +437,7 @@ class NotifyWhen extends AdaptiveUI {
   final String defaultValue;
 
   NotifyWhen(
-      {Key? key,
-        required this.values,
-        required this.defaultValue,
-        this.disabled = false,
-        required this.onSelect})
+      {Key? key, required this.values, required this.defaultValue, this.disabled = false, required this.onSelect})
       : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _value(defaultValue);
@@ -495,14 +445,14 @@ class NotifyWhen extends AdaptiveUI {
   }
 
   @override
-  Widget view({ required BuildContext ctx,  required Adaptive adapter}) {
+  Widget view({required BuildContext ctx, required Adaptive adapter}) {
     return Obx(
-          () => Opacity(
-        opacity: disabled ? 0.4:1,
+      () => Opacity(
+        opacity: disabled ? 0.4 : 1,
         child: Container(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color:Colors.transparent,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(0),
             // border: const Border.fromBorderSide(
             //     BorderSide(color: Colors.black45, width: 0.8))
@@ -511,7 +461,6 @@ class NotifyWhen extends AdaptiveUI {
             value: _value.value ?? defaultValue,
             icon: const Icon(Icons.arrow_drop_down),
             elevation: 16,
-
             borderRadius: BorderRadius.circular(0),
             underline: Container(
               height: 2,

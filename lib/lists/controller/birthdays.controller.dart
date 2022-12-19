@@ -3,23 +3,20 @@
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/models/account.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
-import 'package:celebrated/cards/adapter/birthdays.factory.dart';
 import 'package:celebrated/domain/model/drop.down.action.dart';
-import 'package:celebrated/domain/services/app.initializing.state.dart';
 import 'package:celebrated/domain/services/content.store/model/query.dart';
 import 'package:celebrated/domain/services/content.store/model/query.methods.dart';
 import 'package:celebrated/domain/services/content.store/repository/repository.dart';
 import 'package:celebrated/lists/adapter/birthday.list.factory.dart';
+import 'package:celebrated/lists/adapter/birthdays.factory.dart';
 import 'package:celebrated/lists/data/static.data.dart';
 import 'package:celebrated/lists/model/birthday.dart';
 import 'package:celebrated/lists/model/birthday.list.dart';
 import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/lists/model/settings.ui.dart';
-import 'package:celebrated/lists/view/pages/list.shared.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/support/controller/feedback.controller.dart';
-import 'package:celebrated/support/controller/spin.keys.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
@@ -56,6 +53,12 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
   @override
   CollectionReference<Map<String, dynamic>> get collectionReference => firestore.collection('lists');
 
+  List<ABirthday> get getAllBirthdays {
+    return [...birthdayLists.values,...trackedLists.values]
+        .map((BirthdayBoard value) => value.birthdays.values)
+        .fold([], (previousValue, element) => [...previousValue, ...element]);
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -68,7 +71,7 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
             Map.fromIterable(await getCollectionAsList(null), key: (e) => e.id, value: (e) => e);
 
         birthdayLists.assignAll(list);
-       await getTrackedLists();
+        await getTrackedLists();
         // trackedLists(Map.fromIterable(await getTrackedLists(), key: (e) => e.id, value: (e) => e));
         // FeedbackService.spinnerUpdateState(key:FeedbackSpinKeys.appWide, isOn: false);
         // BirthdaysController.instance.currentListId( orderedBoards.isNotEmpty ? orderedBoards[0].id:"");
@@ -78,7 +81,7 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
         //     await updateContent(e.id,{"authorName":AuthController.instance.accountUser.value.displayName});
         //   }
         // });
-      }else{
+      } else {
         birthdayLists.assignAll({});
         trackedLists.assignAll({});
       }
@@ -108,8 +111,10 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
   }
 
   Future<List<BirthdayBoard>> getTrackedLists() async {
-    final Map<String, BirthdayBoard> tracked =
-    Map.fromIterable(await queryCollection(ContentQuery("watchers", QueryMethods.arrayContains, authService.userLive.value.uid)), key: (e) => e.id, value: (e) => e);
+    final Map<String, BirthdayBoard> tracked = Map.fromIterable(
+        await queryCollection(ContentQuery("watchers", QueryMethods.arrayContains, authService.userLive.value.uid)),
+        key: (e) => e.id,
+        value: (e) => e);
     trackedLists.assignAll(tracked);
     return tracked.values.toList();
   }
@@ -379,6 +384,21 @@ class BirthdaysController extends GetxController with ContentStore<BirthdayBoard
         "watchers": [...board.watchers, authService.user.uid]
       }));
     }
+  }
+
+  Future<void> updateDataFromStore()async {
+
+      final Map<String, BirthdayBoard> list =
+      Map.fromIterable(await getCollectionAsList(null), key: (e) => e.id, value: (e) => e);
+
+    birthdayLists.assignAll(list);
+    await getTrackedLists();
+
+  }
+
+  void clearData(){
+    birthdayLists.assignAll({});
+    trackedLists.assignAll({});
   }
 }
 

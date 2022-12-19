@@ -1,0 +1,1 @@
+enum CardSendMethod { email, sms }

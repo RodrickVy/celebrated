@@ -24,14 +24,6 @@ class ContentStore<T extends IModel, F extends IModelFactory<T>>
 
   late CollectionReference<Map<String, dynamic>> collectionReference;
 
-  // ContentRepository(
-  //     {required this.empty,
-  //     required this.docFactory,
-  //     required this.dbCollectionPath}) {
-  //   collectionReference = firestore.collection(dbCollectionPath);
-  // }
-
-
   void onContentUpdated(T content) {
 
   }
@@ -199,7 +191,7 @@ class ContentStore<T extends IModel, F extends IModelFactory<T>>
         .set(docFactory.toJson(data))
         .then((value) => true)
         .catchError((e) {
-      Get.log(e);
+      Get.log(e.toString());
       return false;
     });
   }

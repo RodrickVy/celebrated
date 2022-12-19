@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingSpinner extends StatelessWidget {
+  final String message;
+
   const LoadingSpinner({
     Key? key,
+    this.message = "getting things ready...",
   }) : super(key: key);
 
   @override
@@ -15,7 +18,7 @@ class LoadingSpinner extends StatelessWidget {
         SpinKitSpinningCircle(
           color: Adaptive(context).theme.colorScheme.primary,
         ),
-        const Text("getting things ready...")
+        Text(message)
       ],
     );
   }

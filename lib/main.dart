@@ -8,8 +8,10 @@ import 'package:celebrated/authenticate/view/pages/email.verifier.dart';
 import 'package:celebrated/authenticate/view/pages/profile.dart';
 import 'package:celebrated/authenticate/view/pages/signin.dart';
 import 'package:celebrated/authenticate/view/pages/signup.dart';
-import 'package:celebrated/cards/view/card.editor.dart';
-import 'package:celebrated/cards/view/cards.list.dart';
+import 'package:celebrated/cards/view/components/card.preview.page.dart';
+import 'package:celebrated/cards/view/pages/card.editor.dart';
+import 'package:celebrated/cards/view/pages/card.signer.dart';
+import 'package:celebrated/cards/view/pages/cards.list.dart';
 import 'package:celebrated/lists/view/pages/birthday.collector.dart';
 import 'package:celebrated/lists/view/pages/birthday.countdown.dart';
 import 'package:celebrated/lists/view/pages/lists.dart';
@@ -35,35 +37,37 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
+import 'package:giphy_get/l10n.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'authenticate/view/pages/password.reset.dart';
 import 'domain/view/interface/app.page.wrapper.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (message.notification != null) {
-    await notificationService.sendNotification(message.data['message'] ?? '', '');
-  }
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   if (message.notification != null) {
+//     await notificationService.sendNotification(message.data['message'] ?? '', '');
+//   }
+// }
 
 void main() async {
+  SystemChrome. setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await notificationService.init();
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("Got message ::: ----------------  ${message.data}");
-    if (message.notification != null) {
-      FeedbackService.announce(
-          notification: AppNotification(
-        appWide: true,
-        title: "${message.data['message']}",
-      ));
-    }
-  });
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await notificationService.init();
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print("Got message ::: ----------------  ${message.data}");
+  //   if (message.notification != null) {
+  //     FeedbackService.announce(
+  //         notification: AppNotification(
+  //       appWide: true,
+  //       title: "${message.data['message']}",
+  //     ));
+  //   }
+  // });
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const App());
 }
@@ -97,8 +101,10 @@ class App extends StatelessWidget {
         GetPage(name: AppRoutes.authSignIn, page: () => const SignInPage()),
         GetPage(name: AppRoutes.verifyEmail, page: () => const EmailVerifier()),
         GetPage(name: AppRoutes.subscriptions, page: () => const SubscriptionsPage()),
-        GetPage(name: AppRoutes.cards, page: () => const CardsListPage()),
-    GetPage(name: AppRoutes.cardEditor, page: () => const CardEditor()),
+        GetPage(name: AppRoutes.cards, page: () =>  const CardsListPage()),
+        GetPage(name: AppRoutes.cardEditor, page: () =>  const CardEditor()),
+       GetPage(name: AppRoutes.signCard, page: () =>   CardSigner()),
+    GetPage(name: AppRoutes.cardPreview, page: () =>   CardViewer()),
         // GetPage(
         // name: AppRoutes.cards,
         // page: () => const ComingSoon(
@@ -142,9 +148,21 @@ class App extends StatelessWidget {
       title: 'celebrated',
       theme: AppTheme.themeData,
       unknownRoute: GetPage(name: AppRoutes.notFound, page: () => const NotFoundView(key: Key(AppRoutes.notFound))),
-      defaultTransition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 800),
+      defaultTransition: Transition.noTransition,
+      // transitionDuration: const Duration(milliseconds: 800),
       initialRoute: AppRoutes.splash,
+      localizationsDelegates: [
+        // Default Delegates
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        // Add this line
+        GiphyGetUILocalizations.delegate
+      ],
+      supportedLocales: [
+
+        //Your supported languages
+        Locale('en', ''),
+      ],
       initialBinding: AppBindings(),
       routingCallback: (Routing? routing) {
         if (routing != null) {

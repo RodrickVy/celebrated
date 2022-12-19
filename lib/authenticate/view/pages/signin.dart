@@ -116,7 +116,7 @@ class SignInPage extends AdaptiveUI {
               const SizedBox(
                 height: 15,
               ),
-              if (GetPlatform.isDesktop) UIFormState.emailLinkButton,
+              // if (GetPlatform.isDesktop) UIFormState.emailLinkButton,
               const SizedBox(
                 height: 5,
               ),
@@ -167,7 +167,7 @@ class SignInPage extends AdaptiveUI {
               const SizedBox(
                 height: 15,
               ),
-              if (GetPlatform.isDesktop) UIFormState.emailLinkButton,
+              // if (GetPlatform.isDesktop) UIFormState.emailLinkButton,
               const SizedBox(
                 height: 10,
               ),

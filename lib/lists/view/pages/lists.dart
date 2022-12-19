@@ -17,10 +17,10 @@ import 'package:celebrated/support/controller/feedback.controller.dart';
 import 'package:celebrated/support/models/app.error.code.dart';
 import 'package:celebrated/support/models/app.notification.dart';
 import 'package:celebrated/support/models/notification.type.dart';
+import 'package:celebrated/support/view/components/prompt.snack.actions.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class ListsPage extends AdaptiveUI {
   const ListsPage({super.key});
@@ -40,19 +40,21 @@ class ListsPage extends AdaptiveUI {
                 toolbarHeight: 0,
                 elevation: 0,
                 backgroundColor: Colors.white,
-                bottom: const PreferredSize(preferredSize:Size(350,50), child:SizedBox(
-                  width: 350,
-                  child: TabBar(tabs: [
-                    Tab(
-                      text: "Your List",
-                      // icon: Icon(Icons.list),
-                    ),
-                    Tab(
-                      text: "Tracking",
-                      // icon: Icon(Icons.notifications),
-                    )
-                  ]),
-                )),
+                bottom: const PreferredSize(
+                    preferredSize: Size(350, 50),
+                    child: SizedBox(
+                      width: 350,
+                      child: TabBar(tabs: [
+                        Tab(
+                          text: "Your List",
+                          // icon: Icon(Icons.list),
+                        ),
+                        Tab(
+                          text: "Tracking",
+                          // icon: Icon(Icons.notifications),
+                        )
+                      ]),
+                    )),
               ),
               body: TabBarView(children: [
                 Container(
@@ -78,7 +80,7 @@ class ListsPage extends AdaptiveUI {
                           );
                         }).toList(),
                         if (birthdaysController.birthdayLists.isEmpty || authService.user.isUnauthenticated) ...[
-                           Container(
+                          Container(
                             alignment: Alignment.center,
                             padding: const EdgeInsets.all(8.0),
                             child: Image.asset(
@@ -198,11 +200,11 @@ class ListsPage extends AdaptiveUI {
                                   label: !board.isWatcher(authService.user.uid) ? "Track List" : "Stop Tracking",
                                   onPressed: () async {
                                     if (board.isWatcher(authService.user.uid)) {
-                                     await birthdaysController.stopTrackingList(board);
+                                      await birthdaysController.stopTrackingList(board);
                                     } else {
                                       await birthdaysController.trackList(board);
                                     }
-                                    await  birthdaysController.getTrackedLists();
+                                    await birthdaysController.getTrackedLists();
                                   },
                                   isTextButton: board.isWatcher(authService.user.id),
                                 ),
@@ -225,24 +227,24 @@ class ListsPage extends AdaptiveUI {
                               width: 200,
                             ),
                           ),
-                            Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Track Other Lists!",
-                                style: adapter.textTheme.headline5,
-                                textAlign: TextAlign.left,
-                              ),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Track Other Lists!",
+                              style: adapter.textTheme.headline5,
+                              textAlign: TextAlign.left,
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(8.0),
-                              child: const Text(
-                                "Can track lists created by others to also get notified",
-                                // style: adapter.textTheme.headline6,
-                                textAlign: TextAlign.center,
-                              ),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(8.0),
+                            child: const Text(
+                              "Can track lists created by others to also get notified",
+                              // style: adapter.textTheme.headline6,
+                              textAlign: TextAlign.center,
                             ),
+                          ),
                           if (birthdaysController.trackedLists.isEmpty)
                             Container(
                               alignment: Alignment.center,
@@ -315,8 +317,6 @@ class ListsPage extends AdaptiveUI {
   }
 }
 
-
-
 enum BirthdayListPageUI { noList, birthdays, settings }
 
 class BirthdayListPage extends AdaptiveUI {
@@ -369,16 +369,18 @@ class BirthdayListPage extends AdaptiveUI {
                   height: 40,
                 ),
                 ...board!.bds.map((ABirthday birthday) {
-                  if(birthdaysController.currentBirthdayInEdit.value == birthday.id){
+                  if (birthdaysController.currentBirthdayInEdit.value == birthday.id) {
                     return BirthdayEditor(
-                      birthdayValue: birthday,
-                        onSave: (ABirthday birthday){
-                      birthdaysController.saveBirthdayDetails(board!, birthday);
-                    }, onDelete: (){
-                      birthdaysController.deleteBirthday(board!, birthday);
-                    }, onCancel: (){
-                      birthdaysController.currentBirthdayInEdit("");
-                    });
+                        birthdayValue: birthday,
+                        onSave: (ABirthday birthday) {
+                          birthdaysController.saveBirthdayDetails(board!, birthday);
+                        },
+                        onDelete: () {
+                          birthdaysController.deleteBirthday(board!, birthday);
+                        },
+                        onCancel: () {
+                          birthdaysController.currentBirthdayInEdit("");
+                        });
                   }
                   return BirthdayCard(
                     list: board!,
@@ -478,7 +480,14 @@ class BirthdayListPage extends AdaptiveUI {
                     type: NotificationType.warning,
                     title: "Are you sure you want to this '${board!.name}' delete?",
                     code: ResponseCode.unknown,
-                    child: DeleteListView(controller: birthdaysController, board: board!)),
+                    child: PromptSnackActions(
+                      onCancel: () {},
+                      actionLabel: "Delete",
+                      cancelLabel: "Cancel",
+                      onAction: () async {
+                        await birthdaysController.deleteList(board!.id);
+                      },
+                    )),
               );
             },
             icon: const Icon(Icons.delete)),
@@ -491,28 +500,6 @@ class BirthdayListPage extends AdaptiveUI {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // class BirthdayListsPage extends AppPageView {
 //   const BirthdayListsPage({Key? key}) : super(key: key);

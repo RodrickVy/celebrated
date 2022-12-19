@@ -1,123 +1,162 @@
+import 'package:celebrated/cards/controller/card.themes.service.dart';
+import 'package:celebrated/cards/controller/cards.service.dart';
+import 'package:celebrated/cards/model/card.sign.dart';
+import 'package:celebrated/cards/model/card.theme.dart';
+import 'package:celebrated/cards/model/send.method.dart';
 import 'package:celebrated/domain/model/imodel.dart';
+import 'package:celebrated/lists/view/components/birthday.card.dart';
+import 'package:celebrated/navigation/controller/route.names.dart';
 
-enum CardSendMethod { email, sms }
-
-class BirthdayCard extends IModel {
+class CelebrationCard extends IModel {
   final CardSendMethod method;
   final String to;
   final String from;
   final String title;
-  final String image;
-  @override
-  final String id;
+  final String toEmail;
   final String authorId;
-  final String template;
-  final List<CardSigner> signers;
-  final DateTime sendWhen;
 
-  BirthdayCard(
+  final String templateId;
+  final Map<String, CardSign> signatures;
+  final DateTime sendWhen;
+  final bool cardSent;
+  final String themeId;
+  final bool sendManually;
+  final int pages;
+
+  CelebrationCard(
       {required this.method,
       required this.to,
+      required this.toEmail,
+      this.sendManually = false,
       required this.sendWhen,
-      required this.from,required this.template,
-        required this.title,
-      required this.image,
-      required this.id,
+      required this.pages,
+      required this.from,
+      required this.templateId,
+      required this.title,
+      required this.themeId,
+      required final String id,
       required this.authorId,
-      required this.signers})
+      this.cardSent = false,
+      required this.signatures})
       : super(id);
 
-  Map<String, dynamic> toMap() {
-    return {
-      'method': method,
-      'to': to,
-      'from': from,
-      'title': title,
-      'image': image,
-      'id': id,
-      'template':template,
-      'authorId': authorId,
-      'signer': signers,
-    };
+  bool get failedToSend =>
+      cardSent == false &&
+      sendWhen.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch &&
+      signatures.isNotEmpty;
+
+  bool get hasBackgroundImage => theme.cardFront.isNotEmpty;
+
+  static CelebrationCard empty() {
+    return CelebrationCard(
+        method: CardSendMethod.email,
+        sendWhen: DateTime.now(),
+        cardSent: false,
+        to: '',
+        pages: 0,
+        from: '',
+        title: '',
+        themeId: '',
+        id: '',
+        authorId: '',
+        signatures: {},
+        templateId: '',
+        toEmail: '');
   }
 
-
-
-  static BirthdayCard empty() {
-    return BirthdayCard(
-        method: CardSendMethod.email,sendWhen: DateTime.now(), to: '', from: '', title: '', image: '', id: '', authorId: '', signers: [], template: '');
+  CelebrationCardTheme get theme {
+    try {
+      return cardThemesService.themes.firstWhere((element) => element.id == themeId);
+    } catch (_) {
+      return CelebrationCardThemesService.themesList.first;
+    }
   }
 
-  BirthdayCard copyWith({
+  CelebrationCard copyWith({
     CardSendMethod? method,
     String? to,
     String? from,
     String? title,
-    String? image,
-    String? template,
+    String? themeId,
+    String? templateId,
+    bool? sendManually,
     String? id,
     String? authorId,
-    List<CardSigner>? signers,
+    Map<String, CardSign>? signatures,
     DateTime? sendWhen,
+    bool? cardSent,
+    String? toEmail,
+    int? pages,
   }) {
-    return BirthdayCard(
+    return CelebrationCard(
       method: method ?? this.method,
       to: to ?? this.to,
       from: from ?? this.from,
       title: title ?? this.title,
-      image: image ?? this.image,
+      themeId: themeId ?? this.themeId,
       id: id ?? this.id,
-      template: template ?? this.template,
+      pages: pages ?? this.pages,
+      toEmail: toEmail ?? this.toEmail,
+      sendManually: sendManually ?? this.sendManually,
+      cardSent: cardSent ?? this.cardSent,
+      templateId: templateId ?? this.templateId,
       authorId: authorId ?? this.authorId,
-      signers: signers ?? this.signers,
+      signatures: signatures ?? this.signatures,
       sendWhen: sendWhen ?? this.sendWhen,
     );
   }
-}
 
-class CardSigner {
-  final String name;
-  final String message;
-  final int pageNumber;
-  final double left;
-  final double top;
+  CelebrationCard withSignature(CardSign cardSign) {
+    final newSigns = {...signatures, cardSign.id: cardSign};
 
-  CardSigner(
-      {required this.pageNumber, required this.left, required this.top, required this.name, required this.message});
+    return copyWith(signatures: newSigns);
+  }
 
-  Map<String, dynamic> toMap() {
+  CelebrationCard withRemovedSignature(CardSign cardSign) {
+    return copyWith(signatures: signatures..remove(cardSign.id));
+  }
+
+  String get shareUrl {
+    return "${AppRoutes.domainUrlBase}${AppRoutes.cardPreview}?id=$id&page=0";
+  }
+
+  factory CelebrationCard.fromMap(Map<String, dynamic> json) {
+    return CelebrationCard(
+      method: CardSendMethod.values.byName(json['method'] ?? 'email'),
+      to: json['to'],
+      from: json['from'],
+      title: json['title'],
+      templateId: json['templateId'] ?? '',
+      toEmail: json["toEmail"],
+      themeId: json['themeId'] ?? '',
+      id: json['id'],
+      pages: json['pages'] ?? 0,
+      sendManually: json["sendManually"] ?? false,
+      authorId: json['authorId'],
+      cardSent: json['cardSent'],
+      signatures: Map.fromIterable(List.from(json['signatures'] ?? []).map((e) => CardSign.fromMap(e)),
+          key: (e) => e.id, value: (e) => e),
+      sendWhen: DateTime.fromMillisecondsSinceEpoch(json["sendWhen"]),
+    );
+  }
+
+
+  Map<String, dynamic> toMap(CelebrationCard model) {
     return {
-      'name': name,
-      'message': message,
-      'pageNumber': pageNumber,
-      'left': left,
-      'top': top,
+      'method': model.method.name,
+      'to': model.to,
+      'from': model.from,
+      'title': model.title,
+      'templateId': model.templateId,
+      'sendManually': model.sendManually,
+      'themeId': model.themeId,
+      'id': model.id,
+      'pages': model.pages,
+      'toEmail': model.toEmail,
+      'cardSent': model.cardSent,
+      'authorId': model.authorId,
+      'signatures': model.signatures.values.map((e) => e.toMap()).toList(),
+      "sendWhen": model.sendWhen.millisecondsSinceEpoch
     };
-  }
-
-  factory CardSigner.fromMap(Map<String, dynamic> map) {
-    return CardSigner(
-      name: map['name'] as String,
-      message: map['message'] as String,
-      pageNumber: map['pageNumber'] as int,
-      left: map['left'] as double,
-      top: map['top'] as double,
-    );
-  }
-
-  CardSigner copyWith({
-    String? name,
-    String? message,
-    int? pageNumber,
-    double? left,
-    double? top,
-  }) {
-    return CardSigner(
-      name: name ?? this.name,
-      message: message ?? this.message,
-      pageNumber: pageNumber ?? this.pageNumber,
-      left: left ?? this.left,
-      top: top ?? this.top,
-    );
   }
 }

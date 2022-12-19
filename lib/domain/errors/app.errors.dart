@@ -51,7 +51,7 @@ class AnnounceErrors {
   }
 
   static unknown(error) => FeedbackService.announce(
-          notification: AppNotification.unknownError(error).copyWith(
+          notification: AppNotification.unknownError( error.toString()).copyWith(
         appWide: false,
         stack: error.toString(),
       ));

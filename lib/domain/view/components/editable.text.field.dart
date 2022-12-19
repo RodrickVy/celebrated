@@ -21,20 +21,24 @@ class EditableTextView extends StatelessWidget {
   final int? minLines;
   final Color? background;
   final bool autoFocus;
+  final String hint;
   final Function? onIconPressed;
   final Key _key;
   final RxBool  needsToSave = RxBool(false);
   final bool asText;
   final TextStyle? textStyle;
+  final bool noBorder;
 
   EditableTextView(
       {Key? key,
       required this.textValue,
       required this.label,
       // required this.spinnerKey,
+        this.hint = '',
       this.background,
       required this.onSave,
         this.textStyle,
+        this.noBorder = false,
       this.onIconPressed,
       required this.icon,
       this.autoFocus = false,
@@ -57,7 +61,11 @@ class EditableTextView extends StatelessWidget {
           label: asText ? '':label,
           decoration: (asText ? AppTheme.inputDecorationNoBorder:AppTheme.inputDecoration).copyWith(
             prefixIcon: asText ? null:Icon(icon),
+            hintText: hint,
             prefixIconConstraints: asText ? const BoxConstraints(maxWidth:0 ):null,
+            border: noBorder? const OutlineInputBorder(borderSide: BorderSide.none) : null,
+            focusedBorder: noBorder? const OutlineInputBorder(borderSide: BorderSide.none) : null,
+            errorBorder: noBorder? const OutlineInputBorder(borderSide: BorderSide.none) : null,
             suffixIcon: Obx(
                 ()=> IconButton(
                   onPressed: () {

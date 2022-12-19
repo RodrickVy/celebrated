@@ -52,13 +52,12 @@ class EmailVerifier extends AdaptiveUI {
   AppTextField get codeField => AppTextField(
         fieldIcon: Icons.key_sharp,
         label: "Code",
-        hint: "f43hkl",
+        hint: "43hl",
         autoFocus: true,
         controller: TextEditingController(text: UIFormState.authCode),
         onChanged: (data) {
           UIFormState.authCode = data.trim();
         },
-        
         keyboardType: TextInputType.visiblePassword,
         autoFillHints: const [AutofillHints.oneTimeCode],
       );
