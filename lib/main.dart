@@ -33,7 +33,6 @@ import 'package:celebrated/support/view/not.found.dart';
 import 'package:celebrated/support/view/notification.snackbar.dart';
 import 'package:celebrated/support/view/support.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';

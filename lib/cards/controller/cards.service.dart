@@ -24,6 +24,7 @@ class CardsController extends GetxController with ContentStore<CelebrationCard, 
 
   final RxMap<String, CelebrationCard> birthdayCards = RxMap<String, CelebrationCard>({});
 
+  /// used to retrieve the current card as reflected in the route using the id parameter
   Future<CelebrationCard?> get cardFromUrlParam async {
     if (Get.parameters['id'] != null) {
       if (birthdayCards[Get.parameters['id']] != null) {
@@ -36,13 +37,26 @@ class CardsController extends GetxController with ContentStore<CelebrationCard, 
     return null;
   }
 
-  static CardsController? _instance;
+  /// the current index of the sign we are when signing a card
 
+  static CardsController? _instance;
+  final RxInt currentSignIndex = 0.obs;
   CardsController._();
 
   factory CardsController() {
     _instance ??= CardsController._();
     return _instance!;
+  }
+
+  Future<CelebrationCard> getCardById(String id)async{
+
+      if (birthdayCards.containsKey(id)) {
+        return birthdayCards[id]!;
+      } else {
+        return await getContent(id);
+      }
+
+
   }
 
   Future<void> updateDataFromStore() async {
@@ -106,3 +120,4 @@ class CardsController extends GetxController with ContentStore<CelebrationCard, 
     FeedbackService.spinnerUpdateState(key: FeedbackSpinKeys.appWide, isOn: false);
   }
 }
+

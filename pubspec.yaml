@@ -42,6 +42,8 @@ dependencies:
   text_editor: ^0.7.0
   image_stickers: ^0.0.4
   giphy_get: ^3.1.1
+  font_awesome_flutter: ^10.3.0
+  super_editor: ^0.2.3+1
 
 
 dev_dependencies:

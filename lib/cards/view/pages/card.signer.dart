@@ -11,6 +11,7 @@ import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
 import 'package:celebrated/domain/view/pages/loading.dart';
 import 'package:celebrated/domain/view/pages/task.stage.pages.dart';
+import 'package:celebrated/main.dart';
 import 'package:celebrated/navigation/controller/nav.controller.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 import 'package:celebrated/util/adaptive.dart';
@@ -20,19 +21,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CardSigner extends AdaptiveUI {
-   CardSigner({super.key});
-
-
-
-  static int get currentPage => int.parse(Get.parameters['page']??'0');
+  CardSigner({super.key});
 
   final PageController _cardSignerController = PageController(
-    initialPage: int.parse(Get.parameters['page']??'0'),
+    initialPage: cardsController.currentSignIndex.value,
   );
+
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-
-
     return Obx(
       () {
         cardsController.birthdayCards.value;
@@ -50,117 +46,120 @@ class CardSigner extends AdaptiveUI {
                 image: 'assets/intro/data_not_found.png',
               );
             } else if (snapshot.hasData && snapshot.data != null) {
-
               final CelebrationCard card = snapshot.data!;
 
               final List<CardSign> signatures = card.signatures.values.toList();
 
-              return SizedBox(
-                width: adapter.width,
-                height: adapter.height,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      width: adapter.width,
-                      height: adapter.height - 40,
-                      child: PageView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _cardSignerController,
-                        scrollDirection: Axis.vertical,
-                        children: [
-                          Container(
-                              alignment: Alignment.center,
-                              child: CardFrontPage(
-                                card: card,
-                                width: adapter.adapt(phone: 300, tablet: 500, desktop: 600),
-                                height: adapter.adapt(phone: 600, tablet: 1000, desktop: 1200),
-                              )),
-                          if (signatures.isEmpty)
-                            TaskFailed(
-                              title: "Be the first to sign!",
-                              image: "assets/intro/notification.png",
-                              buttonLabel: "Sign",
-                              buttonAction: () async {
-                                await addNewSignature(card);
-                              },
-                            ),
-                          ...signatures.map2((signature, index) {
-                            return CardSignPage(
-                              card: card,
-                              signature: signature,
-                            );
-                          }),
-                          Container(
-                              alignment: Alignment.center,
-                              child: CardBackPage(
-                                card: card,
-                                width: adapter.adapt(phone: 300, tablet: 500, desktop: 600),
-                                height: adapter.adapt(phone: 600, tablet: 1000, desktop: 1200),
-                              )),
-                        ],
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Container(
-                        alignment: Alignment.bottomCenter,
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+              return Scaffold(
+                appBar: AppBar(
+                  actions: [
+                    AppIconButton(
+                        icon: const Icon(
+                          Icons.arrow_upward,
+                          color: Colors.black,
+                        ),
+                        noBg: true,
+                        onPressed: () {
+                          _cardSignerController.animateTo(_cardSignerController.offset - adapter.height,
+                              duration: const Duration(milliseconds: 500), curve: Curves.easeInCubic);
+                          //   if( cardsController.currentSignIndex.value >= 1){
+                          //     navService.routeToParameter('page', ( cardsController.currentSignIndex.value-1).toString());
+                          //
+                          //   }
+                        }),
+                    // Container(
+                    //   decoration: AppTheme.boxDecoration.copyWith(
+                    //     color: Colors.white
+                    //   ),
+                    //   margin: EdgeInsets.all(4),
+                    //   padding: const EdgeInsets.all(20),
+                    //   child: Text(" ${ cardsController.currentSignIndex.value} / ${card.signatures.length+1}"),
+                    // ),
+                    AppIconButton(
+                        icon: const Icon(
+                          Icons.arrow_downward,
+                          color: Colors.black,
+                        ),
+                        noBg: true,
+                        onPressed: () {
+                          _cardSignerController.animateTo(_cardSignerController.offset + adapter.height,
+                              duration: const Duration(milliseconds: 500), curve: Curves.easeInCubic);
+                          //  if( cardsController.currentSignIndex.value <= card.signatures.length){
+                          //    navService.routeToParameter('page', ( cardsController.currentSignIndex.value+1).toString());
+                          //
+                          //  }
+                        }),
+                    Obx(() {
+                      if (authService.userLive.value.uid == card.authorId &&
+                          cardsController.currentSignIndex.value > 0 &&
+                          cardsController.currentSignIndex.value <= card.signatures.length) {
+                        return AppIconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            await deleteSign(card, signatures[cardsController.currentSignIndex.value-1]);
+                          },
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+                    AppIconButton(
+                        icon: Icon(Icons.draw),
+                        onPressed: () {
+                          addNewSignature(card);
+                        }),
+                  ],
+                ),
+                body: SizedBox(
+                  width: adapter.width,
+                  height: adapter.height,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: adapter.width,
+                        height: adapter.height - 40,
+                        child: PageView(
+                          // physics: NeverScrollableScrollPhysics(),
+                          controller: _cardSignerController,
+                          scrollDirection: Axis.vertical,
+                          restorationId: "cards_sign_page",
+                          onPageChanged: (int index) {
+                            cardsController.currentSignIndex(index);
+                          },
                           children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: currentPage <= 0 ? Colors.grey :AppSwatch.primary ,
-                              child: AppIconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_upward,
-                                    color: Colors.black,
-                                  ),
-                                  noBg: currentPage <= 0 ,
-                                  onPressed: () {
-                                  //  _cardSignerController.animateTo(_cardSignerController.offset - adapter.height,duration: const Duration(milliseconds:500),curve: Curves.easeInCubic);
-                                    if(currentPage >= 1){
-                                      navService.routeToParameter('page', (currentPage-1).toString());
-
-                                    }
-
-                                  }),
-                            ),
                             Container(
-                              decoration: AppTheme.boxDecoration.copyWith(
-                                color: Colors.white
+                                alignment: Alignment.center,
+                                child: CardFrontPage(
+                                  card: card,
+                                  width: adapter.adapt(phone: 300, tablet: 500, desktop: 600),
+                                  height: adapter.adapt(phone: 600, tablet: 1000, desktop: 1200),
+                                )),
+                            if (signatures.isEmpty)
+                              TaskFailed(
+                                title: "Be the first to sign!",
+                                image: "assets/intro/notification.png",
+                                buttonLabel: "Sign",
+                                buttonAction: () async {
+                                  await addNewSignature(card);
+                                },
                               ),
-                              margin: EdgeInsets.all(4),
-                              padding: const EdgeInsets.all(20),
-                              child: Text(" $currentPage / ${card.signatures.length+1}"),
-                            ),
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: currentPage >= card.signatures.length+1 ? Colors.grey :AppSwatch.primary ,
-                              child: AppIconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_downward,
-                                    color: Colors.black,
-                                  ),
-                                  noBg: currentPage >= card.signatures.length+1,
-                                  onPressed: () {
-                                   // _cardSignerController.animateTo(_cardSignerController.offset + adapter.height,duration: const Duration(milliseconds:500),curve: Curves.easeInCubic);
-                                    if(currentPage <= card.signatures.length){
-                                      navService.routeToParameter('page', (currentPage+1).toString());
-
-                                    }
-
-                                  }),
-                            ),
-                            const SizedBox(width: 30,),
-                            AppButtonIcon(icon: const Icon(Icons.add) , onPressed: (){
-                              addNewSignature(card);
-                            },label: "sign",)
+                            ...signatures.map2((signature, index) {
+                              return CardSignPage(
+                                card: card,
+                                signature: signature,
+                              );
+                            }),
+                            Container(
+                                alignment: Alignment.center,
+                                child: CardBackPage(
+                                  card: card,
+                                  width: adapter.adapt(phone: 300, tablet: 500, desktop: 600),
+                                  height: adapter.adapt(phone: 600, tablet: 1000, desktop: 1200),
+                                )),
                           ],
                         ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               );
             } else {
@@ -186,12 +185,17 @@ class CardSigner extends AdaptiveUI {
   Future<void> addNewSignature(CelebrationCard card) async {
     await cardsController.updateContent(card.id, {
       "signatures": card
-          .withSignature(CardSign(id: IDGenerator.generateId(10,card.id), elements: []))
+          .withSignature(CardSign(id: IDGenerator.generateId(10, card.id), elements: []))
           .signatures
           .values
           .map((e) => e.toMap())
           .toList(),
     });
-    navService.routeToParameter('page', (card.signatures.length+1).toString());
+    navService.routeToParameter('page', (card.signatures.length + 1).toString());
+  }
+
+  Future<void> deleteSign(CelebrationCard card, CardSign signature) async {
+    await cardsController.updateContent(card.id,
+        {'signatures': card.withRemovedSignature(signature).signatures.values.map((value) => value.toMap()).toList()});
   }
 }

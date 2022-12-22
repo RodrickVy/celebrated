@@ -1,3 +1,4 @@
+import 'package:celebrated/cards/view/components/card.sign.page.dart';
 import 'package:flutter/material.dart';
 import 'package:giphy_get/giphy_get.dart';
 
@@ -28,8 +29,8 @@ extension TextStyleFromMap on Map<String, dynamic> {
     return TextAlign.values.byName(this["align"]??'center');
   }
 
-  GiphyGif get toGif{
-
-    return GiphyGif.fromJson(this);
+  SignGiphyGif get toGif{
+    print(this);
+    return SignGiphyGif.fromJson(this);
   }
 }
