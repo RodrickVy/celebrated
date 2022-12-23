@@ -1,5 +1,6 @@
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/cards/adapter/card.factory.dart';
 import 'package:celebrated/cards/controller/cards.service.dart';
 import 'package:celebrated/cards/model/card.dart';
 import 'package:celebrated/cards/model/card.sign.dart';
@@ -27,8 +28,8 @@ class CardSignPage extends AdaptiveUI {
 
   const CardSignPage({required this.signature, super.key, required this.card});
 
-// With a MutableDocument, create a DocumentEditor, which knows how
-// to apply changes to the MutableDocument.
+   // With a MutableDocument, create a DocumentEditor, which knows how
+   // to apply changes to the MutableDocument.
   // final docEditor = ;
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -77,35 +78,68 @@ class CardSignPage extends AdaptiveUI {
               body: Center(
                 child: SizedBox(
                   width: 400,
-                  child: SuperEditor(
-                    componentBuilders: [
-                      ...defaultComponentBuilders,
-                    ],
-                    editor: DocumentEditor(
-                        document: MutableDocument(
-                      nodes: [
-                        ...signature.elements.values.map((SignatureElement element) {
-                          switch (element.type) {
-                            case SigElementType.text:
-                              return ParagraphNode(
-                                id: DocumentEditor.createNodeId(),
-                                text: AttributedText(text: element.value),
-                                metadata: {
-                                  'blockType': blockquoteAttribution,
-                                },
-                              );
-                            case SigElementType.gif:
-                              print(element.metadata.entries.map((e) => '\n\n${e.key}:${e.value}\n').toList().join(""));
-                              return ImageNode(
-                                id: DocumentEditor.createNodeId(),
-                                metadata: {'blockType': blockquoteAttribution, ...element.toMap()},
-                                imageUrl: element.metadata.toGif.images!.fixedHeight!.url,
-                              );
-                          }
-                        }),
-                      ],
-                    )),
-                  ),
+                  child: Column(children: [
+                    ...signature.elements.values.map((SignatureElement element) {
+                      switch (element.type) {
+                        case SigElementType.text:
+                          return  TextElementViewer(
+                            onDelete: deleteElement,
+                            onSave: saveElement,
+                            element: element,
+                          );
+
+                        case SigElementType.gif:
+                          return    ImageElementViewer(
+                            onDelete: deleteElement,
+                            onSave: saveElement,
+                            element: element,
+                          );
+                      }
+                    }),
+                  ],)
+
+
+                  // SuperEditor(
+                  //   composer: DocumentComposer(
+                  //     imeConfiguration: const ImeConfiguration(enableAutocorrect: true,enableSuggestions: true, keyboardActionButton: TextInputAction.done),
+                  //   ),
+                  //   componentBuilders:  [
+                  //      BlockquoteComponentBuilder(),
+                  //      ParagraphComponentBuilder(),
+                  //      ListItemComponentBuilder(),
+                  //      ImageElementBuilder(),
+                  //      HorizontalRuleComponentBuilder(),
+                  //   ],
+                  //   editor: DocumentEditor(
+                  //       document: MutableDocument(
+                  //     nodes: [
+                  //       ...signature.elements.values.map((SignatureElement element) {
+                  //         switch (element.type) {
+                  //           case SigElementType.text:
+                  //             return ParagraphNode(
+                  //               id: DocumentEditor.createNodeId(),
+                  //               text: AttributedText(text: element.value),
+                  //               metadata: {
+                  //                 'blockType': blockquoteAttribution,
+                  //               },
+                  //             );
+                  //           case SigElementType.gif:
+                  //             return ImageNode(
+                  //               id: DocumentEditor.createNodeId(),
+                  //               metadata: {
+                  //                 'blockType': blockquoteAttribution,
+                  //                 'element': element.toMap(),
+                  //                 'signature': signature.toMap(),
+                  //                 'card': CelebrationCardFactory().toJson(card)
+                  //               },
+                  //               altText: element.metadata.toGif.title??'gif from giffy',
+                  //               imageUrl: element.metadata.toGif.url,
+                  //             );
+                  //         }
+                  //       }),
+                  //     ],
+                  //   )),
+                  // ),
                 ),
               ),
             ),
@@ -155,19 +189,19 @@ class CardSignPage extends AdaptiveUI {
       await saveElement(SignatureElement.gif(
         id: id,
         value: giffy!.url!,
-        metadata: SignGiphyGif.fromGiffy(giffy!).toJson(),
+        metadata: SignElementImage.fromGiffy(giffy!).toJson(),
       ));
     }
   }
 }
 
-class SignTextElement extends AdaptiveUI {
+class TextElementViewer extends AdaptiveUI {
   final SignatureElement element;
   final Function(SignatureElement element) onSave;
   final Function(SignatureElement element) onDelete;
   static final RxString textInEdit = ''.obs;
 
-  const SignTextElement({required this.onSave, required this.element, required this.onDelete, super.key});
+  const TextElementViewer({required this.onSave, required this.element, required this.onDelete, super.key});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
@@ -202,276 +236,190 @@ class SignTextElement extends AdaptiveUI {
             ),
           );
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              element.value,
-              style: element.metadata.asTextStyle,
-              textAlign: element.metadata.asAlignment,
-            ),
-            Row(
-              mainAxisAlignment: element.metadata.asAlignment == TextAlign.left
-                  ? MainAxisAlignment.start
-                  : element.metadata.asAlignment == TextAlign.right
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.center,
-              children: [
-                AppIconButton(
-                  onPressed: () {
-                    textInEdit(element.id);
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                AppIconButton(
-                  onPressed: () {
-                    onDelete(element);
-                  },
-                  icon: const Icon(Icons.delete),
-                )
-              ],
-            )
-          ],
+        return Draggable(
+          feedback: Opacity(
+            opacity: 0.2,
+            child: image,
+          ),
+          child: image,
         );
       },
     );
   }
-}
 
-class GifSignElement extends AdaptiveUI {
-  final SignatureElement element;
+  Widget get image {
+    return Material(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            element.value,
+            style: element.metadata.asTextStyle,
+            textAlign: element.metadata.asAlignment,
+          ),
+          Row(
+            mainAxisAlignment: element.metadata.asAlignment == TextAlign.left
+                ? MainAxisAlignment.start
+                : element.metadata.asAlignment == TextAlign.right
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.center,
+            children: [
+              AppIconButton(
+                onPressed: () {
+                  textInEdit(element.id);
+                },
+                icon: const Icon(Icons.edit),
+              ),
+              AppIconButton(
+                onPressed: () {
+                  onDelete(element);
+                },
+                icon: const Icon(Icons.delete),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+}
+}
+//
+// class GifSignElement extends AdaptiveUI {
+//   final SignatureElement element;
+//   final Function(SignatureElement element) onSave;
+//   final Function(SignatureElement element) onDelete;
+//
+//   const GifSignElement({required this.element, required this.onSave, required this.onDelete});
+//
+//   @override
+//   Widget view({required BuildContext ctx, required Adaptive adapter}) {
+//     return GiphyGetWrapper(
+//         giphy_api_key: giffyAPIKey,
+//         builder: (stream, giphyGetWrapper) => StreamBuilder<GiphyGif>(
+//             stream: stream,
+//             initialData: element.metadata.toGif,
+//             builder: (context, snapshot) {
+//               return snapshot.hasData
+//                   ? Column(
+//                       children: [
+//                         GiphyGifWidget(
+//                           imageAlignment: Alignment.center,
+//                           gif: element.metadata.toGif,
+//                           giphyGetWrapper: giphyGetWrapper,
+//                           borderRadius: BorderRadius.circular(30),
+//                           showGiphyLabel: true,
+//                         ),
+//                         Row(
+//                           mainAxisAlignment: MainAxisAlignment.center,
+//                           children: [
+//                             AppIconButton(
+//                               onPressed: () async {
+//                                 giffy = await GiphyGet.getGif(
+//                                   context: context,
+//                                   //Required
+//                                   apiKey: giffyAPIKey,
+//                                   //Required.
+//                                   lang: GiphyLanguage.english,
+//                                   //Optional - Language for query.
+//                                   randomID: "abcd",
+//                                   // Optional - An ID/proxy for a specific user.
+//                                   queryText: "birthday",
+//                                   tabColor: Colors.teal, // Optional- default accent color.
+//                                 );
+//                                 onSave(element.copyWith(metadata: giffy?.toJson()));
+//                               },
+//                               icon: const Icon(Icons.swap_vert),
+//                             ),
+//                             AppIconButton(
+//                               onPressed: () {
+//                                 onDelete(element);
+//                               },
+//                               icon: const Icon(Icons.delete),
+//                             )
+//                           ],
+//                         )
+//                       ],
+//                     )
+//                   : Text("No GIF");
+//             }));
+//   }
+// }
+
+
+
+/// Displays an image in a document.
+class ImageElementViewer extends StatelessWidget {
+
+
+  final  SignatureElement  element;
   final Function(SignatureElement element) onSave;
   final Function(SignatureElement element) onDelete;
 
-  const GifSignElement({required this.element, required this.onSave, required this.onDelete});
-
-  @override
-  Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return GiphyGetWrapper(
-        giphy_api_key: giffyAPIKey,
-        builder: (stream, giphyGetWrapper) => StreamBuilder<GiphyGif>(
-            stream: stream,
-            initialData: element.metadata.toGif,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? Column(
-                      children: [
-                        GiphyGifWidget(
-                          imageAlignment: Alignment.center,
-                          gif: element.metadata.toGif,
-                          giphyGetWrapper: giphyGetWrapper,
-                          borderRadius: BorderRadius.circular(30),
-                          showGiphyLabel: true,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AppIconButton(
-                              onPressed: () async {
-                                giffy = await GiphyGet.getGif(
-                                  context: context,
-                                  //Required
-                                  apiKey: giffyAPIKey,
-                                  //Required.
-                                  lang: GiphyLanguage.english,
-                                  //Optional - Language for query.
-                                  randomID: "abcd",
-                                  // Optional - An ID/proxy for a specific user.
-                                  queryText: "birthday",
-                                  tabColor: Colors.teal, // Optional- default accent color.
-                                );
-                                onSave(element.copyWith(metadata: giffy?.toJson()));
-                              },
-                              icon: const Icon(Icons.swap_vert),
-                            ),
-                            AppIconButton(
-                              onPressed: () {
-                                onDelete(element);
-                              },
-                              icon: const Icon(Icons.delete),
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                  : Text("No GIF");
-            }));
-  }
-}
-
-class ImageElementBuilder extends ComponentBuilder {
-  @override
-  Widget? createComponent(
-      SingleColumnDocumentComponentContext componentContext, SingleColumnLayoutComponentViewModel componentViewModel) {
-    if (componentViewModel is! ImageComponentViewModel) {
-      return null;
-    }
-
-    return ImageComponent(
-      componentKey: componentContext.componentKey,
-      imageUrl: componentViewModel.imageUrl,
-      selection: componentViewModel.selection,
-      selectionColor: componentViewModel.selectionColor,
-    );
-  }
-
-  @override
-  SingleColumnLayoutComponentViewModel? createViewModel(Document document, DocumentNode node) {
-    if (node is! ImageNode) {
-      return null;
-    }
-
-    return ImageComponentViewModel(
-      nodeId: node.id,
-      imageUrl: node.imageUrl,
-      selectionColor: const Color(0x00000000),
-    );
-  }
-}
-
-/// Displays an image in a document.
-class ImageSignElement extends StatelessWidget {
-  const ImageSignElement({
-    Key? key,
-    required this.componentKey,
-    required this.imageUrl,
-    this.selectionColor = Colors.blue,
-    this.selection,
-    this.imageBuilder,
+  const ImageElementViewer({
+    Key? key, required this.element,
+    required this.onSave,
+    required this.onDelete
   }) : super(key: key);
 
-  final GlobalKey componentKey;
-  final String imageUrl;
-  final Color selectionColor;
-  final UpstreamDownstreamNodeSelection? selection;
 
-  /// Called to obtain the inner image for the given [imageUrl].
-  ///
-  /// This builder is used in tests to 'mock' an [Image], avoiding accessing the network.
-  ///
-  /// If [imageBuilder] is `null` an [Image] is used.
-  final Widget Function(BuildContext context, String imageUrl)? imageBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.basic,
-      hitTestBehavior: HitTestBehavior.translucent,
-      child: IgnorePointer(
-        child: Center(
-          child: SelectableBox(
-            selection: selection,
-            selectionColor: selectionColor,
-            child: BoxComponent(
-              key: componentKey,
-              child: imageBuilder != null
-                  ? imageBuilder!(context, imageUrl)
-                  : Column(
-                      children: [
-                        Image.network(
-                          imageUrl,
-                          fit: BoxFit.contain,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AppIconButton(
-                              onPressed: () async {
-                                giffy = await GiphyGet.getGif(
-                                  context: context,
-                                  //Required
-                                  apiKey: giffyAPIKey,
-                                  //Required.
-                                  lang: GiphyLanguage.english,
-                                  //Optional - Language for query.
-                                  randomID: "abcd",
-                                  // Optional - An ID/proxy for a specific user.
-                                  queryText: "birthday",
-                                  tabColor: Colors.teal, // Optional- default accent color.
-                                );
-                                onSave(element.copyWith(metadata: giffy?.toJson()));
-                              },
-                              icon: const Icon(Icons.swap_vert),
-                            ),
-                            AppIconButton(
-                              onPressed: () {
-                                onDelete(element);
-                              },
-                              icon: const Icon(Icons.delete),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-            ),
-          ),
+    return Column(
+      children: [
+        Image.network(
+          element.metadata.toGif.url,
+          fit: BoxFit.contain,
         ),
-      ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppIconButton(
+              onPressed: () async {
+                giffy = await GiphyGet.getGif(
+                  context: context,
+                  //Required
+                  apiKey: giffyAPIKey,
+                  //Required.
+                  lang: GiphyLanguage.english,
+                  //Optional - Language for query.
+                  randomID: "abcd",
+                  // Optional - An ID/proxy for a specific user.
+                  queryText: "birthday",
+                  tabColor: Colors.teal, // Optional- default accent color.
+                );
+                if(giffy != null && giffy!.images!= null) {
+                  onSave(element.copyWith(
+                      metadata: SignElementImage.fromGiffy(
+                          giffy!).toJson()));
+                }
+              },
+              icon: const Icon(Icons.swap_vert),
+            ),
+            AppIconButton(
+              onPressed: () {
+                onDelete(element);
+              },
+              icon: const Icon(Icons.delete),
+            )
+          ],
+        )
+      ],
     );
   }
 
-  CelebrationCard get card => cardsController.getCardById();
 
-  Future<void> saveElement(SignatureElement element) async {
-    final CardSign newSign = signature.withElement(element);
-    await cardsController.updateContent(
-        card.id, {'signatures': card.withSignature(newSign).signatures.values.map((value) => value.toMap()).toList()});
-  }
 
-  Future<void> deleteElement(SignatureElement element) async {
-    final CardSign newSign = signature.removeElement(element);
-    await cardsController.updateContent(
-        card.id, {'signatures': card.withSignature(newSign).signatures.values.map((value) => value.toMap()).toList()});
-  }
 }
 
-class ImageSignElementViewModel extends SingleColumnLayoutComponentViewModel {
-  final SignatureElement signElement;
 
-  ImageSignElementViewModel({
-    required String nodeId,
-    double? maxWidth,
-    required this.signElement,
-    EdgeInsetsGeometry padding = EdgeInsets.zero,
-    required this.imageUrl,
-    this.selection,
-    required this.selectionColor,
-  }) : super(nodeId: nodeId, maxWidth: maxWidth, padding: padding);
 
-  String get imageUrl => signElement.metadata.toGif;
-  UpstreamDownstreamNodeSelection? selection;
-  Color selectionColor;
 
-  @override
-  ImageSignElementViewModel copy() {
-    return ImageSignElementViewModel(
-      nodeId: nodeId,
-      maxWidth: maxWidth,
-      padding: padding,
-      imageUrl: imageUrl,
-      selection: selection,
-      signElement: signElement,
-      selectionColor: selectionColor,
-    );
-  }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      super == other &&
-          other is ImageComponentViewModel &&
-          runtimeType == other.runtimeType &&
-          nodeId == other.nodeId &&
-          imageUrl == other.imageUrl &&
-          selection == other.selection &&
-          selectionColor == other.selectionColor;
 
-  @override
-  int get hashCode =>
-      super.hashCode ^ nodeId.hashCode ^ imageUrl.hashCode ^ selection.hashCode ^ selectionColor.hashCode;
-}
 
-class SignGiphyGif {
+
+class SignElementImage {
   String? title;
   String? type;
   String? id;
@@ -481,7 +429,7 @@ class SignGiphyGif {
   int? width;
   int? height;
 
-  SignGiphyGif({
+  SignElementImage({
     required this.title,
     required this.type,
     required this.id,
@@ -492,26 +440,28 @@ class SignGiphyGif {
     required this.isSticker,
   });
 
-  factory SignGiphyGif.fromJson(Map<String, dynamic> json) => SignGiphyGif(
+  factory SignElementImage.fromJson(Map<String, dynamic> json) => SignElementImage(
         title: json['title'],
         type: json['type'],
         id: json['id'],
         url: json['url'],
         rating: json['rating'],
         isSticker: json['is_sticker'] as int,
-      );
+        width:json['width'],
+        height:json['height'] ,
+  );
 
-  factory SignGiphyGif.fromGiffy(GiphyGif gif) {
-    return SignGiphyGif(
+  factory SignElementImage.fromGiffy(GiphyGif gif) {
+    return SignElementImage(
         title: gif.title,
         type: gif.type,
         id: gif.id,
-        url: gif.url!,
+        url: gif.images!.fixedWidth.url,
         rating: gif.rating,
         isSticker: gif.isSticker,
-        width: gif.images.downsizedLarge.url,
-
-        height: gif);
+        width:int.parse(gif.images!.fixedWidth.width),
+        height: int.parse(gif.images!.fixedWidth.height)
+    );
   }
 
   Map<String, dynamic> toJson() {

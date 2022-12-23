@@ -29,8 +29,8 @@ extension TextStyleFromMap on Map<String, dynamic> {
     return TextAlign.values.byName(this["align"]??'center');
   }
 
-  SignGiphyGif get toGif{
+  SignElementImage get toGif{
     print(this);
-    return SignGiphyGif.fromJson(this);
+    return SignElementImage.fromJson(this);
   }
 }

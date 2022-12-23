@@ -272,26 +272,11 @@ class GifSignPreviewElement extends AdaptiveUI {
   final SignatureElement element;
 
 
-  const GifSignPreviewElement({required this.element});
+  const GifSignPreviewElement({super.key, required this.element});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return GiphyGetWrapper(
-        giphy_api_key: giffyAPIKey,
-        builder: (stream, giphyGetWrapper) => StreamBuilder<GiphyGif>(
-            stream: stream,
-            initialData: element.metadata.toGif,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ?  GiphyGifWidget(
-                imageAlignment: Alignment.center,
-                gif: element.metadata.toGif,
-                giphyGetWrapper: giphyGetWrapper,
-                borderRadius: BorderRadius.circular(30),
-                showGiphyLabel: true,
-              )
-                  : Text("No GIF");
-            }));
+    return Image.network(element.metadata.toGif.url);
   }
 }
 
