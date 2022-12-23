@@ -1,6 +1,8 @@
 import 'package:celebrated/app.swatch.dart';
 import 'package:celebrated/app.theme.dart';
 import 'package:celebrated/authenticate/service/auth.service.dart';
+import 'package:celebrated/cards/adapter/card.factory.dart';
+import 'package:celebrated/cards/controller/card.editor.dart';
 import 'package:celebrated/cards/controller/cards.service.dart';
 import 'package:celebrated/cards/model/card.dart';
 import 'package:celebrated/cards/model/card.sign.dart';
@@ -11,6 +13,8 @@ import 'package:celebrated/domain/view/components/app.button.dart';
 import 'package:celebrated/domain/view/components/editable.text.field.dart';
 import 'package:celebrated/domain/view/components/text.dart';
 import 'package:celebrated/domain/view/interface/adaptive.ui.dart';
+import 'package:celebrated/live.editor/model/live.element.dart';
+import 'package:celebrated/live.editor/views/live.canvas.viewer.dart';
 import 'package:celebrated/main.dart';
 import 'package:celebrated/util/adaptive.dart';
 import 'package:celebrated/util/id.generator.dart';
@@ -52,6 +56,7 @@ class CardViewer extends AdaptiveUI {
   final PageController _cardSignerController = PageController(
     initialPage: int.parse(Get.parameters['page']??'0'),
   );
+
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
 
@@ -74,7 +79,9 @@ class CardViewer extends AdaptiveUI {
 
           final List<CardSign> signatures = card.signatures.values.toList();
           Size cardSize = card.theme.computeSizeFromRatio(const Size(400,500));
-
+          final CelebrationCardsEditor editor = CelebrationCardsEditor(
+            initialCanvases: card.signatures.values.map((e) => e.toCanvas(card.theme.cardRatio.toSize)).toList(),
+            card:card,);
           return SizedBox(
             width: adapter.width,
             height: adapter.height,
@@ -92,27 +99,21 @@ class CardViewer extends AdaptiveUI {
                           alignment: Alignment.center,
                           child: CardFrontPage(
                             card: card,
-                            width: cardSize.width,
-                            height:  cardSize.height,
                           )),
                       if (signatures.isEmpty)
-                        TaskFailed(
+                        const TaskFailed(
                           title: "This card is empty",
                           image: "assets/intro/notification.png",
                           buttonLabel: "Go back",
                         ),
-                      ...signatures.map2((signature, index) {
-                        return _CardPreviewPage(
-                          card: card,
-                          signature: signature,
+                      ...editor.controllers.values.map2((controller, index) {
+                        return LiveCanvasViewOnly(
+                          controller: controller,
                         );
                       }),
                       Container(
                           alignment: Alignment.center,
-                          child: CardBackPage(
-                            card: card,
-                            width: cardSize.width,
-                            height:  cardSize.height,
+                          child: CardBackPage(card: card,
                           )),
                     ],
                   ),
@@ -201,56 +202,9 @@ class CardViewer extends AdaptiveUI {
 String giffyAPIKey = "rcFrjQfPwLydblY9vsX6VuM6neiDLGRy";
 GiphyGif? giffy;
 
-class _CardPreviewPage extends AdaptiveUI {
-  final CelebrationCard card;
-  final CardSign signature;
-
-  const _CardPreviewPage({required this.signature, super.key, required this.card});
-
-  @override
-  Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.all(12.0),
-        height: adapter.height,
-        child: Center(
-          child: SizedBox(
-            width: 400,
-            child: Card(
-              shape: AppTheme.shape,
-              child: ListView(
-                padding: const EdgeInsets.all(30),
-                children: [
-
-                  ...signature.elements.values.map((SignatureElement element) {
-                    switch (element.type) {
-                      case SigElementType.text:
-                        return SignTextPreviewElement(
-
-                          element: element,
-
-                        );
-                      case SigElementType.gif:
-                        return GifSignPreviewElement(
-                          element: element,
-                        );
-                    }
-                  }),
-                  SizedBox(height: 260,)
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-
-}
 
 class SignTextPreviewElement extends AdaptiveUI {
-  final SignatureElement element;
+  final LiveEditorElement element;
 
 
   const SignTextPreviewElement({required this.element, super.key});
@@ -269,14 +223,14 @@ class SignTextPreviewElement extends AdaptiveUI {
 }
 
 class GifSignPreviewElement extends AdaptiveUI {
-  final SignatureElement element;
+  final LiveEditorElement element;
 
 
   const GifSignPreviewElement({super.key, required this.element});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {
-    return Image.network(element.metadata.toGif.url);
+    return Image.network(element.metadata.toImage.url);
   }
 }
 

@@ -7,10 +7,9 @@ import 'package:flutter/material.dart';
 
 class CardFrontPage extends AdaptiveUI {
   final CelebrationCard card;
-  final double? width;
-  final double? height;
 
-  const CardFrontPage({super.key, required this.card,  this.width,  this.height});
+
+  const CardFrontPage({super.key, required this.card});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

@@ -65,13 +65,9 @@ class CardPreview extends AdaptiveUI {
           direction: FlipDirection.HORIZONTAL, // default
           front: CardFrontPage(
             card: card,
-            width: 320,
-            height: 600,
           ),
           back: CardBackPage(
             card: card,
-            width: 320,
-            height: 600,
           ),
         ),
         if(withEditActions)

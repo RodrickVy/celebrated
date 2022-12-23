@@ -40,7 +40,7 @@ class CardsController extends GetxController with ContentStore<CelebrationCard, 
   /// the current index of the sign we are when signing a card
 
   static CardsController? _instance;
-  final RxInt currentSignIndex = 0.obs;
+
   CardsController._();
 
   factory CardsController() {

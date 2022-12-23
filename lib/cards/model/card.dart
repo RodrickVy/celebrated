@@ -1,10 +1,8 @@
 import 'package:celebrated/cards/controller/card.themes.service.dart';
-import 'package:celebrated/cards/controller/cards.service.dart';
 import 'package:celebrated/cards/model/card.sign.dart';
 import 'package:celebrated/cards/model/card.theme.dart';
 import 'package:celebrated/cards/model/send.method.dart';
 import 'package:celebrated/domain/model/imodel.dart';
-import 'package:celebrated/lists/view/components/birthday.card.dart';
 import 'package:celebrated/navigation/controller/route.names.dart';
 
 class CelebrationCard extends IModel {
@@ -120,43 +118,7 @@ class CelebrationCard extends IModel {
     return "${AppRoutes.domainUrlBase}${AppRoutes.cardPreview}?id=$id&page=0";
   }
 
-  factory CelebrationCard.fromMap(Map<String, dynamic> json) {
-    return CelebrationCard(
-      method: CardSendMethod.values.byName(json['method'] ?? 'email'),
-      to: json['to'],
-      from: json['from'],
-      title: json['title'],
-      templateId: json['templateId'] ?? '',
-      toEmail: json["toEmail"],
-      themeId: json['themeId'] ?? '',
-      id: json['id'],
-      pages: json['pages'] ?? 0,
-      sendManually: json["sendManually"] ?? false,
-      authorId: json['authorId'],
-      cardSent: json['cardSent'],
-      signatures: Map.fromIterable(List.from(json['signatures'] ?? []).map((e) => CardSign.fromMap(e)),
-          key: (e) => e.id, value: (e) => e),
-      sendWhen: DateTime.fromMillisecondsSinceEpoch(json["sendWhen"]),
-    );
-  }
 
 
-  Map<String, dynamic> toMap(CelebrationCard model) {
-    return {
-      'method': model.method.name,
-      'to': model.to,
-      'from': model.from,
-      'title': model.title,
-      'templateId': model.templateId,
-      'sendManually': model.sendManually,
-      'themeId': model.themeId,
-      'id': model.id,
-      'pages': model.pages,
-      'toEmail': model.toEmail,
-      'cardSent': model.cardSent,
-      'authorId': model.authorId,
-      'signatures': model.signatures.values.map((e) => e.toMap()).toList(),
-      "sendWhen": model.sendWhen.millisecondsSinceEpoch
-    };
-  }
+
 }

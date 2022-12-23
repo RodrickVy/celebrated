@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 
 class CardBackPage extends AdaptiveUI {
   final CelebrationCard card;
-  final double width;
-  final double height;
 
-  const CardBackPage({super.key, required this.card, required this.width, required this.height});
+  const CardBackPage({super.key, required this.card});
 
   @override
   Widget view({required BuildContext ctx, required Adaptive adapter}) {

@@ -57,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1+4"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -450,6 +457,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.18"
+  flutter_text_draggable:
+    dependency: "direct main"
+    description:
+      name: flutter_text_draggable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -462,6 +476,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "10.3.0"
+  fraction:
+    dependency: "direct main"
+    description:
+      name: fraction
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.4"
   frontend_server_client:
     dependency: transitive
     description:

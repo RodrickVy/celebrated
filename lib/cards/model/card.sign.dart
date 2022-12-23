@@ -1,13 +1,33 @@
-import 'package:get/get.dart';
+import 'package:celebrated/cards/model/card.theme.dart';
+import 'package:celebrated/cards/model/text.style.dart';
+import 'package:celebrated/cards/view/components/card.sign.page.dart';
+import 'package:celebrated/live.editor/model/live.canvas.dart';
+import 'package:celebrated/live.editor/model/live.element.dart';
+import 'package:flutter/material.dart';
+import 'package:fraction/fraction.dart';
 
 class CardSign {
   final String id;
-  final Map<String, SignatureElement> _elements;
+  final Map<String, LiveEditorElement> _elements;
 
-  Map<String, SignatureElement> get elements => _elements;
+  Map<String, LiveEditorElement> get elements => _elements;
 
-  CardSign({required this.id, required final List<SignatureElement> elements})
+  CardSign({required this.id, required final List<LiveEditorElement> elements})
       : _elements = Map.fromIterable(elements, key: (value) => value.id, value: (value) => value);
+
+  XYPair get unUsedPosition {
+    if(elements.isEmpty){
+      return const XYPair(0, 0);
+    }
+    final List<XYPair> usedPoints = elements.values.map((e) => XYPair(e.posY, e.posX)).toList();
+    usedPoints.sort((XYPair a, XYPair b) {
+      double aValue = a.yValue / a.yValue;
+      double bValue = b.yValue / b.xValue;
+      return aValue.compareTo(bValue);
+    });
+
+    return usedPoints.last;
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -18,12 +38,12 @@ class CardSign {
 
   factory CardSign.fromMap(Map<String, dynamic> map) {
     return CardSign(
-        elements: List.from(map['elements']).map((e) => SignatureElement.fromMap(e)).toList(), id: map['id']);
+        elements: List.from(map['elements']).map((e) => LiveEditorElement.fromMap(e)).toList(), id: map['id']);
   }
 
   CardSign copyWith({
     String? id,
-    List<SignatureElement>? elements,
+    List<LiveEditorElement>? elements,
   }) {
     return CardSign(
       id: id ?? this.id,
@@ -31,81 +51,45 @@ class CardSign {
     );
   }
 
-  CardSign withElement(SignatureElement element) {
-    _elements[element.id] =  element;
+  CardSign withElement(LiveEditorElement element) {
+    _elements[element.id] = element;
     return this;
   }
 
-  CardSign removeElement(SignatureElement element) {
+  CardSign removeElement(LiveEditorElement element) {
     _elements.remove(element.id);
     return this;
   }
+
+  
+  factory CardSign.fromLiveCanvas(LiveEditorCanvas canvas){
+    return  CardSign(id: canvas.id, elements: canvas.elements);
+  }
+
+  withLiveCanvas(LiveEditorCanvas canvas){
+    return  CardSign(id: id, elements: canvas.elements);
+  }
+
+  LiveEditorCanvas toCanvas(Size dimensions){
+    return LiveEditorCanvas(width: dimensions.width,height: dimensions.height,elements: elements.values.toList(), id: id);
+  }
 }
 
-enum SigElementType { text,  gif }
+enum SigElementType { text, image }
 
-class SignatureElement {
-  final SigElementType type;
-  final String id;
-  final String value;
-  final Map<String, dynamic> metadata;
 
-  const SignatureElement({required this.type, required this.id, required this.value, required this.metadata});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'type': type.name,
-      'id': id,
-      'value': value,
-      'metadata': metadata,
-    };
-  }
+double getTextAutoWidth(String text, TextStyle style) {
+  final List<int> lineCharLengths = text.split("\n").map((e) => e.length).toList();
+  lineCharLengths.sort();
 
-  factory SignatureElement.text({
-    required String id,
-    required String value,
-    required Map<String, dynamic> metadata,
-  }) {
-    return SignatureElement(
-      type: SigElementType.text,
-      id: id,
-      value: value,
-      metadata:metadata,
-    );
-  }
+  return lineCharLengths.first * (style.letterSpacing ?? 1);
+}
 
-  factory SignatureElement.gif({
-    required String id,
-    required String value,
-    required Map<String, dynamic> metadata,
-  }) {
-    return SignatureElement(
-      type: SigElementType.gif,
-      id: id,
-      value: value,
-      metadata:metadata,
-    );
-  }
-  factory SignatureElement.fromMap(Map<String, dynamic> map) {
-    return SignatureElement(
-      type: SigElementType.values.byName(map['type']),
-      id: map['id'] as String,
-      value: map['value'] as String,
-      metadata: Map.from(map['metadata']),
-    );
-  }
-
-  SignatureElement copyWith({
-    SigElementType? type,
-    String? id,
-    String? value,
-    Map<String, dynamic>? metadata,
-  }) {
-    return SignatureElement(
-      type: type ?? this.type,
-      id: id ?? this.id,
-      value: value ?? this.value,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+double getTextAutoHeight(String text, TextStyle style) {
+  final int lines = text
+      .split("\n")
+      .length;
+  final double lineHeight = (style.height ?? 1.0) * (style.fontSize ?? 16.0);
+  return lines * lineHeight;
 }

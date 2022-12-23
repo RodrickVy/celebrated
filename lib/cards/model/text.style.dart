@@ -29,7 +29,7 @@ extension TextStyleFromMap on Map<String, dynamic> {
     return TextAlign.values.byName(this["align"]??'center');
   }
 
-  SignElementImage get toGif{
+  SignElementImage get toImage{
     print(this);
     return SignElementImage.fromJson(this);
   }

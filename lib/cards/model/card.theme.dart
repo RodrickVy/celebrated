@@ -1,11 +1,14 @@
 import 'package:celebrated/domain/model/imodel.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/fraction.dart';
 
 class XYPair {
   final double yValue;
   final double xValue;
 
   const XYPair(this.xValue, this.yValue);
+
+  Size get toSize => Size(xValue,yValue);
 
   Map<String, dynamic> toMap() {
     return {
@@ -154,28 +157,55 @@ class CelebrationCardTheme implements IModel {
 
   /// computes what the height and width of the card should be on the current [screenSize] based on the ratio
   Size computeSizeFromRatio(Size screenSize) {
-    // the difference in % between the x and y length of the card as a decimal
-    double ratioPercentDifference = (cardRatio.yValue / cardRatio.xValue);
-
-    double width = screenSize.width;
-    double height = width * ratioPercentDifference;
-
-    if (width <= screenSize.width && height <= screenSize.height) {
-      return Size(width, height);
-    } else {
-      /// the only other case is when  height > screenSize.height
-      final double difference = height - screenSize.height;
-      height = height - difference;
-      // the percentage of the decrease in height  as a decimal
-      final double differencePercent = (difference / height);
-
-      width = width - (width * differencePercent);
-
-      return Size(width, height);
-    }
+    return getMaxFitSize(screenSize, cardRatio);
   }
 
   XYPair computeTextXYPosition(Size cardSize) {
-    return XYPair(cardSize.height * (texPosition.xValue / 100),cardSize.height * (texPosition.yValue / 100) );
+    return XYPair(cardSize.height * (texPosition.xValue / 100), cardSize.height * (texPosition.yValue / 100));
+  }
+}
+
+Size getMaxFitSize(Size screenSize, XYPair imageRatio) {
+  // the difference in % between the x and y length of the card as a decimal
+  double ratioPercentDifference = (imageRatio.yValue / imageRatio.xValue);
+
+  double width = screenSize.width;
+  double height = width * ratioPercentDifference;
+
+  if (width <= screenSize.width && height <= screenSize.height) {
+    return Size(width, height);
+  } else {
+    /// the only other case is when  height > screenSize.height
+    final double difference = height - screenSize.height;
+    height = height - difference;
+    // the percentage of the decrease in height  as a decimal
+    final double differencePercent = (difference / height);
+
+    width = width - (width * differencePercent);
+
+    return Size(width, height);
+  }
+}
+
+Size fitRectOnScreen(Size screenSize, Size rectSize) {
+  final Fraction fractionRation = Fraction(rectSize.width.toInt(), rectSize.height.toInt()).reduce();
+  // the difference in % between the x and y length of the card as a decimal
+  double ratioPercentDifference = (fractionRation.numerator/ fractionRation.denominator);
+
+  double width = screenSize.width;
+  double height = width * ratioPercentDifference;
+
+  if (width <= screenSize.width && height <= screenSize.height) {
+    return Size(width, height);
+  } else {
+    /// the only other case is when  height > screenSize.height
+    final double difference = height - screenSize.height;
+    height = height - difference;
+    // the percentage of the decrease in height  as a decimal
+    final double differencePercent = (difference / height);
+
+    width = width - (width * differencePercent);
+
+    return Size(width, height);
   }
 }
