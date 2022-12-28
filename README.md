@@ -1,2 +1,2 @@
-# breminder
+# Celebrated
 a birthday reminder app
