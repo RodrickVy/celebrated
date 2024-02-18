@@ -1,6 +1,6 @@
 # Celebrated
 A birthday reminder and card-sharing app for individuals, families and organizations. Built-in flutter with a modified MVC pattern and strong adherence to S.O.L.I.D principles. 
-
+The app comes with another server application with cloud functions for sending reminders, check it out here
 
 ## APP FEATURES
 For a more detailed breakdown check out - [this doc here](https://docs.google.com/document/d/1QWqqVyUoniQAwhGb1toJ4gVX_i6NNbCs5eygzvI7uwA/edit?usp=sharing)
