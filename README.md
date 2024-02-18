@@ -1,14 +1,44 @@
 # Celebrated
-A birthday reminder and card-sharing app for individuals, families and organizations
+A birthday reminder and card-sharing app for individuals, families and organizations.
 
-Expressing appreciation and love is essential to our humanity, yet our busy lives make it challenging to honour those important to us. Surprisingly, over 80% of Americans view their birthdays as special, second only to Christmas, highlighting a strong desire for celebration [Source 1.0][Source 1.1]. However, obstacles such as forgetting birthdays, lack of time for meaningful celebrations, repetitive celebration methods, budget constraints, and the struggle to unite people in organizations suggest a widespread feeling of being unappreciated [Source 1.2].
 
-**Celebrated** aims to transform this scenario. Our mission is to enable people to show appreciation meaningfully and effortlessly. With the Celebrated app/website, you can:
+# APP FEATURES
 
-- **Never forget birthdays** with phone, email, or WhatsApp reminders.
-- **Send virtual gifts** with personalized notes and packaging.
-- **Create unique birthday cards** for group signing.
-- Enjoy **fun games** at birthday gatherings.
-- **Easily collect birthday data** across organizations of any size.
+## MVP
 
-We aim to shift the focus from monetary value to quality time, connection, and genuine appreciation. Celebrated's features are designed to ensure that celebrating your loved ones is simple, personal, and meaningful.
+### Account
+- Signup: Enter name, email, birthdate, optional phone number, and password.
+- Select a plan: Choose from individual, business, school, etc., with basic/pro pricing.
+- Get verified via email or phone.
+- Edit profile: Update name, phone number, and birthdate.
+- Sign in with email and password.
+- Set app-wide settings, including theme (dark or light mode) and notification preferences (SMS, in-app, WhatsApp, or disable all).
+
+### Home
+- Set a Birthday Wish List, shareable as a post or link.
+- View Celebrated Stats: Number of birthdays celebrated and CTA to invite more people.
+- Testimonials: Share and view how Celebrated has impacted others.
+- Join our mission: Suggest features, add testimonials, and rate the app.
+
+### Lists
+- Create and manage birthday lists, with features for adding, editing, and deleting birthdays.
+- Import birthdays from contacts or via invite link.
+- Share birthday reminders and manage list notifications.
+
+### Gifts (Coming Soon)
+- Create and send virtual gifts with customizable details, categories, and packaging.
+- Schedule gift sending and customize messages.
+
+### Cards (Coming Soon)
+- Create virtual cards with options for templates, messages, signatures, and multimedia content.
+- Invite others to sign and set sending times.
+
+### Parties (Coming Soon)
+- Plan parties with detailed settings (location, time, dress code, theme, etc.).
+- Send party invites with confirmation links.
+
+## Tech Stack 
+- Authentication/Hosting - Firebase 
+- State Management & Routing - 
+
+
